@@ -1,8 +1,15 @@
 'use client';
 
-import React, { createContext, useReducer, ReactNode, Dispatch, useEffect } from 'react';
-import { GameState, Athlete, Team, Event, EventType, Schedule, EventResult } from '../types';
+import React, {
+    createContext,
+    useReducer,
+    ReactNode,
+    Dispatch,
+    useEffect,
+} from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { GameState, Athlete, Team, Meet, EventType, Schedule, EventResult, AthleteRaceResult,Event } from '../types';
+
 
 interface GameContextProps {
     state: GameState;
@@ -17,7 +24,6 @@ type GameAction =
     | { type: 'ADVANCE_SEASON' }
     | { type: 'UPDATE_TEAM_STATS'; payload: Team };
 
-
 const meetEvents: EventType[] = [
     '100m',
     '200m',
@@ -31,24 +37,24 @@ const meetEvents: EventType[] = [
     '400m Hurdles',
 ];
 
-
 const initialState: GameState = {
     currentDate: new Date().toISOString(),
-    events: [],
+    meets: [],
     teams: [],
     athletes: [],
     schedule: [],
-    currentWeek: 0
+    currentWeek: 1,
+    gameName: '',
+    userTeamId: 0
 };
-
 
 export const GameContext = createContext<{
     state: GameState;
     dispatch: Dispatch<GameAction>;
-  }>({
+}>({
     state: initialState,
     dispatch: () => null,
-  });
+});
 
 const gameReducer = (state: GameState, action: GameAction): GameState => {
     switch (action.type) {
@@ -80,44 +86,121 @@ const handleAddAthlete = (state: GameState, payload: Athlete): GameState => {
 const handleUpdateTeamStats = (state: GameState, payload: Team): GameState => {
     return {
         ...state,
-        teams: state.teams.map((team) => (team.id === payload.id ? payload : team)),
+        teams: state.teams.map((team) =>
+            team.id === payload.id ? payload : team
+        ),
     };
 };
 
 const handleSimulateMeet = (state: GameState): GameState => {
-    const newEvents: Event[] = [];
+    const newMeets: Meet[] = [];
 
+    const currentWeekSchedule = state.schedule.find(
+        (s) => s.week === state.currentWeek
+    );
+
+    if (!currentWeekSchedule) {
+        // No schedule for current week
+        return state;
+    }
+
+    const participatingTeamIds = currentWeekSchedule.participatingTeams;
+
+    const participatingTeams = state.teams.filter((team) =>
+        participatingTeamIds.includes(team.id)
+    );
+
+    // Create a new meet
+    const meet: Meet = {
+        id: state.meets.length + 1,
+        name: currentWeekSchedule.meetName,
+        date: state.currentDate,
+        teams: participatingTeams,
+        events: [],
+        teamResults: [],
+    };
+
+    // For each event type
     meetEvents.forEach((eventType) => {
-        const participants = state.athletes.filter((athlete) =>
-            athlete.events.includes(eventType)
+        // Get all athletes from participating teams who are in this event
+        const participants = state.athletes.filter(
+            (athlete) =>
+                athlete.events.includes(eventType) &&
+                participatingTeamIds.includes(athlete.teamId)
         );
 
         if (participants.length < 1) return;
 
-        const results = simulateEventResults(participants);
+        // Simulate results
+        const results = simulateEventResults(participants, eventType);
 
+        // Create event
         const event: Event = {
-            id: state.events.length + 1,
-            name: eventType,
-            date: state.currentDate,
-            participants,
-            results,
+            id: meet.events.length + 1,
+            eventType: eventType,
+            participants: participants,
+            results: results,
         };
 
-        newEvents.push(event);
+        meet.events.push(event);
     });
 
-    const { updatedAthletes, updatedTeams } = updateStats(state, newEvents);
+    // Calculate team points
+    const teamPoints: { [teamId: number]: number } = {};
+
+    meet.events.forEach((event) => {
+        event.results.forEach((result) => {
+            const athlete = state.athletes.find(
+                (a) => a.id === result.athleteId
+            );
+            if (athlete) {
+                const teamId = athlete.teamId;
+                if (!teamPoints[teamId]) {
+                    teamPoints[teamId] = 0;
+                }
+                teamPoints[teamId] += result.points;
+            }
+        });
+    });
+
+    // Create teamResults
+    meet.teamResults = participatingTeams.map((team) => {
+        return {
+            teamId: team.id,
+            points: teamPoints[team.id] || 0,
+            position: 0, // Placeholder, will set later
+        };
+    });
+
+    // Sort teams by points
+    meet.teamResults.sort((a, b) => b.points - a.points);
+
+    // Assign positions
+    meet.teamResults.forEach((teamResult, index) => {
+        teamResult.position = index + 1;
+    });
+
+    newMeets.push(meet);
+
+    // Update athlete stats and team stats
+    const { updatedAthletes, updatedTeams } = updateStats(state, newMeets);
+
+    // Advance currentWeek
+    const newCurrentWeek = state.currentWeek + 1;
 
     return {
         ...state,
         athletes: updatedAthletes,
         teams: updatedTeams,
-        events: [...state.events, ...newEvents],
+        meets: [...state.meets, ...newMeets],
+        currentWeek: newCurrentWeek,
     };
 };
 
-const handleStartNewGame = (state: GameState, numTeams: number): GameState => {
+const handleStartNewGame = (
+    state: GameState,
+    numTeams: number
+): GameState => {
     const teams: Team[] = [];
     let athletes: Athlete[] = [];
 
@@ -139,6 +222,7 @@ const handleStartNewGame = (state: GameState, numTeams: number): GameState => {
                 competitions: 0,
                 wins: 0,
                 totalPoints: 0,
+                rank: 0,
             },
             isUserTeam: teamId === 1, // First team is the user's team
         });
@@ -151,7 +235,7 @@ const handleStartNewGame = (state: GameState, numTeams: number): GameState => {
         currentDate: new Date().toISOString(),
         teams,
         athletes,
-        events: [],
+        meets: [],
         schedule,
         currentWeek: 1,
     };
@@ -160,7 +244,8 @@ const handleStartNewGame = (state: GameState, numTeams: number): GameState => {
 const handleAdvanceSeason = (state: GameState): GameState => {
     let updatedAthletes = state.athletes
         .map((athlete) => {
-            let newYear: 'Freshman' | 'Sophomore' | 'Junior' | 'Senior' = athlete.schoolYear;
+            let newYear: 'Freshman' | 'Sophomore' | 'Junior' | 'Senior' =
+                athlete.schoolYear;
             switch (athlete.schoolYear) {
                 case 'Freshman':
                     newYear = 'Sophomore';
@@ -174,13 +259,25 @@ const handleAdvanceSeason = (state: GameState): GameState => {
                 case 'Senior':
                     return null; // Graduate seniors
             }
-            return { ...athlete, schoolYear: newYear };
+            // Reset seasonRecords
+            return {
+                ...athlete,
+                schoolYear: newYear,
+                stats: {
+                    ...athlete.stats,
+                    competitions: 0,
+                    wins: 0,
+                    seasonRecords: {},
+                },
+            };
         })
         .filter((athlete) => athlete !== null) as Athlete[];
 
     const newAthletes: Athlete[] = [];
     state.teams.forEach((team) => {
-        const numGraduated = team.athletes.filter((a) => a.schoolYear === 'Senior').length;
+        const numGraduated = team.athletes.filter(
+            (a) => a.schoolYear === 'Senior'
+        ).length;
         const freshmen = generateAthletes(team.id, numGraduated, [
             'Sprinter',
             'Distance Runner',
@@ -190,8 +287,12 @@ const handleAdvanceSeason = (state: GameState): GameState => {
     });
 
     const updatedTeams = state.teams.map((team) => {
-        const teamAthletes = updatedAthletes.filter((a) => a.teamId === team.id);
-        const newTeamAthletes = newAthletes.filter((a) => a.teamId === team.id);
+        const teamAthletes = updatedAthletes.filter(
+            (a) => a.teamId === team.id
+        );
+        const newTeamAthletes = newAthletes.filter(
+            (a) => a.teamId === team.id
+        );
         return {
             ...team,
             athletes: [...teamAthletes, ...newTeamAthletes],
@@ -199,6 +300,7 @@ const handleAdvanceSeason = (state: GameState): GameState => {
                 competitions: 0,
                 wins: 0,
                 totalPoints: 0,
+                rank: 0,
             },
         };
     });
@@ -209,14 +311,15 @@ const handleAdvanceSeason = (state: GameState): GameState => {
         ...state,
         athletes: [...updatedAthletes, ...newAthletes],
         teams: updatedTeams,
-        events: [],
+        meets: [],
         schedule: newSchedule,
         currentWeek: 1,
     };
 };
 
-
-export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const GameProvider: React.FC<{ children: ReactNode }> = ({
+    children,
+}) => {
     const [state, dispatch] = useReducer(gameReducer, initialState);
 
     // Load game state from localStorage on mount
@@ -232,22 +335,30 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.setItem('gameState', JSON.stringify(state));
     }, [state]);
 
-    return <GameContext.Provider value={{ state, dispatch }}>{children}</GameContext.Provider>;
+    return (
+        <GameContext.Provider value={{ state, dispatch }}>
+            {children}
+        </GameContext.Provider>
+    );
 };
 
-// Helper function to simulate event results
-const simulateEventResults = (participants: Athlete[]): EventResult[] => {
+// Helper function to simulate Meet results
+const simulateEventResults = (
+    participants: Athlete[],
+    eventType: EventType
+): EventResult[] => {
     // Assign random times based on athlete stats
     const results: EventResult[] = participants.map((athlete) => {
-        const baseTime = getBaseTimeForEvent(athlete, athlete.events[0]); // Assuming first event
+        const baseTime = getBaseTimeForEvent(athlete, eventType);
         const timeVariation = Math.random() * 2 - 1; // Random variation between -1 and 1
         const time = baseTime + timeVariation;
 
         return {
             athleteId: athlete.id,
+            id: 0, // Will set later
             time: parseFloat(time.toFixed(2)),
-            position: 0,  // Initial placeholder, will be updated later
-            points: 0,    // Initial placeholder, will be updated later
+            position: 0, // Initial placeholder
+            points: 0, // Initial placeholder
         };
     });
 
@@ -258,11 +369,11 @@ const simulateEventResults = (participants: Athlete[]): EventResult[] => {
     results.forEach((result, index) => {
         result.position = index + 1;
         result.points = getPointsForPosition(result.position);
+        result.id = index + 1;
     });
 
     return results;
 };
-
 
 // Helper function to get base time for an athlete in an event
 const getBaseTimeForEvent = (athlete: Athlete, eventType: EventType): number => {
@@ -272,20 +383,20 @@ const getBaseTimeForEvent = (athlete: Athlete, eventType: EventType): number => 
 
     // Base times for events (in seconds)
     const eventBaseTimes: { [key in EventType]: number } = {
-        '100m': 10,
-        '200m': 20,
-        '400m': 50,
+        '100m': 12,
+        '200m': 22,
+        '400m': 52,
         '800m': 110,
-        '1600m': 240,
-        '3200m': 500,
-        '5k': 900,
-        '10k': 1800,
-        '110m Hurdles': 14,
-        '400m Hurdles': 55,
+        '1600m': 310,
+        '3200m': 600,
+        '5k': 960,
+        '10k': 1920,
+        '110m Hurdles': 15,
+        '400m Hurdles': 56,
     };
 
     const baseTime = eventBaseTimes[eventType];
-    return baseTime * (1 + speedFactor + enduranceFactor) / 2;
+    return baseTime * (1 + (speedFactor + enduranceFactor) / 2);
 };
 
 // Helper function to assign points based on position
@@ -295,33 +406,97 @@ const getPointsForPosition = (position: number): number => {
 };
 
 // Helper function to update stats
-const updateStats = (state: GameState, newEvents: Event[]) => {
+const updateStats = (state: GameState, newMeets: Meet[]) => {
     let updatedAthletes = [...state.athletes];
     let updatedTeams = [...state.teams];
 
-    newEvents.forEach((event) => {
-        event.results.forEach((result) => {
-            let athlete = updatedAthletes.find((a) => a.id === result.athleteId);
-            if (athlete) {
-                // Update athlete stats
-                athlete.stats.competitions += 1;
-                athlete.stats.wins += result.position === 1 ? 1 : 0;
+    newMeets.forEach((meet) => {
+        meet.events.forEach((event) => {
+            event.results.forEach((result) => {
+                let athlete = updatedAthletes.find(
+                    (a) => a.id === result.athleteId
+                );
+                if (athlete) {
+                    // Update athlete stats
+                    athlete.stats.competitions += 1;
+                    athlete.stats.wins += result.position === 1 ? 1 : 0;
 
-                // Update team stats
-                const team = updatedTeams.find((t) => t.id === athlete.teamId);
-                if (team) {
-                    team.stats.totalPoints += result.points;
+                    // Add race result to athlete's raceResults
+                    const raceResult: AthleteRaceResult = {
+                        date: meet.date,
+                        meetId: meet.id,
+                        eventType: event.eventType,
+                        time: result.time,
+                        position: result.position,
+                        points: result.points,
+                    };
+
+                    if (!athlete.stats.raceResults) {
+                        athlete.stats.raceResults = [];
+                    }
+
+                    athlete.stats.raceResults.push(raceResult);
+
+                    // Update personal record
+                    const currentPR =
+                        athlete.stats.personalRecords[event.eventType];
+                    if (
+                        currentPR === undefined ||
+                        result.time < currentPR
+                    ) {
+                        athlete.stats.personalRecords[event.eventType] =
+                            result.time;
+                    }
+
+                    // Update season record
+                    const currentSeasonRecord =
+                        athlete.stats.seasonRecords[event.eventType];
+                    if (
+                        currentSeasonRecord === undefined ||
+                        result.time < currentSeasonRecord
+                    ) {
+                        athlete.stats.seasonRecords[event.eventType] =
+                            result.time;
+                    }
+
+                    // Update team stats
+                    const team = updatedTeams.find(
+                        (t) => t.id === athlete.teamId
+                    );
+                    if (team) {
+                        team.stats.totalPoints += result.points;
+                    }
+                }
+            });
+        });
+
+        // Update team stats for team placements
+        meet.teamResults.forEach((teamResult) => {
+            const team = updatedTeams.find((t) => t.id === teamResult.teamId);
+            if (team) {
+                team.stats.competitions += 1;
+                if (teamResult.position === 1) {
+                    team.stats.wins += 1;
                 }
             }
         });
     });
 
+    // Update team rankings
+    updatedTeams.sort((a, b) => b.stats.totalPoints - a.stats.totalPoints);
+    updatedTeams.forEach((team, index) => {
+        team.stats.rank = index + 1;
+    });
+
     return { updatedAthletes, updatedTeams };
 };
 
-
 // Generate random athletes
-const generateAthletes = (teamId: number, numAthletes: number, roles: string[]): Athlete[] => {
+const generateAthletes = (
+    teamId: number,
+    numAthletes: number,
+    roles: string[]
+): Athlete[] => {
     const athletes: Athlete[] = [];
     for (let i = 0; i < numAthletes; i++) {
         const role = roles[i % roles.length];
@@ -331,11 +506,16 @@ const generateAthletes = (teamId: number, numAthletes: number, roles: string[]):
             teamId,
             events: getEventsForRole(role),
             stats: {
-                speed: Math.floor(Math.random() * 30) + 70, // 70-99
-                endurance: Math.floor(Math.random() * 30) + 70,
-                strength: Math.floor(Math.random() * 30) + 70,
+                athleteID: i + 1,
+                speed: Math.floor(Math.random() * 45) + 45, // 45-99
+                endurance: Math.floor(Math.random() * 45) + 45,
+                strength: Math.floor(Math.random() * 45) + 45,
                 competitions: 0,
                 wins: 0,
+                raceResults: [],
+                personalRecords: {},
+                seasonRecords: {},
+                // Add other stats if necessary
             },
             schoolYear: getRandomSchoolYear(),
         };
@@ -378,13 +558,19 @@ const generateSchedule = (numTeams: number): Schedule[] => {
         {
             week: totalWeeks + 1,
             meetName: 'Semi-finals',
-            participatingTeams: Array.from({ length: Math.ceil(numTeams / 2) }, (_, i) => i + 1),
+            participatingTeams: Array.from(
+                { length: Math.ceil(numTeams / 2) },
+                (_, i) => i + 1
+            ),
             isPlayoff: true,
         },
         {
             week: totalWeeks + 2,
             meetName: 'Finals',
-            participatingTeams: Array.from({ length: Math.ceil(numTeams / 4) }, (_, i) => i + 1),
+            participatingTeams: Array.from(
+                { length: Math.ceil(numTeams / 4) },
+                (_, i) => i + 1
+            ),
             isPlayoff: true,
         }
     );

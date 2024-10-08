@@ -1,16 +1,18 @@
 'use client';
 
-import { GameProvider } from '../context/GameContext';
-import NavBar from '../components/NavBar';
+import React from 'react';
+import { GameProvider } from '@/context/GameContext';
+import '@/styles/globals.css'; 
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body>
-        <GameProvider>
-          <NavBar />
-          {children}
-        </GameProvider>
+        <GameProvider>{children}</GameProvider>
       </body>
     </html>
   );
