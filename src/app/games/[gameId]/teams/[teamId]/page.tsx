@@ -1,50 +1,50 @@
 "use client";
 
 import { useParams } from 'next/navigation';
-import { loadGameData } from '@/data/storage';
-import { Game } from '@/types/game';
-import { Team } from '@/types/team';
-import { Meet } from '@/types/schedule';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { loadGameData } from '@/data/storage';
+import { Team } from '@/types/team';
+import { Player } from '@/types/player';
 
-export default function TeamDashboard() {
+export default function TeamPage() {
     const { gameId, teamId } = useParams();
-    const [teamData, setTeamData] = useState<Team>();
+    const [team, setTeam] = useState<Team | null>(null);
 
     useEffect(() => {
         async function fetchData() {
-            const data: Game = await loadGameData(Number(gameId));
-            const team = data.teams.find(t => t.teamId === Number(teamId));
-            setTeamData(team);
+            const gameData = await loadGameData(Number(gameId));
+            const selectedTeam = gameData?.teams.find(t => t.teamId === Number(teamId));
+            setTeam(selectedTeam || null);
         }
         fetchData();
     }, [gameId, teamId]);
 
-    if (!teamData) return <div>Loading...</div>;
+    if (!team) return <div>Loading...</div>;
 
     return (
-        <div>
-            <h1>Team Dashboard</h1>
-            <h2>Conference: {teamData.conference}</h2>
-            <h2>Points: {teamData.points}</h2>
+        <div className="p-4">
+            <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">{team.teamName}</h1>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">College: <span className="font-semibold">{team.college}</span></p>
 
-            <section>
-                <h3>Roster</h3>
-                <ul>
-                    {teamData.players.map(player => (
-                        <li key={player.playerId}>
-                            <a href={`/games/${gameId}/players/${player.playerId}`}>
-                                Player ID: {player.playerId}, Year: {player.year}
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            </section>
+            <Link href={`/games/${gameId}/teams/${teamId}/schedule`}>
+                <button className="px-4 py-2 bg-accent text-white rounded-lg transition hover:bg-accent-dark mb-6">
+                    View Team Schedule
+                </button>
+            </Link>
 
-            <section>
-                <h3>Schedule</h3>
- 
-            </section>
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Players</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {team.players.map(player => (
+                    <Link key={player.playerId} href={`/games/${gameId}/players/${player.playerId}`}>
+                        <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors cursor-pointer hover:shadow-xl">
+                            <h3 className="text-xl font-semibold text-accent">{player.firstName} {player.lastName}</h3>
+                            <p className="text-gray-700 dark:text-gray-300">Year: <span className="font-semibold">{player.year}</span></p>
+                            <p className="text-gray-700 dark:text-gray-300">Event Type: <span className="font-semibold">{player.eventType}</span></p>
+                        </div>
+                    </Link>
+                ))}
+            </div>
         </div>
     );
 }
