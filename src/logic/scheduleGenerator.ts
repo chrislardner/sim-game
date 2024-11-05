@@ -28,6 +28,7 @@ function createMeetsForWeek(teams: Team[], seasonType: 'cross_country' | 'track_
 
 function createMeet(teams: Team[], seasonType: 'cross_country' | 'track_field'): Meet {
     return {
+        week: 1, // Placeholder for now
         meetId: meetIdCounter++,
         date: getNextMeetDate(), // Helper function for dates
         teams,
@@ -40,7 +41,8 @@ function createRacesForMeet(seasonType: 'cross_country' | 'track_field'): Race[]
     const eventTypes = seasonType === 'cross_country' ? ['8k'] : ['100m', '200m', '400m', '800m', '1500m'];
     return eventTypes.map(eventType => ({
         eventType,
-        heats: [] // Races can be filled in during simulation
+        heats: [], // Races can be filled in during simulation
+        participants: [] // Initialize participants as an empty array
     }));
 }
 

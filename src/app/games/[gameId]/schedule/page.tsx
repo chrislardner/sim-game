@@ -1,29 +1,45 @@
-'use client';
+// src/app/games/[gameId]/schedule/page.tsx
+"use client";
 
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { loadGameData } from '@/data/storage';
-import { Team } from '@/types/team';
+import { useEffect, useState } from 'react';
+import { Meet } from '@/types/event';
 
-export default function SchedulePage() {
+export default function LeagueSchedule() {
     const { gameId } = useParams();
-    const [teams, setTeams] = useState<Team[]>([]);
+    const [leagueSchedule, setLeagueSchedule] = useState<Meet[]>([]);
 
     useEffect(() => {
-        const fetchSchedule = async () => {
-            const game = await loadGameData(Number(gameId));
-            setTeams(game?.teams || []);
-        };
-        fetchSchedule();
+        async function fetchData() {
+            const gameData = await loadGameData(Number(gameId));
+            const allMeets: Meet[] = gameData?.teams.flatMap(team => team.schedule.flatMap(week => week.meets as unknown as Meet[])) || [];
+            const uniqueMeets = Array.from(new Map(allMeets.map((meet: Meet) => [meet.meetId, meet])).values());
+            setLeagueSchedule(uniqueMeets);
+            const allTeamSched: Meet[] = gameData?.teams.flatMap(team => team.schedule as unknown as Meet[]) || [];
+            console.log(allTeamSched)
+        }
+        fetchData();
     }, [gameId]);
+
+    if (!leagueSchedule.length) return <div>Loading...</div>;
 
     return (
         <div>
-            <h1>Schedule and Standings</h1>
+            <h1>League Schedule</h1>
             <ul>
-                {teams.map((team) => (
-                    <li key={team.teamId}>
-                        Team {team.teamId}: {team.points} Points
+                {leagueSchedule.map((meet, index) => (
+                    <li key={index}>
+                        <h3>Meet {meet.meetId} - {meet.date}</h3>
+                        <p>Meet Type: {meet.type}</p>
+                        {/* <p>Participating Teams: {meet.teams.join(', ')}</p> */}
+                        <ul>
+                            {/* {meet.races.map((race, i) => (
+                                <li key={i}>
+                                    {race.eventType} - Heats: {race.heats.length}
+                                </li>
+                            ))} */}
+                        </ul>
                     </li>
                 ))}
             </ul>

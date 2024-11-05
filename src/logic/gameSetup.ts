@@ -13,7 +13,7 @@ export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): 
     const teams: Team[] = [];
     initializeIDTracker(gameId, 0, 0, 0);
     const seasonSchedule = generateSeasonSchedule(teams, 'cross_country');
-    generateTeamSchedules(teams); 
+    // generateTeamSchedules(teams); 
 
     const gameData: Game = {
         gameId,

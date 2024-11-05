@@ -9,6 +9,7 @@ interface Params {
 export default async function StandingsPage({ params }: { params: Params }) {
     const game = await loadGameData(Number(params.gameId));
     
+    
     return (
         <div className="p-8">
             <h1 className="text-2xl font-bold">Standings</h1>

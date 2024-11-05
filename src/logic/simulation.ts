@@ -46,13 +46,14 @@ export function simulateRegularSeason(game: Game) {
     if (game.currentWeek <= 12) {
         game.teams.forEach(team => {
             const meet: Meet = {
+                week: game.currentWeek,
                 meetId: getNextMeetId(game.gameId),
                 teams: [game.teams.find(t => t.teamId === team.teamId)!], // Find the actual team object
                 date: `Week ${game.currentWeek}`,
                 races: [],
                 meetType: 'track_field',
             };
-            team.schedule.push({ week: game.currentWeek, meets: [meet.meetId] });
+            team.schedule.push(meet);
         });
     } else {
         game.gamePhase = 'playoffs';
@@ -68,6 +69,7 @@ export function simulatePlayoffs(game: Game) {
         if (teamPair.length < 2) break;
 
         const meet: Meet = {
+            week: game.currentWeek,
             meetId: getNextMeetId(game.gameId),
             teams: teamPair.map(teamId => game.teams.find(team => team.teamId === teamId)!),
             date: `Playoff Round`,

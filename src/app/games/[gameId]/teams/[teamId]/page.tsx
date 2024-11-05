@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { loadGameData } from '@/data/storage';
 import { Game } from '@/types/game';
 import { Team } from '@/types/team';
+import { Meet } from '@/types/schedule';
 import { useEffect, useState } from 'react';
 
 export default function TeamDashboard() {
@@ -42,11 +43,7 @@ export default function TeamDashboard() {
 
             <section>
                 <h3>Schedule</h3>
-                <ul>
-                    {teamData.schedule.map((meet, index) => (
-                        <li key={index}>Week {meet.week}: Meets {meet.meets.join(', ')}</li>
-                    ))}
-                </ul>
+ 
             </section>
         </div>
     );

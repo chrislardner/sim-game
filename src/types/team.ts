@@ -1,4 +1,5 @@
 import { Player } from './player';
+import { Meet } from './schedule';
 
 export interface Team {
     teamId: number;
@@ -7,7 +8,7 @@ export interface Team {
     gameId: number;
     players: Player[];
     points: number;
-    schedule: { week: number; meets: number[] }[]; // Updated to accept objects with week and meets properties
+    schedule: Meet[]; // Updated to accept objects with week and meets properties
     conference: string;
     region: string;
 }
