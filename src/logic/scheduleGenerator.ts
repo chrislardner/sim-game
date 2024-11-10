@@ -1,64 +1,71 @@
-import { Meet, Race, Schedule } from '@/types/schedule';
+// src/logic/scheduleGenerator.ts
+
 import { Team } from '@/types/team';
+import { LeagueSchedule, TeamSchedule, Meet, Race } from '@/types/schedule';
+import { raceTypes } from '@/constants/raceTypes';
 
 let meetIdCounter = 1;
 
-export function generateSeasonSchedule(teams: Team[], seasonType: 'cross_country' | 'track_field'): Schedule[] {
-    const schedules: Schedule[] = teams.map(team => ({ teamId: team.teamId, meets: [] }));
+// Generate the complete League Schedule for a season
+export function generateLeagueSchedule(teams: Team[], seasonType: 'cross_country' | 'track_field'): LeagueSchedule {
+    const leagueSchedule: LeagueSchedule = {
+        seasonType,
+        meets: []
+    };
 
-    // Generate 10 regular-season weeks
+    // Generate a set number of weeks with meets
     for (let week = 1; week <= 10; week++) {
-        const meetsForWeek = createMeetsForWeek(teams, seasonType);
-        meetsForWeek.forEach(meet => {
-            schedules.forEach(schedule => {
-                if (meet.teams.some(team => team.teamId === schedule.teamId)) {
-                    schedule.meets.push(meet);
-                }
-            });
-        });
+        const meetsForWeek = createMeetsForWeek(teams, seasonType, week);
+        leagueSchedule.meets.push(...meetsForWeek);
     }
-    return schedules;
+
+    return leagueSchedule;
 }
 
-function createMeetsForWeek(teams: Team[], seasonType: 'cross_country' | 'track_field'): Meet[] {
-    const teamPairs = getRandomTeamPairs(teams); // Helper to pair teams
-    const meets: Meet[] = teamPairs.map(pair => createMeet(pair, seasonType));
+// Generate meets for a specific week
+function createMeetsForWeek(teams: Team[], seasonType: 'cross_country' | 'track_field', week: number): Meet[] {
+    const shuffledTeams = [...teams].sort(() => Math.random() - 0.5);
+    const teamPairs = pairTeams(shuffledTeams); // Helper function to pair teams
+    const meets: Meet[] = teamPairs.map(pair => createMeet(pair, seasonType, week));
+
     return meets;
 }
 
-function createMeet(teams: Team[], seasonType: 'cross_country' | 'track_field'): Meet {
+// Helper to pair teams
+function pairTeams(teams: Team[]): Team[][] {
+    const pairs: Team[][] = [];
+    for (let i = 0; i < teams.length - 1; i += 2) {
+        pairs.push([teams[i], teams[i + 1]]);
+    }
+    return pairs;
+}
+
+// Create a meet with seasonal race types
+function createMeet(teams: Team[], seasonType: 'cross_country' | 'track_field', week: number): Meet {
     return {
-        week: 1, // Placeholder for now
+        week,
         meetId: meetIdCounter++,
-        date: getNextMeetDate(), // Helper function for dates
+        date: `Week ${week}`,
         teams,
         races: createRacesForMeet(seasonType),
-        meetType: seasonType,
+        meetType: seasonType
     };
 }
 
+// Create races based on the meet type (seasonal race types)
 function createRacesForMeet(seasonType: 'cross_country' | 'track_field'): Race[] {
-    const eventTypes = seasonType === 'cross_country' ? ['8k'] : ['100m', '200m', '400m', '800m', '1500m'];
+    const eventTypes = raceTypes[seasonType];
     return eventTypes.map(eventType => ({
         eventType,
-        heats: [], // Races can be filled in during simulation
-        participants: [] // Initialize participants as an empty array
+        heats: [],
+        participants: []
     }));
 }
 
-function getNextMeetDate(): string {
-    // Example of generating dates - customize based on season needs
-    const now = new Date();
-    return new Date(now.setDate(now.getDate() + 7)).toISOString().slice(0, 10);
-}
-
-// Helper to create random team pairs for weekly meets
-function getRandomTeamPairs(teams: Team[]): Team[][] {
-    // Shuffle and pair teams randomly
-    const shuffled = [...teams].sort(() => Math.random() - 0.5);
-    const pairs: Team[][] = [];
-    for (let i = 0; i < shuffled.length - 1; i += 2) {
-        pairs.push([shuffled[i], shuffled[i + 1]]);
-    }
-    return pairs;
+// Generate individual Team Schedules based on the League Schedule
+export function generateTeamSchedules(leagueSchedule: LeagueSchedule, teams: Team[]): TeamSchedule[] {
+    return teams.map(team => ({
+        teamId: team.teamId,
+        meets: leagueSchedule.meets.filter(meet => meet.teams.some(t => t.teamId === team.teamId)),
+    }));
 }

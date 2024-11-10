@@ -1,5 +1,5 @@
 import { Team } from './team';
-import { Schedule } from './schedule';
+import { LeagueSchedule } from './schedule';
 
 export interface Game {
     gamePhase: string;
@@ -7,7 +7,7 @@ export interface Game {
     teams: Team[];
     currentYear: number;   // e.g., 2024
     currentWeek: number;     // Tracks the week within the season
-    schedule: Schedule[];    // Full season schedule
+    leagueSchedule: LeagueSchedule;    // Full season schedule
     lastPlayerId: number; // Tracks last assigned player ID in this game
     lastTeamId: number;  // Tracks last assigned team ID in this game
     lastMeetId: number;  // Tracks last assigned meet ID in this game

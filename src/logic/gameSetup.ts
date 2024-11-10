@@ -1,10 +1,9 @@
 import { saveGameData, savePlayerData, saveTeamData } from '@/data/storage';
-import { generateSeasonSchedule } from '@/logic/scheduleGenerator';
-import { generateTeamSchedules } from '@/logic/schedule';
+import { generateLeagueSchedule, generateTeamSchedules } from '@/logic/scheduleGenerator';
 import { Team } from '@/types/team';
 import { Game } from '@/types/game';
 import { Player } from '@/types/player';
-import { getNextPlayerId, getNextTeamId, initializeIDTracker } from '@/data/idTracker';
+import { getCurrentIDs, getNextPlayerId, getNextTeamId, initializeIDTracker } from '@/data/idTracker';
 
 var gameIdCounter = 0;
 
@@ -12,20 +11,6 @@ export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): 
     const gameId = gameIdCounter++;
     const teams: Team[] = [];
     initializeIDTracker(gameId, 0, 0, 0);
-    const seasonSchedule = generateSeasonSchedule(teams, 'cross_country');
-    // generateTeamSchedules(teams); 
-
-    const gameData: Game = {
-        gameId,
-        teams,
-        currentYear: 2024, // Starting season
-        currentWeek: 0, // Start at week 0
-        schedule: seasonSchedule,
-        gamePhase: 'cross_country', // Start with cross country season
-        lastPlayerId: 0, // Start ID counters at 0
-        lastTeamId: 0,
-        lastMeetId: 0
-    };
 
     for (let i = 0; i < numTeams; i++) {
         const team = createTeam(gameId);
@@ -37,9 +22,37 @@ export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): 
         }
     }
 
-    saveGameData(gameData);
-    return gameData;
+    const leagueSchedule = generateLeagueSchedule(teams, 'cross_country');
+    const teamSchedules = generateTeamSchedules(leagueSchedule, teams);
+
+    const ids = getCurrentIDs(gameId);
+
+    const lastPlayerId = ids.lastPlayerId;
+    const lastTeamId = ids.lastTeamId;
+    const lastMeetId = ids.lastMeetId;
+
+    const game: Game = {
+        gameId,
+        teams: teams.map(team => ({
+            ...team,
+            teamSchedule: {
+                teamId: team.teamId,
+                meets: teamSchedules.find(s => s.teamId === team.teamId)?.meets || []
+            }
+        })),
+        currentWeek: 0,
+        currentYear: 2024,
+        gamePhase: 'regular',
+        leagueSchedule,
+        lastPlayerId,
+        lastTeamId,
+        lastMeetId
+    };
+
+    saveGameData(game);
+    return game;
 }
+
 function createTeam(gameId: number): Team {
     const newTeamId: number = getNextTeamId(gameId);
     const colleges = ['Knox College', 'Monmouth College', 'Illinois College',
@@ -56,7 +69,7 @@ function createTeam(gameId: number): Team {
         gameId,
         players: [],
         points: 0,
-        schedule: [],
+        teamSchedule: { teamId: newTeamId, meets: [] },
         conference: 'Midwest Conference',
         region: 'Midwest Region'
     };

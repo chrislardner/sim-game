@@ -1,5 +1,3 @@
-// src/data/idTracker.ts
-
 interface GameIDTracker {
     lastPlayerId: number;
     lastTeamId: number;
