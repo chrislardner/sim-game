@@ -49,7 +49,7 @@ export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): 
         lastPlayerId,
         lastTeamId,
         lastMeetId,
-        remainingTeams: teams
+        remainingTeams: teams.map(team => team.teamId)
     };
 
     saveGameData(game);
@@ -85,9 +85,6 @@ function createPlayer(gameId: number, teamId: number) {
     const newPlayerId = getNextPlayerId(gameId);
 
     const face = generate({
-        head: {
-            shave: 'rgba(0,0,0,0)'
-        }
     }, {
         gender: 'male',
     });

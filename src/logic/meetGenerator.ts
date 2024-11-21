@@ -3,7 +3,7 @@ import { Meet, Race } from '@/types/schedule';
 import { getNextMeetId } from '@/data/idTracker';
 import { raceTypes } from '@/constants/raceTypes';
 
-export function createPlayoffMeet(teamPair: number[], week: number, year: number, teams: Team[], gameId: number): Meet {
+export function createPlayoffMeet(teams: Team[], week: number, year: number, gameId: number): Meet {
     return {
         week,
         meetId: getNextMeetId(gameId),

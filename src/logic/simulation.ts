@@ -44,25 +44,23 @@ function simulateRegularSeason(game: Game) {
 
 export function simulatePlayoffs(game: Game) {
     const matches: Meet[] = [];
+    game.remainingTeams = shuffleArray(game.remainingTeams); // Ensure remainingTeams is shuffled and correctly typed
 
-    // Shuffle remaining teams to ensure random pairing
-    const shuffledTeams = shuffleArray(game.remainingTeams);
-
-    for (let i = 0; i < shuffledTeams.length; i += 2) {
-        const teamPair = shuffledTeams.slice(i, i + 2);
+    for (let i = 0; i < game.remainingTeams.length; i += 2) {
+        const teamPairIds: Number[] = game.remainingTeams.slice(i, i + 2);
+        const teamPair: Team[] = game.teams.filter(team => teamPairIds.includes(team.teamId));
         if (teamPair.length < 2) break;
-        const meet = createPlayoffMeet(teamPair, game.currentWeek, game.currentYear, teamPair, game.gameId);
+        const meet = createPlayoffMeet(teamPair, game.currentWeek, game.currentYear, game.gameId);
         matches.push(meet);
         for (const team of teamPair) {
             addMeetsToTeam(team, meet);
         }
     }
-
     game.remainingTeams = determineWinners(matches);
     game.leagueSchedule.meets.push(...matches);
 }
 
-function shuffleArray(array: any[]): any[] {
+function shuffleArray(array: Number[]): Number[] {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
@@ -70,11 +68,11 @@ function shuffleArray(array: any[]): any[] {
     return array;
 }
 
-function determineWinners(matches: Meet[]): Team[] {
-    const winners: Team[] = [];
+function determineWinners(matches: Meet[]): Number[] {
+    const winners: Number[] = [];
     for (const meet of matches) {
         const winner = meet.teams[Math.floor(Math.random() * meet.teams.length)];
-        winners.push(winner);
+        winners.push(winner.teamId);
     }
     return winners;
 }
@@ -88,10 +86,12 @@ function incrementWeek(game: Game) {
     }
 }
 function addMeetsToTeam(team: Team, match: Meet) {
-    if (!team.teamSchedule.meets) {
-        throw new Error('Team schedule not found');
+    if (team.teamSchedule.meets.length == 0) {
+        console.log("empty schedule for " + team.college);
     }
-    team.teamSchedule.meets.push(match);
-    console.log('pushed' + match.meetId + 'to team' + team.teamId);
+
+    let ogNum = team.teamSchedule.meets.length;
+    let newNum = team.teamSchedule.meets.push(match);
+    console.log(`${team.college} had ${ogNum} meets, now has ${newNum}`);
 }
 

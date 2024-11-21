@@ -20,6 +20,8 @@ export default function TeamSchedulePage() {
 
     if (!teamSchedule) return <div>Loading...</div>;
 
+    console.log(teamSchedule.meets.length);
+
     return (
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">Team Schedule</h1>

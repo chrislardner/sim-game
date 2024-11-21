@@ -3,6 +3,7 @@ import { Team } from '@/types/team';
 import { Player } from '@/types/player';
 import { Game } from '@/types/game';
 import { getNextPlayerId } from '@/data/idTracker';
+import { generate } from 'facesjs';
 
 // Transition to next season: graduating seniors and adding new recruits
 export function handleOffseason(game: Game): void {
@@ -38,6 +39,7 @@ function generateRecruits(game: Game, count: number): Player[] {
             lastName: '',
             eventType: '',
             seasons: '',
+            face: generate()
         });
     }
     return recruits;
