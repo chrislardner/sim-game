@@ -49,7 +49,7 @@ export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): 
         lastPlayerId,
         lastTeamId,
         lastMeetId,
-        remainingTeams: teams.map(team => team.teamId)
+        remainingTeams: teams
     };
 
     saveGameData(game);

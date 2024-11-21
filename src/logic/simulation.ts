@@ -4,6 +4,7 @@ import { handleOffseason } from './offseason';
 import { createRegularSeasonMeet, createPlayoffMeet } from '@/logic/meetGenerator';
 import { seasonPhases } from '@/constants/seasonPhases';
 import { Meet } from '@/types/schedule';
+import { Team } from '@/types/team';
 
 export async function simulateWeek(gameId: number) {
     const game = await loadGameData(gameId);
@@ -42,18 +43,17 @@ function simulateRegularSeason(game: Game) {
 }
 
 export function simulatePlayoffs(game: Game) {
-    const matches = [];
-    const week = game.currentWeek;
-    const year = game.currentYear;
+    const matches: Meet[] = [];
 
     // Shuffle remaining teams to ensure random pairing
     const shuffledTeams = shuffleArray(game.remainingTeams);
 
     for (let i = 0; i < shuffledTeams.length; i += 2) {
         const teamPair = shuffledTeams.slice(i, i + 2);
+        console.log(`Teams in meet: ${teamPair.map(team => team.teamId).join(', ')}`);
         if (teamPair.length < 2) break;
-
-        const meet = createPlayoffMeet(teamPair, week, year, game.teams, game.gameId);
+        const meet = createPlayoffMeet(teamPair, game.currentWeek, game.currentYear, teamPair, game.gameId);
+        console.log("created playoff meet", game.currentWeek, meet.meetId);
         matches.push(meet);
     }
 
@@ -69,10 +69,10 @@ function shuffleArray(array: any[]): any[] {
     return array;
 }
 
-function determineWinners(matches: Meet[]): number[] {
-    const winners: number[] = [];
+function determineWinners(matches: Meet[]): Team[] {
+    const winners: Team[] = [];
     for (const meet of matches) {
-        const winner = meet.teams[Math.floor(Math.random() * meet.teams.length)].teamId;
+        const winner = meet.teams[Math.floor(Math.random() * meet.teams.length)];
         winners.push(winner);
     }
     return winners;
