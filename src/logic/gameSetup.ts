@@ -83,7 +83,14 @@ function createTeam(gameId: number, year: number): Team {
 function createPlayer(gameId: number, teamId: number) {
 
     const newPlayerId = getNextPlayerId(gameId);
-    const face = generate();
+
+    const face = generate({
+        head: {
+            shave: 'rgba(0,0,0,0)'
+        }
+    }, {
+        gender: 'male',
+    });
 
     const player: Player = {
         playerId: newPlayerId,
@@ -95,7 +102,7 @@ function createPlayer(gameId: number, teamId: number) {
         lastName: newPlayerId + "",
         eventType: '',
         seasons: '',
-        face
+        face: face
         };
 
     savePlayerData(gameId, player); // Save player to IndexedDB
