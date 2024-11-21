@@ -51,7 +51,7 @@ export default function GameDashboard() {
                     <p>{gameData.gamePhase}</p>
                 </div>
                 <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
-                    <h2 className="text-lg font-semibold">Current Ye</h2>
+                    <h2 className="text-lg font-semibold">Current Year</h2>
                     <p>{gameData.currentYear} </p>
                 </div>
             </div>

@@ -15,21 +15,23 @@ export interface Heat {
 
 export interface Meet {
     week: number;
+    year: number;                 // Year associated with the league schedule
     meetId: number;
     date: string;
     teams: Team[];            // Teams participating in the meet
     races: Race[];            // Races held at the meet
-    meetType: 'cross_country' | 'track_field';
+    meetType: string;
 }
 
 // Schedule for individual teams
 export interface TeamSchedule {
     teamId: number;
+    year: number;                 // Year associated with the league schedule
     meets: Meet[];            // List of meets in which the team participates
 }
 
 // Schedule for the entire league
-export interface LeagueSchedule {
-    seasonType: 'cross_country' | 'track_field';
+export interface YearlyLeagueSchedule {
+    year: number;                 // Year associated with the league schedule
     meets: Meet[];            // Complete list of all meets for the season
 }

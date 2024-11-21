@@ -13,7 +13,6 @@ export default function TeamSchedulePage() {
         async function fetchData() {
             const gameData = await loadGameData(Number(gameId));
             const team = gameData?.teams.find(t => t.teamId === Number(teamId));
-            console.log(team?.teamSchedule?.meets.length);
             if (team) setTeamSchedule(team.teamSchedule);
         }
         fetchData();

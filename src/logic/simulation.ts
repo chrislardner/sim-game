@@ -1,17 +1,15 @@
-// src/logic/simulation.ts
 import { Game } from '@/types/game';
 import { saveGameData, loadGameData } from '@/data/storage';
-import { Meet } from '@/types/schedule';
-import { getNextMeetId } from '@/data/idTracker';
 import { handleOffseason } from './offseason';
+import { createRegularSeasonMeet, createPlayoffMeet } from '@/logic/meetGenerator';
+import { seasonPhases } from '@/constants/seasonPhases';
+import { Meet } from '@/types/schedule';
 
 export async function simulateWeek(gameId: number) {
     const game = await loadGameData(gameId);
-
-    // Determine phase based on currentWeek
     const phase = getPhaseByWeek(game.currentWeek);
+    game.gamePhase = phase;
 
-    // Perform actions based on the current phase
     if (phase === 'regular') {
         simulateRegularSeason(game);
     } else if (phase === 'playoffs') {
@@ -19,63 +17,72 @@ export async function simulateWeek(gameId: number) {
     } else if (phase === 'offseason') {
         handleOffseason(game);
     }
-
-    // Increment the week
-    game.currentWeek = (game.currentWeek + 1) % 52;
-    if (game.currentWeek === 0) {
-        game.currentYear += 1;
-    }
-
+    incrementWeek(game);
     saveGameData(game);
 }
 
 function getPhaseByWeek(week: number): 'regular' | 'playoffs' | 'offseason' {
-    if (week >= 0 && week <= 8) return 'regular';
-    if (week >= 9 && week <= 11) return 'playoffs';
-    if (week >= 12 && week <= 13) return 'offseason';
-    if (week >= 14 && week <= 23) return 'regular';
-    if (week >= 24 && week <= 26) return 'playoffs';
-    if (week >= 27 && week <= 28) return 'offseason';
-    if (week >= 29 && week <= 38) return 'regular';
-    if (week >= 39 && week <= 41) return 'playoffs';
-    if (week >= 42 && week <= 51) return 'offseason';
+    const { regularCrossCountry, crossCountryPlayoffs, offseason, regularTrackField1, trackFieldPlayoffs1, offseason2, regularTrackField2, trackFieldPlayoffs2, offseason3 } = seasonPhases;
+
+    if (week >= regularCrossCountry.startWeek && week <= regularCrossCountry.endWeek) return 'regular';
+    if (week >= crossCountryPlayoffs.startWeek && week <= crossCountryPlayoffs.endWeek) return 'playoffs';
+    if (week >= offseason.startWeek && week <= offseason.endWeek) return 'offseason';
+    if (week >= regularTrackField1.startWeek && week <= regularTrackField1.endWeek) return 'regular';
+    if (week >= trackFieldPlayoffs1.startWeek && week <= trackFieldPlayoffs1.endWeek) return 'playoffs';
+    if (week >= offseason2.startWeek && week <= offseason2.endWeek) return 'offseason';
+    if (week >= regularTrackField2.startWeek && week <= regularTrackField2.endWeek) return 'regular';
+    if (week >= trackFieldPlayoffs2.startWeek && week <= trackFieldPlayoffs2.endWeek) return 'playoffs';
+    if (week >= offseason3.startWeek && week <= offseason3.endWeek) return 'offseason';
+
     throw new Error('Invalid week number');
 }
 
-export function simulateRegularSeason(game: Game) {
-    if (game.currentWeek <= 12) {
-        game.teams.forEach(team => {
-            const meet: Meet = {
-                week: game.currentWeek,
-                meetId: getNextMeetId(game.gameId),
-                teams: [game.teams.find(t => t.teamId === team.teamId)!], // Find the actual team object
-                date: `Week ${game.currentWeek}`,
-                races: [],
-                meetType: 'track_field',
-            };
-            team.schedule.push(meet);
-        });
-    } else {
-        game.gamePhase = 'playoffs';
-    }
+function simulateRegularSeason(game: Game) {
+    console.log("");
 }
 
 export function simulatePlayoffs(game: Game) {
-    const remainingTeams = game.teams.map(team => team.teamId);
-    const matches: Meet[] = [];
+    const matches = [];
+    const week = game.currentWeek;
+    const year = game.currentYear;
 
-    for (let i = 0; i < remainingTeams.length; i += 2) {
-        const teamPair = remainingTeams.slice(i, i + 2);
+    // Shuffle remaining teams to ensure random pairing
+    const shuffledTeams = shuffleArray(game.remainingTeams);
+
+    for (let i = 0; i < shuffledTeams.length; i += 2) {
+        const teamPair = shuffledTeams.slice(i, i + 2);
         if (teamPair.length < 2) break;
 
-        const meet: Meet = {
-            week: game.currentWeek,
-            meetId: getNextMeetId(game.gameId),
-            teams: teamPair.map(teamId => game.teams.find(team => team.teamId === teamId)!),
-            date: `Playoff Round`,
-            races: [],
-            meetType: 'cross_country',
-        };
+        const meet = createPlayoffMeet(teamPair, week, year, game.teams, game.gameId);
         matches.push(meet);
+    }
+
+    game.remainingTeams = determineWinners(matches);
+    game.leagueSchedule.meets.push(...matches);
+}
+
+function shuffleArray(array: any[]): any[] {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function determineWinners(matches: Meet[]): number[] {
+    const winners: number[] = [];
+    for (const meet of matches) {
+        const winner = meet.teams[Math.floor(Math.random() * meet.teams.length)].teamId;
+        winners.push(winner);
+    }
+    return winners;
+}
+
+
+function incrementWeek(game: Game) {
+    game.currentWeek = (game.currentWeek + 1) % 53;
+    if (game.currentWeek === 0) {
+        game.currentYear += 1;
+        game.currentWeek = 1;
     }
 }

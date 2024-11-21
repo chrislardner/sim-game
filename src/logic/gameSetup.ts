@@ -1,5 +1,5 @@
 import { saveGameData, savePlayerData, saveTeamData } from '@/data/storage';
-import { generateLeagueSchedule, generateTeamSchedules } from '@/logic/scheduleGenerator';
+import { generateYearlyLeagueSchedule, generateTeamSchedules } from '@/logic/scheduleGenerator';
 import { Team } from '@/types/team';
 import { Game } from '@/types/game';
 import { Player } from '@/types/player';
@@ -10,10 +10,11 @@ var gameIdCounter = 0;
 export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): Game {
     const gameId = gameIdCounter++;
     const teams: Team[] = [];
+    const currentYear = 2024
     initializeIDTracker(gameId, 0, 0, 0);
 
     for (let i = 0; i < numTeams; i++) {
-        const team = createTeam(gameId);
+        const team = createTeam(gameId, currentYear);
         teams.push(team);
 
         for (let j = 0; j < numPlayersPerTeam; j++) {
@@ -22,8 +23,8 @@ export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): 
         }
     }
 
-    const leagueSchedule = generateLeagueSchedule(teams, 'cross_country');
-    const teamSchedules = generateTeamSchedules(leagueSchedule, teams);
+    const leagueSchedule = generateYearlyLeagueSchedule(teams, currentYear);
+    const teamSchedules = generateTeamSchedules(leagueSchedule, teams, currentYear);
 
     const ids = getCurrentIDs(gameId);
 
@@ -37,23 +38,25 @@ export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): 
             ...team,
             teamSchedule: {
                 teamId: team.teamId,
+                year: currentYear,
                 meets: teamSchedules.find(s => s.teamId === team.teamId)?.meets || []
             }
         })),
-        currentWeek: 0,
-        currentYear: 2024,
+        currentWeek: 1,
+        currentYear,
         gamePhase: 'regular',
         leagueSchedule,
         lastPlayerId,
         lastTeamId,
-        lastMeetId
+        lastMeetId,
+        remainingTeams: teams.map(team => team.teamId)
     };
 
     saveGameData(game);
     return game;
 }
 
-function createTeam(gameId: number): Team {
+function createTeam(gameId: number, year: number): Team {
     const newTeamId: number = getNextTeamId(gameId);
     const colleges = ['Knox College', 'Monmouth College', 'Illinois College',
          'Lake Forest College', 'Grinnell College', 'Cornell College',
@@ -69,7 +72,7 @@ function createTeam(gameId: number): Team {
         gameId,
         players: [],
         points: 0,
-        teamSchedule: { teamId: newTeamId, meets: [] },
+        teamSchedule: { teamId: newTeamId, meets: [], year},
         conference: 'Midwest Conference',
         region: 'Midwest Region'
     };
@@ -86,7 +89,7 @@ function createPlayer(gameId: number, teamId: number) {
         teamId,
         stats: {}, 
         personality: {},
-        year: 1,
+        year: Math.random() < 0.5 ? 1 : (Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 3 : 4)),
         firstName: 'FirstName',
         lastName: newPlayerId + "",
         eventType: '',
