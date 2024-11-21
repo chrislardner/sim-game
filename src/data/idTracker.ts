@@ -10,6 +10,10 @@ export function initializeIDTracker(gameId: number, lastPlayerId = 0, lastTeamId
     idTrackers[gameId] = { lastPlayerId, lastTeamId, lastMeetId };
 }
 
+export function getNextGameId(): number {
+    return Object.keys(idTrackers).length + 1;
+}
+
 export function getNextPlayerId(gameId: number): number {
     if (!idTrackers[gameId]) {
         throw new Error(`ID Tracker not initialized for gameId ${gameId}`);

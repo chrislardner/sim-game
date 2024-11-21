@@ -1,20 +1,7 @@
-import { Game } from '@/types/game';
 import { Team } from '@/types/team';
 import { Meet, Race } from '@/types/schedule';
 import { getNextMeetId } from '@/data/idTracker';
 import { raceTypes } from '@/constants/raceTypes';
-
-export function createRegularSeasonMeet(game: Game, team: Team , year: number): Meet {
-    return {
-        week: game.currentWeek,
-        meetId: getNextMeetId(game.gameId),
-        date: `Week ${game.currentWeek}`,
-        year,
-        teams: [team],
-        races: createRacesForMeet(mapWeekToSeason(game.currentWeek)),
-        meetType: game.gamePhase === 'regular' ? 'track_field' : 'cross_country',
-    };
-}
 
 export function createPlayoffMeet(teamPair: number[], week: number, year: number, teams: Team[], gameId: number): Meet {
     return {
@@ -24,7 +11,8 @@ export function createPlayoffMeet(teamPair: number[], week: number, year: number
         year,
         teams,
         races: createRacesForMeet(mapWeekToSeason(week)),
-        meetType: mapWeekToSeason(week),
+        season: mapWeekToSeason(week),
+        type: 'playoff'
     };
 }
 

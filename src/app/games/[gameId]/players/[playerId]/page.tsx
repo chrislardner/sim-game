@@ -1,22 +1,28 @@
 "use client";
 
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { loadGameData } from '@/data/storage';
 import { Player } from '@/types/player';
+import { display } from 'facesjs';
 
 export default function PlayerPage() {
     const { gameId, playerId } = useParams();
-    const [player, setPlayer] = useState<Player | null>(null);
+    const [player, setPlayer] = useState<Player>();
+    const faceContainerRef = useRef(null);
 
     useEffect(() => {
         async function fetchData() {
             const gameData = await loadGameData(Number(gameId));
             const selectedPlayer = gameData?.teams.flatMap(team => team.players).find(p => p.playerId === Number(playerId));
-            setPlayer(selectedPlayer || null);
+            setPlayer(selectedPlayer);
+
+            if (faceContainerRef.current && selectedPlayer?.face) {
+                display(faceContainerRef.current, selectedPlayer.face);
+            }
         }
         fetchData();
-    }, [gameId, playerId]);
+    }, [gameId, playerId, player?.face]);
 
     if (!player) return <div>Loading...</div>;
 
@@ -28,6 +34,13 @@ export default function PlayerPage() {
                 <p className="text-gray-700 dark:text-gray-300">Year: <span className="font-semibold">{player.year}</span></p>
                 <p className="text-gray-700 dark:text-gray-300">Event Type: <span className="font-semibold">{player.eventType}</span></p>
             </div>
+            <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg mt-4 transition-colors">
+                <h2 className="text-xl font-semibold text-accent mb-2">Player Face</h2>
+                <div ref={faceContainerRef} className="w-48 h-48">
+
+                </div>
+            </div>
+
             <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg mt-4 transition-colors">
                 <h2 className="text-xl font-semibold text-accent mb-2">Player Personality</h2>
                 <ul className="text-gray-700 dark:text-gray-300">

@@ -1,7 +1,7 @@
 import { Game } from '@/types/game';
 import { saveGameData, loadGameData } from '@/data/storage';
 import { handleOffseason } from './offseason';
-import { createRegularSeasonMeet, createPlayoffMeet } from '@/logic/meetGenerator';
+import { createPlayoffMeet } from '@/logic/meetGenerator';
 import { seasonPhases } from '@/constants/seasonPhases';
 import { Meet } from '@/types/schedule';
 import { Team } from '@/types/team';
@@ -39,7 +39,7 @@ function getPhaseByWeek(week: number): 'regular' | 'playoffs' | 'offseason' {
 }
 
 function simulateRegularSeason(game: Game) {
-    console.log("");
+    // logic for regular season
 }
 
 export function simulatePlayoffs(game: Game) {
@@ -50,11 +50,12 @@ export function simulatePlayoffs(game: Game) {
 
     for (let i = 0; i < shuffledTeams.length; i += 2) {
         const teamPair = shuffledTeams.slice(i, i + 2);
-        console.log(`Teams in meet: ${teamPair.map(team => team.teamId).join(', ')}`);
         if (teamPair.length < 2) break;
         const meet = createPlayoffMeet(teamPair, game.currentWeek, game.currentYear, teamPair, game.gameId);
-        console.log("created playoff meet", game.currentWeek, meet.meetId);
         matches.push(meet);
+        for (const team of teamPair) {
+            addMeetsToTeam(team, meet);
+        }
     }
 
     game.remainingTeams = determineWinners(matches);
@@ -86,3 +87,11 @@ function incrementWeek(game: Game) {
         game.currentWeek = 1;
     }
 }
+function addMeetsToTeam(team: Team, match: Meet) {
+    if (!team.teamSchedule.meets) {
+        throw new Error('Team schedule not found');
+    }
+    team.teamSchedule.meets.push(match);
+    console.log('pushed' + match.meetId + 'to team' + team.teamId);
+}
+

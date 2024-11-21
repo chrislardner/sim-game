@@ -16,4 +16,5 @@ export interface Player {
     eventType: string;
     seasons: string;
     year: number;
+    face: any;
 }

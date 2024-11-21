@@ -3,29 +3,28 @@ import { YearlyLeagueSchedule, TeamSchedule, Meet, Race } from '@/types/schedule
 import { raceTypes } from '@/constants/raceTypes';
 import { seasonPhases } from '@/constants/seasonPhases';
 import {mapWeekToSeason} from '@/logic/meetGenerator';
-
-let meetIdCounter = 1;
+import { getNextMeetId } from '@/data/idTracker';
 
 // Generate League Schedule
-export function generateYearlyLeagueSchedule(teams: Team[], year: number): YearlyLeagueSchedule {
+export function generateYearlyLeagueSchedule(gameId: number, teams: Team[], year: number): YearlyLeagueSchedule {
     const leagueSchedule: YearlyLeagueSchedule = {
         year,
         meets: []
     };
     let regularSeasonPhase = seasonPhases.regularCrossCountry;
     for (let week = regularSeasonPhase.startWeek; week <= regularSeasonPhase.endWeek; week++) {
-        const meetsForWeek = createMeetsForWeek(teams, week, year);
+        const meetsForWeek = createMeetsForWeek(gameId, teams, week, year);
         leagueSchedule.meets.push(...meetsForWeek);
     }
     let trackField1RegularSeasonPhase = seasonPhases.regularTrackField1;
     for (let week = trackField1RegularSeasonPhase.startWeek; week <= trackField1RegularSeasonPhase.endWeek; week++) {
-        const meetsForWeek = createMeetsForWeek(teams, week, year);
+        const meetsForWeek = createMeetsForWeek(gameId, teams, week, year);
         leagueSchedule.meets.push(...meetsForWeek);
     }
 
     let trackField2RegularSeasonPhase = seasonPhases.regularTrackField2;
     for (let week = trackField2RegularSeasonPhase.startWeek; week <= trackField2RegularSeasonPhase.endWeek; week++) {
-        const meetsForWeek = createMeetsForWeek(teams, week, year);
+        const meetsForWeek = createMeetsForWeek(gameId, teams, week, year);
         leagueSchedule.meets.push(...meetsForWeek);
     }
 
@@ -33,9 +32,9 @@ export function generateYearlyLeagueSchedule(teams: Team[], year: number): Yearl
 }
 
 // Generate Meets for a Given Week
-function createMeetsForWeek(teams: Team[],  week: number, year: number): Meet[] {
+function createMeetsForWeek(gameId: number, teams: Team[],  week: number, year: number): Meet[] {
     const teamPairs = pairTeams(teams);
-    return teamPairs.map(pair => createMeet(pair, week, year));
+    return teamPairs.map(pair => createMeet(gameId, pair, week, year));
 }
 
 // Pair Teams for Meets
@@ -49,15 +48,18 @@ function pairTeams(teams: Team[]): Team[][] {
 }
 
 // Create a Meet for a Pair of Teams
-function createMeet(teams: Team[], week: number, year: number): Meet {
+function createMeet(gameId: number, teams: Team[], week: number, year: number): Meet {
+    const newMeetId: number = getNextMeetId(gameId);
+
     return {
         week,
-        meetId: meetIdCounter++,
+        meetId: newMeetId,
         date: `Week ${week}`,
         year,
         teams,
         races: createRacesForMeet(mapWeekToSeason(week)),
-        meetType: mapWeekToSeason(week),
+        season: mapWeekToSeason(week),
+        type: 'regular'
     };
 }
 

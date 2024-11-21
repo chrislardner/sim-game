@@ -3,12 +3,12 @@ import { generateYearlyLeagueSchedule, generateTeamSchedules } from '@/logic/sch
 import { Team } from '@/types/team';
 import { Game } from '@/types/game';
 import { Player } from '@/types/player';
-import { getCurrentIDs, getNextPlayerId, getNextTeamId, initializeIDTracker } from '@/data/idTracker';
+import { getNextGameId, getCurrentIDs, getNextPlayerId, getNextTeamId, initializeIDTracker } from '@/data/idTracker';
+import { generate } from 'facesjs';
 
-var gameIdCounter = 0;
 
 export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): Game {
-    const gameId = gameIdCounter++;
+    const gameId = getNextGameId();
     const teams: Team[] = [];
     const currentYear = 2024
     initializeIDTracker(gameId, 0, 0, 0);
@@ -23,7 +23,7 @@ export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): 
         }
     }
 
-    const leagueSchedule = generateYearlyLeagueSchedule(teams, currentYear);
+    const leagueSchedule = generateYearlyLeagueSchedule(gameId, teams, currentYear);
     const teamSchedules = generateTeamSchedules(leagueSchedule, teams, currentYear);
 
     const ids = getCurrentIDs(gameId);
@@ -83,6 +83,7 @@ function createTeam(gameId: number, year: number): Team {
 function createPlayer(gameId: number, teamId: number) {
 
     const newPlayerId = getNextPlayerId(gameId);
+    const face = generate();
 
     const player: Player = {
         playerId: newPlayerId,
@@ -94,6 +95,7 @@ function createPlayer(gameId: number, teamId: number) {
         lastName: newPlayerId + "",
         eventType: '',
         seasons: '',
+        face
         };
 
     savePlayerData(gameId, player); // Save player to IndexedDB
