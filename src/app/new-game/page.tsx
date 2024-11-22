@@ -32,7 +32,7 @@ export default function NewGamePage() {
                         value={numTeams}
                         onChange={(e) => setNumTeams(Number(e.target.value))}
                         min="1"
-                        className="ml-2"
+                        className="ml-2 text-black"
                     />
                 </label>
                 <label>
@@ -42,7 +42,7 @@ export default function NewGamePage() {
                         value={numPlayers}
                         onChange={(e) => setNumPlayers(Number(e.target.value))}
                         min="1"
-                        className="ml-2"
+                        className="ml-2 text-black"
                     />
                 </label>
                 <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">

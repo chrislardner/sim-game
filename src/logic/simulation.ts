@@ -1,11 +1,10 @@
 import { Game } from '@/types/game';
 import { saveGameData, loadGameData } from '@/data/storage';
-import { handleNewRecruits } from './newYear';
+import { handleNewRecruits, handleNewYearSchedule } from './newYear';
 import { createPlayoffMeet } from '@/logic/meetGenerator';
 import { seasonPhases } from '@/constants/seasonPhases';
 import { Meet } from '@/types/schedule';
 import { Team } from '@/types/team';
-import { receiveMessageOnPort } from 'worker_threads';
 
 export async function simulateWeek(gameId: number) {
     const game: Game = await loadGameData(gameId);
@@ -15,14 +14,29 @@ export async function simulateWeek(gameId: number) {
     let success = false;
 
     if (phase === 'regular') {
-        success = await simulateRegularSeason(gameId);
+        success = await simulateRegularSeason(game);
     } else if (phase === 'playoffs') {
-        success = await simulatePlayoffs(gameId);
+        success = await simulatePlayoffs(game);
     } else if (phase === 'offseason') {
-        success = await handleOffseason(gameId);
+        success = await handleOffseason(game);
     }
 
-    await incrementWeek(game);
+    if (!success) {
+        console.error("Simulation failed");
+        return;
+    }
+
+    let incremenetSuccess = await incrementWeek(game);
+    if(incremenetSuccess[1]) {
+        success = await handleNewRecruits(game);
+        success = await handleNewYearSchedule(game);
+    }
+
+    if (!success) {
+        console.error("Increment week failed");
+        return;
+    }
+
     saveGameData(game);
 }
 
@@ -42,21 +56,24 @@ function getPhaseByWeek(week: number): 'regular' | 'playoffs' | 'offseason' {
     throw new Error('Invalid week number');
 }
 
-async function simulateRegularSeason(gameId: number): Promise<boolean> {
+async function simulateRegularSeason(game: Game): Promise<boolean> {
     // logic for regular season
     return true;
 }
 
-export async function simulatePlayoffs(gameId: number): Promise<boolean> {
+export async function simulatePlayoffs(game: Game): Promise<boolean> {
     try {
-        const game = await loadGameData(gameId);
         const matches: Meet[] = [];
         game.remainingTeams = shuffleArray(game.remainingTeams); // Ensure remainingTeams is shuffled and correctly typed
 
         for (let i = 0; i < game.remainingTeams.length; i += 2) {
             const teamPairIds: Number[] = game.remainingTeams.slice(i, i + 2);
             const teamPair: Team[] = game.teams.filter(team => teamPairIds.includes(team.teamId));
-            if (teamPair.length < 2) break;
+            if (teamPair.length < 2) {
+                console.log("teamPair length is less than 2. Winner is", teamPair[0].teamName);
+                game.remainingTeams = game.teams.map(team => team.teamId)
+                return true;
+            }
             const meet = createPlayoffMeet(teamPair, game.currentWeek, game.currentYear, game.gameId);
             matches.push(meet);
             for (const team of teamPair) {
@@ -65,7 +82,6 @@ export async function simulatePlayoffs(gameId: number): Promise<boolean> {
         }
         game.remainingTeams = determineWinners(matches);
         game.leagueSchedule.meets.push(...matches);
-        await saveGameData(game);
         return true;
     } catch (error) {
         console.error("Error loading game data", error);
@@ -90,20 +106,20 @@ function determineWinners(matches: Meet[]): Number[] {
     return winners;
 }
 
-async function incrementWeek(game: Game): Promise<boolean> {
+// returns array of booleans [success, new year]
+async function incrementWeek(game: Game): Promise<Array<boolean>> {
     try {
         game.currentWeek += 1;
         if (game.currentWeek > 52) {
             game.currentYear += 1;
             game.currentWeek = 1;
-            await saveGameData(game);
-            await handleNewRecruits(game.gameId);
-            console.log("Recruits");
+            console.log("New Year!");
+            return [true, true]
         }
-        return true;
+        return [true, false];
     } catch (error) {
         console.error("Error incrementing week", error);
-        return false;
+        return [false, false];
     }
 }
 
@@ -114,7 +130,7 @@ function addMeetsToTeam(team: Team, match: Meet) {
 
     team.teamSchedule.meets.push(match);
 }
-async function handleOffseason(gameId: number): Promise<boolean> {
+async function handleOffseason(game: Game): Promise<boolean> {
     return true;
 }
 

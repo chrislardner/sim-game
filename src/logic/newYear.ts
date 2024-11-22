@@ -1,13 +1,12 @@
 import { Team } from '@/types/team';
 import { createPlayer } from '@/logic/gameSetup';
 import { Game } from '@/types/game';
-import { loadGameData, saveGameData } from '@/data/storage';
+import { generateTeamSchedules, generateYearlyLeagueSchedule } from './scheduleGenerator';
 
 
 // Transition to next season: graduating seniors and adding new recruits
-export async function handleNewRecruits(gameId: number): Promise<boolean> {
+export async function handleNewRecruits(game: Game): Promise<boolean> {
     try {
-        const game: Game = await loadGameData(gameId);
         const teams: Team[] = game.teams;
         teams.forEach(team => {
             // Count graduating seniors
@@ -28,10 +27,32 @@ export async function handleNewRecruits(gameId: number): Promise<boolean> {
                 team.players.push(createPlayer(game.gameId, team.teamId, 1));
             }
         });
-        await saveGameData(game);
         return true;
     } catch (error) {
         console.error('Error handling offseason:', error);
         return false;
     }
 }
+
+export async function handleNewYearSchedule(game: Game): Promise<boolean> {
+    try {
+        const leagueSchedule = generateYearlyLeagueSchedule(game.gameId, game.teams, game.currentYear);
+        const teamSchedules = generateTeamSchedules(leagueSchedule, game.teams, game.currentYear);
+        game.leagueSchedule = leagueSchedule;
+        
+        game.teams = game.teams.map(team => ({
+            ...team,
+            teamSchedule: {
+                teamId: team.teamId,
+                year: game.currentYear,
+                meets: teamSchedules.find(s => s.teamId === team.teamId)?.meets || []
+            }
+        }));
+
+        return true;
+    } catch (error) {
+        console.error('Error handling new year schedule:', error);
+        return false;
+    }
+}
+
