@@ -80,7 +80,7 @@ function createTeam(gameId: number, year: number): Team {
     return teamData;
 }
 
-function createPlayer(gameId: number, teamId: number) {
+export function createPlayer(gameId: number, teamId: number, year: number = Math.random() < 0.5 ? 1 : (Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 3 : 4))): Player {
 
     const newPlayerId = getNextPlayerId(gameId);
 
@@ -94,7 +94,7 @@ function createPlayer(gameId: number, teamId: number) {
         teamId,
         stats: {}, 
         personality: {},
-        year: Math.random() < 0.5 ? 1 : (Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 3 : 4)),
+        year,
         firstName: 'FirstName',
         lastName: newPlayerId + "",
         eventType: '',

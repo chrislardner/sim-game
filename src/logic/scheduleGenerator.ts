@@ -4,6 +4,7 @@ import { raceTypes } from '@/constants/raceTypes';
 import { seasonPhases } from '@/constants/seasonPhases';
 import {mapWeekToSeason} from '@/logic/meetGenerator';
 import { getNextMeetId } from '@/data/idTracker';
+import { saveGameData } from '@/data/storage';
 
 // Generate League Schedule
 export function generateYearlyLeagueSchedule(gameId: number, teams: Team[], year: number): YearlyLeagueSchedule {
@@ -27,7 +28,6 @@ export function generateYearlyLeagueSchedule(gameId: number, teams: Team[], year
         const meetsForWeek = createMeetsForWeek(gameId, teams, week, year);
         leagueSchedule.meets.push(...meetsForWeek);
     }
-
     return leagueSchedule;
 }
 
