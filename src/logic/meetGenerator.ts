@@ -9,7 +9,7 @@ export function createPlayoffMeet(teams: Team[], week: number, year: number, gam
         meetId: getNextMeetId(gameId),
         date: `Playoff Round`,
         year,
-        teams,
+        teams: teams.map(team => team.teamId),
         races: createRacesForMeet(mapWeekToSeason(week)),
         season: mapWeekToSeason(week),
         type: 'playoff'

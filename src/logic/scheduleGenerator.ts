@@ -4,7 +4,6 @@ import { raceTypes } from '@/constants/raceTypes';
 import { seasonPhases } from '@/constants/seasonPhases';
 import {mapWeekToSeason} from '@/logic/meetGenerator';
 import { getNextMeetId } from '@/data/idTracker';
-import { saveGameData } from '@/data/storage';
 
 // Generate League Schedule
 export function generateYearlyLeagueSchedule(gameId: number, teams: Team[], year: number): YearlyLeagueSchedule {
@@ -56,7 +55,7 @@ function createMeet(gameId: number, teams: Team[], week: number, year: number): 
         meetId: newMeetId,
         date: `Week ${week}`,
         year,
-        teams,
+        teams: teams.map(team => team.teamId),
         races: createRacesForMeet(mapWeekToSeason(week)),
         season: mapWeekToSeason(week),
         type: 'regular'
@@ -79,7 +78,7 @@ export function generateTeamSchedules(leagueSchedule: YearlyLeagueSchedule, team
         teamId: team.teamId,
         year,
         meets: leagueSchedule.meets
-            .filter(meet => meet.teams.some(t => t.teamId === team.teamId))
-            .map(meet => meet.meetId),
+            .filter(meet => meet.teams.some(t => t === team.teamId))
+            .map(meet => meet.meetId)
     }));
 }

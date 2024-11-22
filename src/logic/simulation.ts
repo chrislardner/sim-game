@@ -68,7 +68,9 @@ export async function simulatePlayoffs(game: Game): Promise<boolean> {
 
         for (let i = 0; i < game.remainingTeams.length; i += 2) {
             const teamPairIds: Number[] = game.remainingTeams.slice(i, i + 2);
+            
             const teamPair: Team[] = game.teams.filter(team => teamPairIds.includes(team.teamId));
+            teamPair.forEach(team => {console.log(team.college, team.teamId)});
             if (teamPair.length < 2) {
                 console.log("teamPair length is less than 2. Winner is", teamPair[0].teamName);
                 game.remainingTeams = game.teams.map(team => team.teamId)
@@ -84,7 +86,7 @@ export async function simulatePlayoffs(game: Game): Promise<boolean> {
         game.leagueSchedule.meets.push(...matches);
         return true;
     } catch (error) {
-        console.error("Error loading game data", error);
+        console.error("Error simulating playoffs", error);
         return false
     }
 }
@@ -101,7 +103,7 @@ function determineWinners(matches: Meet[]): Number[] {
     const winners: Number[] = [];
     for (const meet of matches) {
         const winner = meet.teams[Math.floor(Math.random() * meet.teams.length)];
-        winners.push(winner.teamId);
+        winners.push(winner);
     }
     return winners;
 }
