@@ -1,5 +1,3 @@
-// src/types/schedule.ts
-
 import { Player } from './player';
 import { Team } from './team';
 
@@ -28,11 +26,12 @@ export interface Meet {
 export interface TeamSchedule {
     teamId: number;
     year: number;                 // Year associated with the league schedule
-    meets: Meet[];            // List of meets in which the team participates
+    meets: Number[];            // List of meets in which the team participates
 }
 
 // Schedule for the entire league
 export interface YearlyLeagueSchedule {
+    [x: string]: any;
     year: number;                 // Year associated with the league schedule
     meets: Meet[];            // Complete list of all meets for the season
 }

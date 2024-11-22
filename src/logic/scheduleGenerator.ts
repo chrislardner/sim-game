@@ -78,6 +78,8 @@ export function generateTeamSchedules(leagueSchedule: YearlyLeagueSchedule, team
     return teams.map(team => ({
         teamId: team.teamId,
         year,
-        meets: leagueSchedule.meets.filter(meet => meet.teams.some(t => t.teamId === team.teamId)),
+        meets: leagueSchedule.meets
+            .filter(meet => meet.teams.some(t => t.teamId === team.teamId))
+            .map(meet => meet.meetId),
     }));
 }

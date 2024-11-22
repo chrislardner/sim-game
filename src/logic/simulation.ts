@@ -128,7 +128,7 @@ function addMeetsToTeam(team: Team, match: Meet) {
         console.error("Team has no meets");
     }
 
-    team.teamSchedule.meets.push(match);
+    team.teamSchedule.meets.push(match.meetId);
 }
 async function handleOffseason(game: Game): Promise<boolean> {
     return true;
