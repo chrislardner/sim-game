@@ -27,7 +27,9 @@ export default function PlayersPage() {
                         <div key={player.playerId} className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                         <h2 className="text-xl font-bold mb-2 text-accent">{player.firstName} {player.lastName}</h2>
                         <p className="text-gray-700 dark:text-gray-300">Year: <span className="font-semibold">{player.year}</span></p>
-                            <p className="text-gray-700 dark:text-gray-300">Event Type: <span className="font-semibold">{player.eventType}</span></p>
+                            <p className="text-gray-700 dark:text-gray-300">Event Type: <span className="font-semibold">
+                                {player.seasons.join(', ')}
+                            </span></p>
                         </div>
                     </Link>
                 ))}

@@ -1,3 +1,5 @@
+import { raceTypes } from '@/constants/raceTypes';
+
 export interface PlayerStats {
     [key: string]: number; // Stats can be added as needed
 }
@@ -13,8 +15,8 @@ export interface Player {
     lastName: string;
     stats: PlayerStats;
     personality: PlayerPersonality;
-    eventType: string;
-    seasons: string;
+    eventTypes: { cross_country: string[]; track_field: string[] };
+    seasons: ('track_field' | 'cross_country')[]; 
     year: number;
     face: any;
 }

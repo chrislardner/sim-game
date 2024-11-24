@@ -40,7 +40,7 @@ export default function TeamPage() {
                         <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors cursor-pointer hover:shadow-xl">
                             <h3 className="text-xl font-semibold text-accent">{player.firstName} {player.lastName}</h3>
                             <p className="text-gray-700 dark:text-gray-300">Year: <span className="font-semibold">{player.year}</span></p>
-                            <p className="text-gray-700 dark:text-gray-300">Event Type: <span className="font-semibold">{player.eventType}</span></p>
+                            <p className="text-gray-700 dark:text-gray-300">Season(s): <span className="font-semibold">{player.seasons.join(', ')}</span></p>
                         </div>
                     </Link>
                 ))}

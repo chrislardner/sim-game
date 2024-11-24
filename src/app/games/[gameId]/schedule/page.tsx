@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { Key, useEffect, useState } from 'react';
 import { loadGameData } from '@/data/storage';
 import { YearlyLeagueSchedule, Meet } from '@/types/schedule';
+import Link from 'next/link';
 
 export default function LeagueSchedulePage() {
     const { gameId } = useParams();
@@ -23,7 +24,7 @@ export default function LeagueSchedulePage() {
             }, {});
             setTeamsMap(teamsMapping);
         }
-        fetchData();
+        fetchData().catch(console.error);
     }, [gameId]);
     
 
@@ -35,6 +36,8 @@ export default function LeagueSchedulePage() {
             {leagueSchedule.meets
                 .sort((a: { week: number; }, b: { week: number; }) => a.week - b.week)
                 .map((meet: Meet, index: Key ) => (
+                    <Link key={index} href={`/games/${gameId}/schedule/${meet.meetId}`}>
+
                     <div key={index} className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors mb-4">
                         <h2 className="text-xl font-semibold text-accent">Week {meet.week} - {meet.type}</h2>
                         <p className="text-gray-700 dark:text-gray-300">Meet Type: <span className="font-semibold">{meet.season} - {meet.year}</span></p>
@@ -48,6 +51,7 @@ export default function LeagueSchedulePage() {
                             </ul>
                         </div>
                     </div>
+                    </Link>
                 ))}
         </div>
     );

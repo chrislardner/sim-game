@@ -5,6 +5,7 @@ import { Game } from '@/types/game';
 import { Player } from '@/types/player';
 import { getNextGameId, getCurrentIDs, getNextPlayerId, getNextTeamId, initializeIDTracker } from '@/data/idTracker';
 import { generate } from 'facesjs';
+import { raceTypes } from '@/constants/raceTypes';
 
 
 export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): Game {
@@ -89,6 +90,8 @@ export function createPlayer(gameId: number, teamId: number, year: number = Math
         gender: 'male',
     });
 
+    const seasons = generateSeasonTypes();
+
     const player: Player = {
         playerId: newPlayerId,
         teamId,
@@ -97,8 +100,8 @@ export function createPlayer(gameId: number, teamId: number, year: number = Math
         year,
         firstName: 'FirstName',
         lastName: newPlayerId + "",
-        eventType: '',
-        seasons: '',
+        seasons,
+        eventTypes: generateEventTypes(seasons),
         face: face
         };
 
@@ -106,3 +109,31 @@ export function createPlayer(gameId: number, teamId: number, year: number = Math
     return player;
 }
 
+function generateSeasonTypes(): ('track_field' | 'cross_country')[] {
+    const seasonTypes: ('track_field' | 'cross_country')[] = ['cross_country', 'track_field'];
+    const selectedSeason = seasonTypes[Math.floor(Math.random() * seasonTypes.length)];
+    if (selectedSeason === 'cross_country') {
+        return ['cross_country', 'track_field'];
+    }
+    return [selectedSeason];
+}
+
+function generateEventTypes(seasonTypes: ('cross_country' | 'track_field')[]): { cross_country: string[]; track_field: string[] } {
+    const events = {
+        cross_country: [] as string[],
+        track_field: [] as string[]
+    };
+
+    if (seasonTypes.includes('cross_country')) {
+        events.cross_country.push(...raceTypes.cross_country);
+        if (seasonTypes.includes('track_field')) {
+            const trackEvents = Math.random() < 0.5 ? raceTypes.track_field.slice(4, 6) : raceTypes.track_field.slice(6, 8)
+            events.track_field.push(...trackEvents);
+        }
+    } else if (seasonTypes.includes('track_field')) {
+        const trackEvents = Math.random() < 0.5 ? raceTypes.track_field.slice(0, 2) : raceTypes.track_field.slice(2, 4);
+        events.track_field.push(...trackEvents);
+    }
+
+    return events;
+}
