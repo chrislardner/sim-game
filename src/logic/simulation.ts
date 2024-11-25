@@ -1,14 +1,14 @@
 import { Game } from '@/types/game';
 import { saveGameData, loadGameData } from '@/data/storage';
 import { handleNewRecruits, handleNewYearSchedule } from './newYear';
-import { createPlayoffMeet } from '@/logic/meetGenerator';
-import { seasonPhases } from '@/constants/seasonPhases';
+import { createMeet, mapWeekToGamePhase } from '@/logic/meetGenerator';
 import { Meet } from '@/types/schedule';
 import { Team } from '@/types/team';
+import { SeasonGamePhase } from '@/constants/seasons';
 
 export async function simulateWeek(gameId: number) {
     const game: Game = await loadGameData(gameId);
-    const phase = getPhaseByWeek(game.currentWeek);
+    const phase: SeasonGamePhase = mapWeekToGamePhase(game.currentWeek).type;
     game.gamePhase = phase;
 
     let success = false;
@@ -40,22 +40,6 @@ export async function simulateWeek(gameId: number) {
     saveGameData(game);
 }
 
-function getPhaseByWeek(week: number): 'regular' | 'playoffs' | 'offseason' {
-    const { regularCrossCountry, crossCountryPlayoffs, offseason, regularTrackField1, trackFieldPlayoffs1, offseason2, regularTrackField2, trackFieldPlayoffs2, offseason3 } = seasonPhases;
-
-    if (week >= regularCrossCountry.startWeek && week <= regularCrossCountry.endWeek) return 'regular';
-    if (week >= crossCountryPlayoffs.startWeek && week <= crossCountryPlayoffs.endWeek) return 'playoffs';
-    if (week >= offseason.startWeek && week <= offseason.endWeek) return 'offseason';
-    if (week >= regularTrackField1.startWeek && week <= regularTrackField1.endWeek) return 'regular';
-    if (week >= trackFieldPlayoffs1.startWeek && week <= trackFieldPlayoffs1.endWeek) return 'playoffs';
-    if (week >= offseason2.startWeek && week <= offseason2.endWeek) return 'offseason';
-    if (week >= regularTrackField2.startWeek && week <= regularTrackField2.endWeek) return 'regular';
-    if (week >= trackFieldPlayoffs2.startWeek && week <= trackFieldPlayoffs2.endWeek) return 'playoffs';
-    if (week >= offseason3.startWeek && week <= offseason3.endWeek) return 'offseason';
-
-    throw new Error('Invalid week number');
-}
-
 async function simulateRegularSeason(game: Game): Promise<boolean> {
     // logic for regular season
     return true;
@@ -76,7 +60,7 @@ export async function simulatePlayoffs(game: Game): Promise<boolean> {
                 game.remainingTeams = game.teams.map(team => team.teamId)
                 return true;
             }
-            const meet = createPlayoffMeet(teamPair, game.currentWeek, game.currentYear, game.gameId);
+            const meet = createMeet(teamPair, game.currentWeek, game.currentYear, game.gameId);
             matches.push(meet);
             for (const team of teamPair) {
                 addMeetsToTeam(team, meet);
@@ -132,6 +116,7 @@ function addMeetsToTeam(team: Team, match: Meet) {
 
     team.teamSchedule.meets.push(match.meetId);
 }
+
 async function handleOffseason(game: Game): Promise<boolean> {
     return true;
 }

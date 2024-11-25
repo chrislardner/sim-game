@@ -4,16 +4,11 @@ import { Team } from "@/types/team";
 
 export function createTeam(gameId: number, year: number): Team {
     const newTeamId: number = getNextTeamId(gameId);
-    const colleges = ['Knox College', 'Monmouth College', 'Illinois College',
-         'Lake Forest College', 'Grinnell College', 'Cornell College',
-          'Ripon College', 'Beloit College', 'Lawrence University', 'St. Norbert College',
-           'Carroll University'];
-    const regions = ['Midwest Region', 'West Region', 'South Region', 'East Region'];
-    const conferences = ['Midwest Conferencee']
+    const college = chooseCollege();
 
     const teamData: Team = {
         teamId: newTeamId,
-        college: colleges[newTeamId % colleges.length],
+        college,
         teamName: `Team ${newTeamId}`,
         gameId,
         players: [],
@@ -24,4 +19,26 @@ export function createTeam(gameId: number, year: number): Team {
     };
     saveTeamData(gameId, teamData);
     return teamData;
+}
+const colleges = [
+    'Knox College', 'Monmouth College', 'Illinois College',
+    'Lake Forest College', 'Grinnell College', 'Cornell College',
+    'Ripon College', 'Beloit College', 'Lawrence University', 'St. Norbert College',
+    'Carroll University'
+];
+const usedColleges = new Set<string>();
+
+function chooseCollege(): string {
+    if (usedColleges.size >= colleges.length) {
+        throw new Error("No more colleges available to choose from.");
+    }
+
+    let college: string;
+    do {
+        const randomIndex = Math.floor(Math.random() * colleges.length);
+        college = colleges[randomIndex];
+    } while (usedColleges.has(college));
+
+    usedColleges.add(college);
+    return college;
 }

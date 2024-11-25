@@ -1,4 +1,4 @@
-export const seasonPhases = {
+export const mappedSeasonPhases = {
     regularCrossCountry: { startWeek: 1, endWeek: 9 },
     crossCountryPlayoffs: { startWeek: 10, endWeek: 12 },
     offseason: { startWeek: 13, endWeek: 14 },

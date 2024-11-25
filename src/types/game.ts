@@ -1,8 +1,9 @@
 import { Team } from './team';
 import { YearlyLeagueSchedule } from './schedule';
+import { SeasonGamePhase } from '@/constants/seasons';
 
 export interface Game {
-    gamePhase: 'regular' | 'playoffs' | 'offseason'; // Tracks game state
+    gamePhase: SeasonGamePhase;
     gameId: number;
     teams: Team[];
     currentYear: number;   // e.g., 2024

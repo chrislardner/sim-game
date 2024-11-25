@@ -17,7 +17,7 @@ export interface Meet {
     teams: Number[];            // TeamIds participating in the meet
     races: Race[];            // Races held at the meet
     season: 'cross_country' | 'track_field';
-    type: 'regular' | 'playoff';
+    type: 'regular' | 'playoffs' | 'offseason';
 }
 
 // Schedule for individual teams
