@@ -54,9 +54,7 @@ export async function simulatePlayoffs(game: Game): Promise<boolean> {
             const teamPairIds: Number[] = game.remainingTeams.slice(i, i + 2);
             
             const teamPair: Team[] = game.teams.filter(team => teamPairIds.includes(team.teamId));
-            teamPair.forEach(team => {console.log(team.college, team.teamId)});
             if (teamPair.length < 2) {
-                console.log("teamPair length is less than 2. Winner is", teamPair[0].teamName);
                 game.remainingTeams = game.teams.map(team => team.teamId)
                 return true;
             }

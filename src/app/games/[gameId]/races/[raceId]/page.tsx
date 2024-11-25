@@ -10,7 +10,7 @@ export default function RaceResultsPage() {
     const { gameId, raceId } = useParams();
     const [race, setRace] = useState<Race | null>(null);
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: string }>({});
-    const [playersMap, setPlayersMap] = useState<{ [key: number]: string }>({});
+    const [playersMap, setPlayersMap] = useState<{ [key: number]: {name: string, college: string} }>({});
     const [meet, setMeet] = useState<Meet | null>();
 
     useEffect(() => {
@@ -35,10 +35,13 @@ export default function RaceResultsPage() {
             }, {});
             setTeamsMap(teamsMapping);
 
-            // Create a mapping of playerId to player name
-            const playersMapping = gameData.teams.reduce((accumlated: { [key: number]: string }, team) => {
+            // Create a mapping of playerId to player first name and player team college
+            const playersMapping = gameData.teams.reduce((accumlated: { [key: number]: {name: string, college: string} }, team) => {
                 team.players.forEach(player => {
-                    accumlated[player.playerId] = player.firstName + ' ' + player.lastName;
+                    accumlated[player.playerId] = {
+                        name: player.firstName + ' ' + player.lastName,
+                        college: team.college
+                    };
                 });
                 return accumlated;
             }, {});
@@ -71,22 +74,20 @@ export default function RaceResultsPage() {
                         <th className="py-2 px-4 border-b">Points</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="min-w-full">
                     {sortedParticipants.map(([playerId, time], index) => (
                         <tr key={playerId}>
-                            <td className="py-2 px-4 border-b">{index + 1}</td>
-                            <td className="py-2 px-4 border-b">
+                            <td className="py-2 px-4 border-b text-center">{index + 1}</td>
+                            <td className="py-2 px-4 border-b text-center">
                                 <Link href={`/games/${gameId}/players/${playerId}`}>
-                                    {playersMap[Number(playerId)]}
+                                    {playersMap[Number(playerId)]?.name}
                                 </Link>
                             </td>
-                            <td className="py-2 px-4 border-b">
-                                <Link href={`/games/${gameId}/teams/${race.participants[Number(playerId)]}`}>
-                                    {teamsMap[Number(race.participants[Number(playerId)])]}
-                                </Link>
+                            <td className="py-2 px-4 border-b text-center">
+                                {playersMap[Number(playerId)]?.college}
                             </td>
-                            <td className="py-2 px-4 border-b">{time}</td>
-                            <td className="py-2 px-4 border-b">{index < 3 ? 10 - index * 3 : 0}</td>
+                            <td className="py-2 px-4 border-b text-center">{time}</td>
+                            <td className="py-2 px-4 border-b text-center">{index < 3 ? 10 - index * 3 : 0}</td>
                         </tr>
                     ))}
                 </tbody>

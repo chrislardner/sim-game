@@ -64,37 +64,37 @@ export default function RacesOverviewPage() {
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">Races Overview</h1>
             {gameData.leagueSchedule.meets.map((meet: Meet) => (
                 <div key={meet.meetId} className="mb-8">
-                    <h2 className="text-2xl font-semibold mb-2 text-primary-light dark:text-primary-dark">
+                    <h2 className="text-2xl font-semibold mb-2 text-secondary-dark dark:text-secondary-dark">
                         Meet {meet.meetId} - {meet.date}
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="">
                         {meet.races.map((race: Race, index: number) => (
-                            <div key={index} className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg">
-                                <h3 className="text-xl font-semibold text-accent">{race.eventType}</h3>
-                                <Link href={`/games/${gameId}/races/${race.raceId}`}>
-                                    <button className="mt-2 px-4 py-2 bg-accent text-white rounded-lg transition hover:bg-accent-dark">
-                                        View Race Details
+                            <Link key={index} href={`/games/${gameId}/races/${race.raceId}`}>
+                                <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors mb-4">
+                                    <h3 className="text-xl font-semibold text-accent">Event: {race.eventType}</h3>
+                                    <p className="font-semibold text-text-dark">Race ID: {race.raceId}</p>
+                                    <button
+                                        className="px-4 py-2 font-semibold bg-accent text-text-light rounded-lg transition hover:text-accent-dark mt-4"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            toggleRaceVisibility(race.raceId);
+                                        }}>
+                                        {visibleRaceId === race.raceId ? 'Hide Top Winners' : 'View Top Winners'}
                                     </button>
-                                </Link>
-                                <button
-                                    className="mt-2 px-4 py-2 bg-secondary text-white rounded-lg transition hover:bg-secondary-dark"
-                                    onClick={() => toggleRaceVisibility(race.raceId)}
-                                >
-                                    {visibleRaceId === race.raceId ? 'Hide Top Winners' : 'View Top Winners'}
-                                </button>
-                                {visibleRaceId === race.raceId && (
-                                    <div className="mt-4">
-                                        <h4 className="text-lg font-semibold">Top 5 Winners:</h4>
-                                        <ul>
-                                            {getTopWinners(race).map((winner, idx) => (
-                                                <li key={idx} className="mt-2">
-                                                    {winner.player} ({winner.team}) - {winner.time}s
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
-                            </div>
+                                    {visibleRaceId === race.raceId && (
+                                        <div className="mt-4">
+                                            <h4 className="text-lg font-semibold text-accent">Top 5 Winners:</h4>
+                                            <ul>
+                                                {getTopWinners(race).map((winner, idx) => (
+                                                    <li key={idx} className="mt-2">
+                                                        {winner.player} ({winner.team}) - {winner.time}s
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
                         ))}
                     </div>
                 </div>

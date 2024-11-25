@@ -2,7 +2,7 @@
 module.exports = {
   darkMode: 'class',
   content: [
-    './src/**/*.{js,ts,jsx,tsx}',
+    './src/**/*',
   ],
   theme: {
     extend: {
@@ -11,6 +11,10 @@ module.exports = {
           light: '#4F46E5', // Light mode primary color
           dark: '#fb6c9f', // Dark mode primary color
         },
+        secondary: {
+          light: '#7F95D1', // Light mode secondary color
+          dark: '#96A8D9', // Dark mode secondary color
+        },  
         background: {
           light: '#F3F4F6',
           dark: '#1F2937',
@@ -29,4 +33,3 @@ module.exports = {
   },
   plugins: [],
 }
-

@@ -1,5 +1,5 @@
 import { Team } from '@/types/team';
-import { Meet, Race } from '@/types/schedule';
+import { Heat, Meet, Race } from '@/types/schedule';
 import { getNextMeetId, getNextRaceId } from '@/data/idTracker';
 import { raceTypes } from '@/constants/raceTypes';
 import { SeasonGamePhase, SeasonType } from '@/constants/seasons';
@@ -12,19 +12,41 @@ export function createMeet(teams: Team[], week: number, year: number, gameId: nu
         date: map.type === 'playoffs' ? 'Playoff Round' : 'Regular Season Meet',
         year,
         teams: teams.map(team => team.teamId),
-        races: createRacesForMeet(gameId, map.season),
+        races: createRacesForMeet(teams, gameId, map.season),
         season: map.season,
         type: map.type
     };
 }
 
-function createRacesForMeet(gameId: number, seasonType: 'cross_country' | 'track_field'): Race[] {
-    return raceTypes[seasonType].map(eventType => ({
-        eventType,
-        heats: [],
-        participants: [],
-        raceId: getNextRaceId(gameId)
-    }));
+function createRacesForMeet(teams: Team[], gameId: number, seasonType: 'cross_country' | 'track_field'): Race[] {
+    return raceTypes[seasonType].map(eventType => {
+        const participants = teams.flatMap(team => 
+            team.players.filter(player => 
+                player.seasons.includes(seasonType) && player.eventTypes[seasonType].includes(eventType)
+            ).map(player => player.playerId)
+        );
+
+        let heats = 1;
+        if (seasonType === 'track_field') {
+            if (['100m', '200m', '400m', '800m'].includes(eventType)) {
+                heats = Math.ceil(participants.length / 8);
+            } else if (['1,500m', '3,000m', '5,000m', '10,000m'].includes(eventType)) {
+                heats = Math.ceil(participants.length / 16);
+            }
+        }
+        let newHeats: Heat[] = Array.from({ length: heats }, () => ({ playerTimes: {} }))
+        participants.forEach((participant, index) => {
+            const heatIndex = index % heats;
+            newHeats[heatIndex].playerTimes[participant] = 0;
+        });
+
+        return {
+            participants,
+            eventType,
+            heats: newHeats,
+            raceId: getNextRaceId(gameId)
+        };
+    });
 }
 
 export function mapWeekToGamePhase(gameWeek: number): { season: SeasonType, type: SeasonGamePhase } {
