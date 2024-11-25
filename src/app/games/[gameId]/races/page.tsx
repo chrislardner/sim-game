@@ -59,6 +59,12 @@ export default function RacesOverviewPage() {
         setVisibleRaceId(visibleRaceId === raceId ? null : raceId);
     };
 
+    const formatTime = (time: number) => {
+        const minutes = Math.floor(time / 60);
+        const seconds = (time % 60).toFixed(2);
+        return minutes > 0 ? `${minutes}:${seconds}` : `${seconds}`;
+    };
+
     return (
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">Races Overview</h1>
@@ -87,7 +93,7 @@ export default function RacesOverviewPage() {
                                             <ul>
                                                 {getTopWinners(race).map((winner, idx) => (
                                                     <li key={idx} className="mt-2">
-                                                        {winner.player} ({winner.team}) - {winner.time}s
+                                                        {winner.player} ({winner.team}) - {formatTime(winner.time)}
                                                     </li>
                                                 ))}
                                             </ul>

@@ -50,6 +50,12 @@ export default function RaceResultsPage() {
         fetchData();
     }, [gameId, raceId]);
 
+    const formatTime = (time: number) => {
+        const minutes = Math.floor(time / 60);
+        const seconds = (time % 60).toFixed(2);
+        return minutes > 0 ? `${minutes}:${seconds}` : `${seconds}`;
+    };
+
     if (!race) return <div>Loading...</div>;
 
     const sortedParticipants = Object.entries(race.heats[0]?.playerTimes || {}).sort(([, timeA], [, timeB]) => timeA - timeB) || [];
@@ -86,7 +92,7 @@ export default function RaceResultsPage() {
                             <td className="py-2 px-4 border-b text-center">
                                 {playersMap[Number(playerId)]?.college}
                             </td>
-                            <td className="py-2 px-4 border-b text-center">{time}</td>
+                            <td className="py-2 px-4 border-b text-center">{formatTime(time)}</td>
                             <td className="py-2 px-4 border-b text-center">{index < 3 ? 10 - index * 3 : 0}</td>
                         </tr>
                     ))}
