@@ -48,7 +48,7 @@ export default function MeetPage() {
                     <div key={index} className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                         <h3 className="text-xl font-semibold text-accent">{race.eventType}</h3>
                         <p className="text-gray-700 dark:text-gray-300">Participants: <span className="font-semibold">{race.participants.length}</span></p>
-                        <Link href={`/games/${gameId}/meets/${meetId}/races/${index}`}>
+                        <Link href={`/games/${gameId}/races/${race.raceId}`}>
                             <button className="px-4 py-2 bg-accent text-white rounded-lg transition hover:bg-accent-dark mt-4">
                                 View Race Details
                             </button>

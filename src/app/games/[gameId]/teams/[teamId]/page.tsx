@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { loadGameData } from '@/data/storage';
 import { Team } from '@/types/team';
-import { Player } from '@/types/player';
 
 export default function TeamPage() {
     const { gameId, teamId } = useParams();

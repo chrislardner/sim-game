@@ -1,21 +1,20 @@
-import { saveGameData, savePlayerData, saveTeamData } from '@/data/storage';
+import { saveGameData } from '@/data/storage';
 import { generateYearlyLeagueSchedule, generateTeamSchedules } from '@/logic/scheduleGenerator';
 import { Team } from '@/types/team';
 import { Game } from '@/types/game';
-import { Player } from '@/types/player';
-import { getNextGameId, getCurrentIDs, getNextPlayerId, getNextTeamId, initializeIDTracker } from '@/data/idTracker';
-import { generate } from 'facesjs';
-import { raceTypes } from '@/constants/raceTypes';
+import { getNextGameId, getCurrentIDs, getNextTeamId, initializeIDTracker } from '@/data/idTracker';
+import { createPlayer } from './generatePlayer';
+import { createTeam } from './generateTeam';
 
 
 export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): Game {
     const gameId = getNextGameId();
     const teams: Team[] = [];
     const currentYear = 2024
-    initializeIDTracker(gameId, 0, 0, 0);
+    initializeIDTracker(gameId, 0, 0, 0, 0);
 
     for (let i = 0; i < numTeams; i++) {
-        const team = createTeam(gameId, currentYear);
+        const team: Team = createTeam(gameId, currentYear);
         teams.push(team);
 
         for (let j = 0; j < numPlayersPerTeam; j++) {
@@ -57,83 +56,4 @@ export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): 
     return game;
 }
 
-function createTeam(gameId: number, year: number): Team {
-    const newTeamId: number = getNextTeamId(gameId);
-    const colleges = ['Knox College', 'Monmouth College', 'Illinois College',
-         'Lake Forest College', 'Grinnell College', 'Cornell College',
-          'Ripon College', 'Beloit College', 'Lawrence University', 'St. Norbert College',
-           'Carroll University'];
-    const regions = ['Midwest Region', 'West Region', 'South Region', 'East Region'];
-    const conferences = ['Midwest Conferencee']
-
-    const teamData: Team = {
-        teamId: newTeamId,
-        college: colleges[newTeamId % colleges.length],
-        teamName: `Team ${newTeamId}`,
-        gameId,
-        players: [],
-        points: 0,
-        teamSchedule: { teamId: newTeamId, meets: [], year},
-        conference: 'Midwest Conference',
-        region: 'Midwest Region'
-    };
-    saveTeamData(gameId, teamData);
-    return teamData;
-}
-
-export function createPlayer(gameId: number, teamId: number, year: number = Math.random() < 0.5 ? 1 : (Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 3 : 4))): Player {
-
-    const newPlayerId = getNextPlayerId(gameId);
-
-    const face = generate({
-    }, {
-        gender: 'male',
-    });
-
-    const seasons = generateSeasonTypes();
-
-    const player: Player = {
-        playerId: newPlayerId,
-        teamId,
-        stats: {}, 
-        personality: {},
-        year,
-        firstName: 'FirstName',
-        lastName: newPlayerId + "",
-        seasons,
-        eventTypes: generateEventTypes(seasons),
-        face: face
-        };
-
-    savePlayerData(gameId, player); // Save player to IndexedDB
-    return player;
-}
-
-function generateSeasonTypes(): ('track_field' | 'cross_country')[] {
-    const seasonTypes: ('track_field' | 'cross_country')[] = ['cross_country', 'track_field'];
-    const selectedSeason = seasonTypes[Math.floor(Math.random() * seasonTypes.length)];
-    if (selectedSeason === 'cross_country') {
-        return ['cross_country', 'track_field'];
-    }
-    return [selectedSeason];
-}
-
-function generateEventTypes(seasonTypes: ('cross_country' | 'track_field')[]): { cross_country: string[]; track_field: string[] } {
-    const events = {
-        cross_country: [] as string[],
-        track_field: [] as string[]
-    };
-
-    if (seasonTypes.includes('cross_country')) {
-        events.cross_country.push(...raceTypes.cross_country);
-        if (seasonTypes.includes('track_field')) {
-            const trackEvents = Math.random() < 0.5 ? raceTypes.track_field.slice(4, 6) : raceTypes.track_field.slice(6, 8)
-            events.track_field.push(...trackEvents);
-        }
-    } else if (seasonTypes.includes('track_field')) {
-        const trackEvents = Math.random() < 0.5 ? raceTypes.track_field.slice(0, 2) : raceTypes.track_field.slice(2, 4);
-        events.track_field.push(...trackEvents);
-    }
-
-    return events;
-}
+export { createPlayer };

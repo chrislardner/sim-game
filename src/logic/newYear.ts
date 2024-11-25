@@ -1,5 +1,5 @@
 import { Team } from '@/types/team';
-import { createPlayer } from '@/logic/gameSetup';
+import { createPlayer } from '@/logic/generatePlayer';
 import { Game } from '@/types/game';
 import { generateTeamSchedules, generateYearlyLeagueSchedule } from './scheduleGenerator';
 

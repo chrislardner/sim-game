@@ -17,6 +17,7 @@ export default function GameSidebar() {
                 <li><Link href={`/games/${gameId}/teams`} className="hover:text-accent">Teams</Link></li>
                 <li><Link href={`/games/${gameId}/players`} className="hover:text-accent">Players</Link></li>
                 <li><Link href={`/games/${gameId}/schedule`} className="hover:text-accent">Schedule</Link></li>
+                <li><Link href={`/games/${gameId}/races`} className="hover:text-accent">Races</Link></li>
                 <li><Link href={`/games/${gameId}/playoffs`} className="hover:text-accent">Playoffs</Link></li>
             </ul>
         </aside>

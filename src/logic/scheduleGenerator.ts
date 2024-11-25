@@ -3,7 +3,7 @@ import { YearlyLeagueSchedule, TeamSchedule, Meet, Race } from '@/types/schedule
 import { raceTypes } from '@/constants/raceTypes';
 import { seasonPhases } from '@/constants/seasonPhases';
 import {mapWeekToSeason} from '@/logic/meetGenerator';
-import { getNextMeetId } from '@/data/idTracker';
+import { getNextMeetId, getNextRaceId } from '@/data/idTracker';
 
 // Generate League Schedule
 export function generateYearlyLeagueSchedule(gameId: number, teams: Team[], year: number): YearlyLeagueSchedule {
@@ -56,19 +56,20 @@ function createMeet(gameId: number, teams: Team[], week: number, year: number): 
         date: `Week ${week}`,
         year,
         teams: teams.map(team => team.teamId),
-        races: createRacesForMeet(mapWeekToSeason(week)),
+        races: createRacesForMeet(gameId, mapWeekToSeason(week)),
         season: mapWeekToSeason(week),
         type: 'regular'
     };
 }
 
 // Create Races Based on Season Type
-function createRacesForMeet(seasonType: 'cross_country' | 'track_field'): Race[] {
+function createRacesForMeet(gameId: number, seasonType: 'cross_country' | 'track_field'): Race[] {
     const eventTypes = raceTypes[seasonType];
     return eventTypes.map(eventType => ({
         eventType,
         heats: [],
-        participants: []
+        participants: [],
+        raceId: getNextRaceId(gameId)
     }));
 }
 
