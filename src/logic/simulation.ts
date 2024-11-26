@@ -28,7 +28,7 @@ export async function simulateWeek(gameId: number) {
     }
 
     let incremenetSuccess = await incrementWeek(game);
-    if(incremenetSuccess[1]) {
+    if (incremenetSuccess[1]) {
         success = await handleNewRecruits(game);
         success = await handleNewYearSchedule(game);
     }
@@ -53,7 +53,7 @@ export async function simulatePlayoffs(game: Game): Promise<boolean> {
 
         for (let i = 0; i < game.remainingTeams.length; i += 2) {
             const teamPairIds: Number[] = game.remainingTeams.slice(i, i + 2);
-            
+
             const teamPair: Team[] = game.teams.filter(team => teamPairIds.includes(team.teamId));
             if (teamPair.length < 2) {
                 game.remainingTeams = game.teams.map(team => team.teamId)
@@ -137,78 +137,85 @@ function simulateMeetsForWeek(game: Game) {
     }
 }
 
+function getBaseTimeForEvent(eventType: string): number {
+    const baselines = {
+        '100m': (minMax['100m'][0] + minMax['100m'][1]) / 2,
+        '200m': (minMax['200m'][0] + minMax['200m'][1]) / 2,
+        '400m': (minMax['400m'][0] + minMax['400m'][1]) / 2,
+        '800m': (minMax['800m'][0] + minMax['800m'][1]) / 2,
+        '1,500m': (minMax['1,500m'][0] + minMax['1,500m'][1]) / 2,
+        '3,000m': (minMax['3,000m'][0] + minMax['3,000m'][1]) / 2,
+        '5,000m': (minMax['5,000m'][0] + minMax['5,000m'][1]) / 2,
+        '10,000m': (minMax['10,000m'][0] + minMax['10,000m'][1]) / 2,
+        '8,000m': (minMax['8,000m'][0] + minMax['8,000m'][1]) / 2
+    };
+    return baselines[eventType as keyof typeof baselines] || 0;
+}
+
+const variability = {
+    '100m': 0.03,
+    '200m': 0.04,
+    '400m': 0.05,
+    '800m': 0.07,
+    '1,500m': 0.11,
+    '3,000m': 0.14,
+    '5,000m': 0.16,
+    '10,000m': 0.20,
+    '8,000m': 0.18 // Cross country
+};
+
+function getEventVariability(eventType: keyof typeof variability): number {
+    // Variability increases with event distance
+    return variability[eventType] || 0.1;
+}
 function generateRaceTime(playerId: Number, eventType: string): number {
     const baseTime = getBaseTimeForEvent(eventType);
-    const playerSkill = getPlayerSkill(playerId, eventType);
-    const eventLengthFactor = baseTime / 1000; // Normalize the base time to a factor
-    const adjustedRandomFactor = (Math.random() - 0.5) * eventLengthFactor * 0.2; // More randomness for longer events
-    let raceTime = baseTime - playerSkill + adjustedRandomFactor;
+    const skillFactor = getPlayerSkill(playerId, eventType) / 10; // Normalize skill (1-10) to 0.1-1.0
 
-    // Adjust randomness and skill factors based on race type and length
-    const raceLength = getRaceLength(eventType);
-    const skillFactor = (10 - playerSkill) * (raceLength / 1000);
-    const randomnessFactor = (Math.random() - 0.5) * (raceLength / 1000) * 0.3;
+    // Normal distribution parameters
+    const mean = baseTime * (1 - skillFactor * 0.1); // Faster players skew closer to elite times
+    const stdDev = getEventVariability(eventType as keyof typeof variability); // Variability specific to the event
 
-    raceTime = baseTime - skillFactor + randomnessFactor;
+    // Generate a time using normal distribution
+    const randomFactor = Math.random(); // Generate a random number between 0 and 1
+    const z = Math.sqrt(-2 * Math.log(randomFactor)) * Math.cos(2 * Math.PI * Math.random()); // Standard normal (z-score)
+    const raceTime = mean + stdDev * z; // Normal transformation
 
-    // Ensure race times are within reasonable bounds based on race type and length
-    let minTime, maxTime;
+    // Apply environmental adjustments (e.g., weather, fatigue)
+    const environmentalAdjustment = getEnvironmentalFactor(eventType);
+    const adjustedTime = raceTime + environmentalAdjustment;
 
-    if (raceTypes.cross_country.includes(eventType)) {
-        // Cross country races have more variability
-        minTime = baseTime * 0.75;
-        maxTime = baseTime * 1.25;
-    } else if (raceTypes.track_field.includes(eventType)) {
-        // Track and field events have less variability
-        switch (eventType) {
-            case '100m':
-                minTime = baseTime * 0.95;
-                maxTime = baseTime * 1.05;
-                break;
-            case '200m':
-                minTime = baseTime * 0.93;
-                maxTime = baseTime * 1.07;
-                break;
-            case '400m':
-                minTime = baseTime * 0.90;
-                maxTime = baseTime * 1.10;
-                break;
-            case '800m':
-                minTime = baseTime * 0.88;
-                maxTime = baseTime * 1.12;
-                break;
-            case '1,500m':
-                minTime = baseTime * 0.85;
-                maxTime = baseTime * 1.15;
-                break;
-            case '3,000m':
-                minTime = baseTime * 0.83;
-                maxTime = baseTime * 1.17;
-                break;
-            case '5,000m':
-                minTime = baseTime * 0.80;
-                maxTime = baseTime * 1.20;
-                break;
-            case '10,000m':
-                minTime = baseTime * 0.78;
-                maxTime = baseTime * 1.22;
-                break;
-            default:
-                minTime = baseTime * 0.85;
-                maxTime = baseTime * 1.15;
-                break;
-        }
-    } else {
-        minTime = baseTime * 0.85;
-        maxTime = baseTime * 1.15;
-    }
+    // Ensure time remains within plausible bounds
+    return clampTime(adjustedTime, eventType as keyof typeof minMax);
+}
 
-    if (raceTime < minTime) {
-        raceTime = minTime;
-    } else if (raceTime > maxTime) {
-        raceTime = maxTime;
-    }
-    return raceTime;
+function getPlayerSkill(playerId: Number, eventType: string): number {
+    // Example skill fetching logic; replace with actual data logic
+    // Skill is a value between 1 (novice) and 10 (elite)
+    return Math.floor(Math.random() * 10) + 1;
+}
+
+function getEnvironmentalFactor(eventType: string): number {
+    // Add small variability based on external factors
+    const eventLength = getRaceLength(eventType);
+    return (Math.random() - 0.5) * (eventLength / 1000) * 2; // Small adjustment
+}
+
+const minMax = {
+    '100m': [9.7, 14.5],
+    '200m': [19.0, 33.0],
+    '400m': [47.0, 70.0],
+    '800m': [108.0, 150.0],
+    '1,500m': [220.0, 370.0],
+    '3,000m': [495.0, 760.0],
+    '5,000m': [840.0, 1320.0],
+    '10,000m': [1740.0, 2800.0],
+    '8,000m': [1380.0, 2100.0]
+};
+
+function clampTime(time: number, eventType: keyof typeof minMax): number {
+    const [min, max] = minMax[eventType] || [0, Infinity];
+    return Math.max(min, Math.min(time, max));
 }
 
 function getRaceLength(eventType: string): number {
@@ -227,48 +234,13 @@ function getRaceLength(eventType: string): number {
             return 3000;
         case '5,000m':
             return 5000;
+        case '8,000m':
+            return 8000;
         case '10,000m':
             return 10000;
         default:
             return 0;
     }
-}
-
-function getBaseTimeForEvent(eventType: string): number {
-    if (raceTypes.cross_country.includes(eventType)) {
-        return 1620; // Base time for cross country events in seconds (e.g., 40 minutes)
-    } else if (raceTypes.track_field.includes(eventType)) {
-        switch (eventType) {
-            case '100m':
-                return 11; // Base time for 100m in seconds
-            case '200m':
-                return 20; // Base time for 200m in seconds
-            case '400m':
-                return 50; // Base time for 400m in seconds
-            case '800m':
-                return 120; // Base time for 800m in seconds
-            case '1,500m':
-                return 260; // Base time for 1,500m in seconds
-            case '3,000m':
-                return 540; // Base time for 3,000m in seconds
-            case '5,000m':
-                return 960; // Base time for 5,000m in seconds
-            case '10,000m':
-                return 2100; // Base time for 10,000m in seconds
-            default:
-                return 0;
-        }
-    }
-    return 0;
-}
-
-function getPlayerSkill(playerId: Number, eventType: string): number {
-    // Placeholder implementation to get player's skill for the event type
-    // This should be replaced with actual logic to fetch player's skill
-    return getRandomNumber(); // Random skill factor between 1 and 10
-}
-function getRandomNumber(): number {
-    return Math.floor(Math.random() * 10) + 1;
 }
 
 function updatePlayerStats(game: Game, playerId: Number, eventType: string, time: number) {

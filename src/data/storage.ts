@@ -1,11 +1,11 @@
-import { openDB, deleteDB, wrap, unwrap } from 'idb';
+import { openDB } from 'idb';
 import { Game } from '@/types/game';
 import { Team } from '@/types/team';
 import { Player } from '@/types/player';
 import { initializeIDTracker, getCurrentIDs } from './idTracker';
 
 const DATABASE_NAME = 'sportsSimDB';
-const DATABASE_VERSION = 6;
+const DATABASE_VERSION = 7;
 const GAME_STORE = 'games';
 
 export async function initializeDB() {
@@ -35,6 +35,9 @@ export async function saveGameData(gameData: Game) {
     // Update game object with current ID counters for persistence
     gameData.lastPlayerId = ids.lastPlayerId;
     gameData.lastTeamId = ids.lastTeamId;
+    gameData.lastMeetId = ids.lastMeetId;
+    gameData.lastRaceId = ids.lastRaceId;
+    
     await db.put(GAME_STORE, gameData);
 }
 
@@ -42,7 +45,7 @@ export async function loadGameData(gameId: number): Promise<Game> {
     const db = await initializeDB();
     const game = await db.get(GAME_STORE, gameId);
     if (game) {
-        initializeIDTracker(gameId, game.lastPlayerId, game.lastTeamId, game.lastMeetId); // Initialize ID tracker
+        initializeIDTracker(gameId, game.lastPlayerId, game.lastTeamId, game.lastMeetId, game.lastRaceId); // Initialize ID tracker
     }
     return game;
 }
@@ -50,6 +53,7 @@ export async function loadGameData(gameId: number): Promise<Game> {
 export async function deleteGameData(gameId: number) {
     const db = await initializeDB();
     await db.delete(GAME_STORE, gameId); 
+    resetGameIdCounter(); // Reset ID tracker
 }
 
 export async function loadAllGames(): Promise<Game[]> {
@@ -108,4 +112,11 @@ export async function loadPlayerData(gameId: number, playerId: number): Promise<
         }
     }
     return null; // Player not found
+}
+
+export async function resetGameIdCounter() {
+    const db = await initializeDB();
+    const allGames = await loadAllGames();
+    const highestGameId = allGames.reduce((maxId, game) => Math.max(maxId, game.gameId), 0);
+    initializeIDTracker(highestGameId + 1, 0, 0, 0, 0);
 }

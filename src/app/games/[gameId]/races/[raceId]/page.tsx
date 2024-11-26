@@ -52,8 +52,9 @@ export default function RaceResultsPage() {
 
     const formatTime = (time: number) => {
         const minutes = Math.floor(time / 60);
-        const seconds = (time % 60).toFixed(2);
-        return minutes > 0 ? `${minutes}:${seconds}` : `${seconds}`;
+        const seconds = Math.floor(time % 60);
+        const milliseconds = Math.floor((time % 1) * 100);
+        return `${minutes}:${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
     };
 
     if (!race) return <div>Loading...</div>;

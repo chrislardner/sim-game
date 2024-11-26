@@ -61,10 +61,11 @@ export default function RacesOverviewPage() {
 
     const formatTime = (time: number) => {
         const minutes = Math.floor(time / 60);
-        const seconds = (time % 60).toFixed(2);
-        return minutes > 0 ? `${minutes}:${seconds}` : `${seconds}`;
+        const seconds = Math.floor(time % 60);
+        const milliseconds = Math.floor((time % 1) * 100);
+        return `${minutes}:${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
     };
-
+    
     return (
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">Races Overview</h1>
@@ -74,8 +75,8 @@ export default function RacesOverviewPage() {
                         Meet {meet.meetId} - {meet.date}
                     </h2>
                     <div className="">
-                        {meet.races.map((race: Race, index: number) => (
-                            <Link key={index} href={`/games/${gameId}/races/${race.raceId}`}>
+                        {meet.races.map((race: Race) => (
+                            <Link key={race.raceId} href={`/games/${gameId}/races/${race.raceId}`}>
                                 <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors mb-4">
                                     <h3 className="text-xl font-semibold text-accent">Event: {race.eventType}</h3>
                                     <p className="font-semibold text-text-dark">Race ID: {race.raceId}</p>
@@ -92,7 +93,7 @@ export default function RacesOverviewPage() {
                                             <h4 className="text-lg font-semibold text-accent">Top 5 Winners:</h4>
                                             <ul>
                                                 {getTopWinners(race).map((winner, idx) => (
-                                                    <li key={idx} className="mt-2">
+                                                    <li key={`${winner.player}-${winner.time}-${idx}`} className="mt-2">
                                                         {winner.player} ({winner.team}) - {formatTime(winner.time)}
                                                     </li>
                                                 ))}
