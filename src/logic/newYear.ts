@@ -8,7 +8,7 @@ import { generateTeamSchedules, generateYearlyLeagueSchedule } from './scheduleG
 export async function handleNewRecruits(game: Game): Promise<boolean> {
     try {
         const teams: Team[] = game.teams;
-        teams.forEach(team => {
+        teams.forEach(async team => {
             // Count graduating seniors
             const graduatingSeniors = team.players.filter(player => player.year === 4).length;
 
@@ -24,7 +24,8 @@ export async function handleNewRecruits(game: Game): Promise<boolean> {
 
             // Add recruits as new freshmen
             for (let i = 0; i < graduatingSeniors; i++) {
-                team.players.push(createPlayer(game.gameId, team.teamId, 1));
+                let player = await createPlayer(game.gameId, team.teamId, 1);
+                team.players.push(player);
             }
         });
         return true;

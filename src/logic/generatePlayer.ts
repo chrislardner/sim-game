@@ -3,8 +3,9 @@ import { getNextPlayerId } from "@/data/idTracker";
 import { savePlayerData } from "@/data/storage";
 import { Player } from "@/types/player";
 import { generate } from "facesjs";
+import { generateRandomFullName } from "./names";
 
-export function createPlayer(gameId: number, teamId: number, year: number = Math.random() < 0.5 ? 1 : (Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 3 : 4))): Player {
+export async function createPlayer(gameId: number, teamId: number, year: number = Math.random() < 0.5 ? 1 : (Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 3 : 4))): Promise<Player> {
 
     const newPlayerId = getNextPlayerId(gameId);
 
@@ -13,6 +14,7 @@ export function createPlayer(gameId: number, teamId: number, year: number = Math
         gender: 'male',
     });
 
+    const name = await generateRandomFullName();
     const seasons = generateSeasonTypes();
 
     const player: Player = {
@@ -21,8 +23,8 @@ export function createPlayer(gameId: number, teamId: number, year: number = Math
         stats: {}, 
         personality: {},
         year,
-        firstName: 'FirstName',
-        lastName: newPlayerId + "",
+        firstName: name.firstName,
+        lastName: name.lastName,
         seasons,
         eventTypes: generateEventTypes(seasons),
         face: face

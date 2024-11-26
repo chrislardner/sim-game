@@ -5,7 +5,6 @@ import { createMeet, mapWeekToGamePhase } from '@/logic/meetGenerator';
 import { Meet } from '@/types/schedule';
 import { Team } from '@/types/team';
 import { SeasonGamePhase } from '@/constants/seasons';
-import { raceTypes } from '@/constants/raceTypes';
 
 export async function simulateWeek(gameId: number) {
     const game: Game = await loadGameData(gameId);

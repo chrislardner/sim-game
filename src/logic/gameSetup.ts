@@ -7,7 +7,7 @@ import { createPlayer } from './generatePlayer';
 import { createTeam } from './generateTeam';
 
 
-export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): Game {
+export async function initializeNewGame(numTeams: number, numPlayersPerTeam: number): Promise<Game> {
     const gameId = getNextGameId();
     const teams: Team[] = [];
     const currentYear = 2024
@@ -18,7 +18,7 @@ export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): 
         teams.push(team);
 
         for (let j = 0; j < numPlayersPerTeam; j++) {
-            const player = createPlayer(gameId, team.teamId);
+            const player = await createPlayer(gameId, team.teamId);
             team.players.push(player);
         }
     }
@@ -31,6 +31,7 @@ export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): 
     const lastPlayerId = ids.lastPlayerId;
     const lastTeamId = ids.lastTeamId;
     const lastMeetId = ids.lastMeetId;
+    const lastRaceId = ids.lastRaceId;
 
     const game: Game = {
         gameId,
@@ -49,7 +50,8 @@ export function initializeNewGame(numTeams: number, numPlayersPerTeam: number): 
         lastPlayerId,
         lastTeamId,
         lastMeetId,
-        remainingTeams: teams.map(team => team.teamId)
+        remainingTeams: teams.map(team => team.teamId),
+        lastRaceId
     };
 
     saveGameData(game);

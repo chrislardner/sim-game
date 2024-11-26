@@ -10,7 +10,7 @@ export default function NewGamePage() {
     const router = useRouter();
 
     const handleCreateGame = async () => {
-        const newGame = initializeNewGame(numTeams, numPlayers);
+        const newGame = await initializeNewGame(numTeams, numPlayers);
         // Redirect to the newly created game's page
         router.push(`/games/${newGame.gameId}`);
     };
