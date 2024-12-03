@@ -41,17 +41,12 @@ export default function RacesOverviewPage() {
     if (!gameData) return <div>Loading...</div>;
 
     const getTopWinners = (race: Race) => {
-        const playerTimes: { playerId: number, time: number }[] = [];
-        race.heats.forEach(heat => {
-            Object.entries(heat.playerTimes).forEach(([playerId, time]) => {
-                playerTimes.push({ playerId: Number(playerId), time });
-            });
-        });
-        playerTimes.sort((a, b) => a.time - b.time);
-        return playerTimes.slice(0, 5).map(({ playerId, time }) => ({
+        const playerTimes: {playerId: number, playerTime: number, points: number}[] = race.participants;
+        playerTimes.sort((a, b) => a.playerTime - b.playerTime);
+        return playerTimes.slice(0, 5).map(({ playerId, playerTime }) => ({
             player: playersMap[playerId],
             team: teamsMap[gameData!.teams.find(team => team.players.some(player => player.playerId === playerId))!.teamId],
-            time
+            time: playerTime
         }));
     };
 

@@ -37,8 +37,8 @@ export default function MeetPage() {
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Teams Participating</h2>
             <ul className="list-disc list-inside mb-6">
-                {meet.teams.map((teamId, index) => (
-                    <li key={index} className="text-lg text-gray-700 dark:text-gray-300">{teamsMap[Number(teamId)]}</li>
+                {meet.teams.map((team, index) => (
+                    <li key={index} className="text-lg text-gray-700 dark:text-gray-300">{teamsMap[Number(team?.teamId)]}</li>
                 ))}
             </ul>
 

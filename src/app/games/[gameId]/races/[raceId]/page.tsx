@@ -59,7 +59,12 @@ export default function RaceResultsPage() {
 
     if (!race) return <div>Loading...</div>;
 
-    const sortedParticipants = Object.entries(race.heats[0]?.playerTimes || {}).sort(([, timeA], [, timeB]) => timeA - timeB) || [];
+    const sortedParticipants = race.participants
+        .sort((a, b) => a.playerTime - b.playerTime)
+        .map((participant, index) => ({
+            ...participant,
+            position: index + 1,
+        }));
 
     return (
         <div className="p-4">
@@ -67,8 +72,8 @@ export default function RaceResultsPage() {
             <Link href={`/games/${gameId}/schedule/${meet?.meetId}`}>
                 <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Meet: <span className="font-semibold">{meet?.week} - {meet?.season}</span></p>
             </Link>
-
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Event: <span className="font-semibold">{race.eventType}</span></p>
+            <p className="text-gray-700 dark:text-gray-300">Teams: {meet?.teams.map(team => teamsMap[team.teamId]).join(', ')}</p>
+            <p className="text-gray-700 dark:text-gray-300">Event: <span className="font-semibold">{race.eventType}</span></p>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Results</h2>
             <table className="min-w-full bg-white dark:bg-gray-800">
@@ -82,9 +87,9 @@ export default function RaceResultsPage() {
                     </tr>
                 </thead>
                 <tbody className="min-w-full">
-                    {sortedParticipants.map(([playerId, time], index) => (
+                    {sortedParticipants.map(({ playerId, playerTime, points, position }) => (
                         <tr key={playerId}>
-                            <td className="py-2 px-4 border-b text-center">{index + 1}</td>
+                            <td className="py-2 px-4 border-b text-center">{position}</td>
                             <td className="py-2 px-4 border-b text-center">
                                 <Link href={`/games/${gameId}/players/${playerId}`}>
                                     {playersMap[Number(playerId)]?.name}
@@ -93,8 +98,8 @@ export default function RaceResultsPage() {
                             <td className="py-2 px-4 border-b text-center">
                                 {playersMap[Number(playerId)]?.college}
                             </td>
-                            <td className="py-2 px-4 border-b text-center">{formatTime(time)}</td>
-                            <td className="py-2 px-4 border-b text-center">{index < 3 ? 10 - index * 3 : 0}</td>
+                            <td className="py-2 px-4 border-b text-center">{formatTime(playerTime)}</td>
+                            <td className="py-2 px-4 border-b text-center">{points}</td>
                         </tr>
                     ))}
                 </tbody>

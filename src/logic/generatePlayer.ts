@@ -27,7 +27,7 @@ export async function createPlayer(gameId: number, teamId: number, year: number 
         lastName: name.lastName,
         seasons,
         eventTypes: generateEventTypes(seasons),
-        face: face
+        face: JSON.stringify(face)
         };
 
     savePlayerData(gameId, player); // Save player to IndexedDB

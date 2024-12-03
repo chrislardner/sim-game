@@ -9,18 +9,18 @@ export function generateYearlyLeagueSchedule(gameId: number, teams: Team[], year
         year,
         meets: []
     };
-    let regularSeasonPhase = mappedSeasonPhases.regularCrossCountry;
+    const regularSeasonPhase = mappedSeasonPhases.regularCrossCountry;
     for (let week = regularSeasonPhase.startWeek; week <= regularSeasonPhase.endWeek; week++) {
         const meetsForWeek = createMeetsForWeek(gameId, teams, week, year);
         leagueSchedule.meets.push(...meetsForWeek);
     }
-    let trackField1RegularSeasonPhase = mappedSeasonPhases.regularTrackField1;
+    const trackField1RegularSeasonPhase = mappedSeasonPhases.regularTrackField1;
     for (let week = trackField1RegularSeasonPhase.startWeek; week <= trackField1RegularSeasonPhase.endWeek; week++) {
         const meetsForWeek = createMeetsForWeek(gameId, teams, week, year);
         leagueSchedule.meets.push(...meetsForWeek);
     }
 
-    let trackField2RegularSeasonPhase = mappedSeasonPhases.regularTrackField2;
+    const trackField2RegularSeasonPhase = mappedSeasonPhases.regularTrackField2;
     for (let week = trackField2RegularSeasonPhase.startWeek; week <= trackField2RegularSeasonPhase.endWeek; week++) {
         const meetsForWeek = createMeetsForWeek(gameId, teams, week, year);
         leagueSchedule.meets.push(...meetsForWeek);
@@ -50,7 +50,7 @@ export function generateTeamSchedules(leagueSchedule: YearlyLeagueSchedule, team
         teamId: team.teamId,
         year,
         meets: leagueSchedule.meets
-            .filter(meet => meet.teams.some(t => t === team.teamId))
+            .filter(meet => meet.teams.some(t => t.teamId === team.teamId))
             .map(meet => meet.meetId)
     }));
 }

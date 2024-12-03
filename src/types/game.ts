@@ -13,7 +13,7 @@ export interface Game {
     lastTeamId: number;  // Tracks last assigned team ID in this game
     lastMeetId: number;  // Tracks last assigned meet ID in this game
     lastRaceId: number;  // Tracks last assigned
-    remainingTeams: Number[]; // TeamIds still in the playoffs
+    remainingTeams: number[]; // TeamIds still in the playoffs
     // Weeks 1-8: regular (cross country)
     // Weeks 9-11: playoffs
     // Weeks 12-13: offseason/awards/team management

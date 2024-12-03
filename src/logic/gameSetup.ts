@@ -2,7 +2,7 @@ import { saveGameData } from '@/data/storage';
 import { generateYearlyLeagueSchedule, generateTeamSchedules } from '@/logic/scheduleGenerator';
 import { Team } from '@/types/team';
 import { Game } from '@/types/game';
-import { getNextGameId, getCurrentIDs, getNextTeamId, initializeIDTracker } from '@/data/idTracker';
+import { getNextGameId, getCurrentIDs, initializeIDTracker } from '@/data/idTracker';
 import { createPlayer } from './generatePlayer';
 import { createTeam } from './generateTeam';
 

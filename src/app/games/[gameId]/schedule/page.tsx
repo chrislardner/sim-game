@@ -41,7 +41,7 @@ export default function LeagueSchedulePage() {
                     <div key={index} className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors mb-4">
                         <h2 className="text-xl font-semibold text-accent">Week {meet.week} - {meet.type}</h2>
                         <p className="text-gray-700 dark:text-gray-300">Meet Type: <span className="font-semibold">{meet.season} - {meet.year}</span></p>
-                        <p className="text-gray-700 dark:text-gray-300">Teams: {meet.teams.map(team => teamsMap[team as number]).join(', ')}</p>
+                        <p className="text-gray-700 dark:text-gray-300">Teams: {meet.teams.map(team => teamsMap[team.teamId]).join(', ')}</p>
                         <div className="mt-2">
                             <h3 className="text-lg font-semibold">Races:</h3>
                             <ul>

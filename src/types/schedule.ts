@@ -1,12 +1,12 @@
 export interface Race {
     eventType: string;       // e.g., "100m", "8k Cross Country"
     heats: Heat[];           // Array of heats for this race
-    participants: Number[];  // Array of players participating in the race
+    participants: {playerId: number, playerTime:number,  points: number}[];  // Array of players participating in the race
     raceId: number;
 }
 
 export interface Heat {
-    playerTimes: Record<number, number>; // Maps playerId to race time
+    players: number[]; // stores playerIds in heat
 }
 
 export interface Meet {
@@ -14,7 +14,7 @@ export interface Meet {
     year: number;                 // Year associated with the league schedule
     meetId: number;
     date: string;
-    teams: Number[];            // TeamIds participating in the meet
+    teams: {teamId: number, points: number}[];           // TeamIds participating in the meet
     races: Race[];            // Races held at the meet
     season: 'cross_country' | 'track_field';
     type: 'regular' | 'playoffs' | 'offseason';
@@ -24,7 +24,7 @@ export interface Meet {
 export interface TeamSchedule {
     teamId: number;
     year: number;                 // Year associated with the league schedule
-    meets: Number[];            // List of meetIds in which the team participates
+    meets: number[];            // List of meetIds in which the team participates
 }
 
 // Schedule for the entire league
