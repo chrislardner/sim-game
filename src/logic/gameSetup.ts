@@ -6,7 +6,6 @@ import { getNextGameId, getCurrentIDs, initializeIDTracker } from '@/data/idTrac
 import { createPlayer } from './generatePlayer';
 import { createTeam } from './generateTeam';
 
-
 export async function initializeNewGame(numTeams: number, numPlayersPerTeam: number): Promise<Game> {
     const gameId = getNextGameId();
     const teams: Team[] = [];
@@ -58,4 +57,4 @@ export async function initializeNewGame(numTeams: number, numPlayersPerTeam: num
     return game;
 }
 
-export { createPlayer };
+

@@ -1,7 +1,7 @@
 export interface Race {
     eventType: string;       // e.g., "100m", "8k Cross Country"
     heats: Heat[];           // Array of heats for this race
-    participants: {playerId: number, playerTime:number,  scoring: {points: number, team_top_five: boolean}}[];  // Array of players participating in the race
+    participants: RaceParticipant[];  // Array of players participating in the race
     raceId: number;
 }
 
@@ -31,4 +31,13 @@ export interface TeamSchedule {
 export interface YearlyLeagueSchedule {
     year: number;                 // Year associated with the league schedule
     meets: Meet[];            // Complete list of all meets for the season
+}
+
+export interface RaceParticipant {
+    playerId: number;
+    playerTime: number;
+    scoring: {
+        points: number;
+        team_top_five: boolean;
+    };
 }
