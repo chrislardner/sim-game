@@ -3,7 +3,7 @@ import { getNextPlayerId } from "@/data/idTracker";
 import { savePlayerData } from "@/data/storage";
 import { Player } from "@/types/player";
 import { generate } from "facesjs";
-import { generateRandomFullName } from "./parseNames";
+import { generateRandomFullName } from "../data/parseNames";
 
 export async function createPlayer(gameId: number, teamId: number, year: number = Math.random() < 0.5 ? 1 : (Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 3 : 4))): Promise<Player> {
 

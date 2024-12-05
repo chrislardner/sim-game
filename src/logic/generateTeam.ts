@@ -1,14 +1,25 @@
 import { getNextTeamId } from "@/data/idTracker";
-import { generateRandomTeam } from "@/data/teamLoader";
+import { generateCollegesbyConferenceId } from "@/data/parseSchools";
 import { School } from "@/types/regionals";
 import { Team } from "@/types/team";
 
-export async function createTeam(gameId: number, year: number): Promise<Team> {
+export async function createTeamsForConference(gameId: number, year: number, conferenceId: number): Promise<Team[]> {
+    console.log(conferenceId);
+    const schools: School[] = await generateCollegesbyConferenceId(conferenceId);
+    console.log(schools.length, "schools found in conference", conferenceId);
+    const teams: Team[] = [];
+    for (let i = 0; i < schools.length; i++) {
+        const team: Team = await createTeam(gameId, year, schools[i]);
+        teams.push(team);
+    }
+
+    return teams;
+}
+
+export async function createTeam(gameId: number, year: number, school: School): Promise<Team> {
     const newTeamId: number = getNextTeamId(gameId);
 
     console.log("Creating team with ID:", newTeamId);
-
-    const school: School | null = await generateRandomTeam();
 
     if (school === null || school.collegeId === -1) {
         console.error("Failed to assign a college to a team.");

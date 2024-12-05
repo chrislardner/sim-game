@@ -29,7 +29,7 @@ export default function TeamPage() {
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Location: <span className="font-semibold">{team.city}, {team.state}</span></p>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">TeamId: <span className="font-semibold">{team.teamId}</span></p>
             <Link href={`/games/${gameId}/teams/${teamId}/schedule`}>
-                <button className="px-4 py-2 bg-accent text-white rounded-lg transition hover:bg-accent-dark mb-6">
+                <button className="px-4 py-2 bg-accent-dark text-white rounded-lg transition hover:bg-accent-light mb-6">
                     View Team Schedule
                 </button>
             </Link>

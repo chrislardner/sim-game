@@ -4,23 +4,29 @@ import { Team } from '@/types/team';
 import { Game } from '@/types/game';
 import { getNextGameId, getCurrentIDs, initializeIDTracker } from '@/data/idTracker';
 import { createPlayer } from './generatePlayer';
-import { createTeam } from './generateTeam';
+import { createTeamsForConference } from './generateTeam';
+import { getAllColleges, getAllConferences } from '@/data/parseSchools';
+import { Conference, School } from '@/types/regionals';
 
-export async function initializeNewGame(numTeams: number, numPlayersPerTeam: number): Promise<Game> {
+export async function initializeNewGame(conferenceIds: number[], numPlayersPerTeam: number, schools: School[], conferences: Conference[]): Promise<Game> {
     const gameId = getNextGameId();
     const teams: Team[] = [];
     const currentYear = 2024
     initializeIDTracker(gameId, 0, 0, 0, 0);
 
-    for (let i = 0; i < numTeams; i++) {
-        const team: Team = await createTeam(gameId, currentYear);
-        teams.push(team);
+    console.log(conferenceIds);
 
-        for (let j = 0; j < numPlayersPerTeam; j++) {
-            const player = await createPlayer(gameId, team.teamId);
-            team.players.push(player);
+    for (let i = 0; i < conferenceIds.length; i++) {
+        const conferenceTeams = await createTeamsForConference(gameId, currentYear, conferenceIds[i]);
+        for (const team of conferenceTeams) {
+            for (let j = 0; j < numPlayersPerTeam; j++) {
+                const player = await createPlayer(gameId, team.teamId);
+                team.players.push(player);
+            }
         }
+        teams.push(...conferenceTeams);
     }
+    console.log(teams, "teams created");
 
     const leagueSchedule = generateYearlyLeagueSchedule(gameId, teams, currentYear);
     const teamSchedules = generateTeamSchedules(leagueSchedule, teams, currentYear);
@@ -50,11 +56,17 @@ export async function initializeNewGame(numTeams: number, numPlayersPerTeam: num
         lastTeamId,
         lastMeetId,
         remainingTeams: teams.map(team => team.teamId),
-        lastRaceId
+        lastRaceId,
+        schools,
+        conferences
     };
 
     saveGameData(game);
     return game;
 }
 
-
+export async function getAllSchoolsAndConferences(): Promise<{ schools: School[], conferences: Conference[] }> {
+    const schools = await getAllColleges();
+    const conferences = await getAllConferences();
+    return { schools, conferences };
+}

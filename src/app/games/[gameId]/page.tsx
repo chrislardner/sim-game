@@ -32,7 +32,7 @@ export default function GameDashboard() {
         <div className="p-4 transition-colors">
             <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">Game Dashboard</h1>
             
-            <button onClick={handleSimulateWeek} className="px-4 py-2 bg-accent font-semibold text-white rounded">
+            <button onClick={handleSimulateWeek} className="px-4 py-2 bg-accent-dark hover:bg-accent-light font-semibold text-white rounded">
                 Simulate Next Week
             </button>
             

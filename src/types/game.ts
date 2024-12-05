@@ -1,6 +1,7 @@
 import { Team } from './team';
 import { YearlyLeagueSchedule } from './schedule';
 import { SeasonGamePhase } from '@/constants/seasons';
+import { Conference, School } from './regionals';
 
 export interface Game {
     gamePhase: SeasonGamePhase;
@@ -14,13 +15,6 @@ export interface Game {
     lastMeetId: number;  // Tracks last assigned meet ID in this game
     lastRaceId: number;  // Tracks last assigned
     remainingTeams: number[]; // TeamIds still in the playoffs
-    // Weeks 1-8: regular (cross country)
-    // Weeks 9-11: playoffs
-    // Weeks 12-13: offseason/awards/team management
-    // weeks 14-23: regular (track and field)
-    // Weeks 24-26: playoffs
-    // Weeks 27-28: offseason/awards/team management
-    // weeks 29-38: regular (track and field)
-    // Weeks 39-41: playoffs
-    // Weeks 42-52: offseason/awards/team management
+    schools: School[];
+    conferences: Conference[];
 }

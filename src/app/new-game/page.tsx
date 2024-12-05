@@ -1,18 +1,76 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { initializeNewGame } from '@/logic/gameSetup';
 import { useRouter } from 'next/navigation';
+import { getAllColleges, getAllConferences } from '@/data/parseSchools';
+import { Conference, School } from '@/types/regionals';
 
 export default function NewGamePage() {
-    const [numTeams, setNumTeams] = useState(4);
+    const [conferenceIds, setConferenceIds] = useState<number[]>([]);
     const [numPlayers, setNumPlayers] = useState(10);
+    const [schools, setSchools] = useState<School[]>([]);
+    const [conferences, setConferences] = useState<Conference[]>([]);
     const router = useRouter();
 
+    useEffect(() => {
+        const fetchData = async () => {
+            const schools = await getAllColleges();
+            setSchools(schools);
+            const conferences = await getAllConferences();
+            setConferences(conferences);
+        };
+        fetchData();
+    }, []);
+
     const handleCreateGame = async () => {
-        const newGame = await initializeNewGame(numTeams, numPlayers);
+        console.log(conferenceIds);
+        if (conferenceIds.length === 0) {
+            alert("Please select at least one conference to start the game.");
+            return;
+        }
+        const newGame = await initializeNewGame(conferenceIds, numPlayers, schools, conferences);
         // Redirect to the newly created game's page
         router.push(`/games/${newGame.gameId}`);
+    };
+
+
+    // Updated ConferenceGrid component with Tailwind CSS styling
+    const ConferenceGrid = ({
+        conferences,
+        selectedConferenceIds,
+        setSelectedConferenceIds,
+    }: {
+        conferences: Conference[];
+        selectedConferenceIds: number[];
+        setSelectedConferenceIds: React.Dispatch<React.SetStateAction<number[]>>;
+    }) => {
+        const handleConferenceClick = (conferenceId: number) => {
+            setSelectedConferenceIds((prev) =>
+                prev.includes(conferenceId)
+                    ? prev.filter((id) => id !== conferenceId)
+                    : [...prev, conferenceId]
+            );
+        };
+
+        return (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {conferences
+                    .sort((a, b) => a.conferenceName.localeCompare(b.conferenceName))
+                    .map((conference) => (
+                        <div
+                            key={conference.conferenceId}
+                            onClick={() => handleConferenceClick(conference.conferenceId)}
+                            className={`p-4 rounded-lg cursor-pointer text-center transition-colors duration-200 ${selectedConferenceIds.includes(conference.conferenceId)
+                                    ? 'bg-secondary-dark text-text-dark'
+                                    : 'bg-info-dark text-text-dark hover:bg-info-light hover:text-text-light'
+                                }`}
+                        >
+                            {conference.conferenceName}
+                        </div>
+                    ))}
+            </div>
+        );
     };
 
     return (
@@ -25,16 +83,14 @@ export default function NewGamePage() {
                 }}
                 className="flex flex-col gap-4"
             >
-                <label>
-                    Number of Teams:
-                    <input
-                        type="number"
-                        value={numTeams}
-                        onChange={(e) => setNumTeams(Number(e.target.value))}
-                        min="1"
-                        className="ml-2 text-black"
+                <div>
+                    <h2>Select Conferences</h2>
+                    <ConferenceGrid
+                        conferences={conferences}
+                        selectedConferenceIds={conferenceIds}
+                        setSelectedConferenceIds={setConferenceIds}
                     />
-                </label>
+                </div>
                 <label>
                     Number of Players per Team:
                     <input
@@ -52,3 +108,6 @@ export default function NewGamePage() {
         </div>
     );
 }
+
+
+

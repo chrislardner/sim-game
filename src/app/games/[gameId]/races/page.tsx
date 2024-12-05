@@ -80,7 +80,7 @@ export default function RacesOverviewPage() {
                                     <h3 className="text-xl font-semibold text-accent">Event: {race.eventType}</h3>
                                     <p className="font-semibold text-text-dark">Race ID: {race.raceId}</p>
                                     <button
-                                        className="px-4 py-2 font-semibold bg-accent text-text-light rounded-lg transition hover:text-accent-dark mt-4"
+                                        className="px-4 py-2 font-semibold bg-accent text-text-light rounded-lg transition bg-accent-dark hover:text-accent-dark mt-4"
                                         onClick={(e) => {
                                             e.preventDefault();
                                             toggleRaceVisibility(race.raceId);

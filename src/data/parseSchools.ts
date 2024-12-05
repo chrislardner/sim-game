@@ -32,6 +32,22 @@ async function preloadMatchedData(): Promise<void> {
     }
 }
 
+export async function getAllColleges(): Promise<CollegeEntry[]> { 
+    if (!isDataLoaded) {
+        await preloadMatchedData();
+    }
+
+    return colleges;
+}
+
+export async function getAllConferences(): Promise<ConferenceEntry[]> {
+    if (!isDataLoaded) {
+        await preloadMatchedData();
+    }
+
+    return conferences;
+}
+
 // Get a conference by its ID
 function getConferenceById(conferenceId: number): ConferenceEntry | null {
     return conferences.find((conf) => conf.conferenceId === conferenceId) || null;
@@ -51,19 +67,6 @@ function getRandomCollege(): CollegeEntry | null {
 
     const randomIndex = Math.floor(Math.random() * colleges.length);
     return colleges[randomIndex];
-}
-
-// Fetch a random college from a specific conference
-function getRandomCollegeFromConference(conferenceId: number): CollegeEntry | null {
-    const conference = getConferenceById(conferenceId);
-    if (!conference || conference.teamIds.length === 0) {
-        console.error("No colleges found in this conference.");
-        return null;
-    }
-
-    const teamIds = conference.teamIds;
-    const randomTeamId = teamIds[Math.floor(Math.random() * teamIds.length)];
-    return getCollegeById(randomTeamId);
 }
 
 // Generate a team with a random college
@@ -86,23 +89,27 @@ export async function generateRandomTeam(): Promise<CollegeEntry | null> {
 }
 
 // Generate multiple random colleges
-export async function generateRandomCollegesBatch(count: number): Promise<CollegeEntry[]> {
+export async function generateCollegesbyConferenceId(conferenceId: number): Promise<CollegeEntry[]> {
     try {
         if (!isDataLoaded) {
             await preloadMatchedData();
         }
 
         const generatedColleges: CollegeEntry[] = [];
-        for (let i = 0; i < count; i++) {
-            const randomCollege = getRandomCollege();
-            if (randomCollege) {
-                generatedColleges.push(randomCollege);
+        const conference = getConferenceById(conferenceId);
+        if (!conference || !conference.teamIds) {
+            throw new Error("Conference or teamIds not found.");
+        }
+        for (let i = 0; i < conference.teamIds.length; i++) {
+            const generatedCollege = getCollegeById(conference.teamIds[i]);
+            if (generatedCollege) {
+                generatedColleges.push(generatedCollege);
             }
         }
 
         return generatedColleges;
     } catch (error) {
-        console.error("Error generating random colleges batch:", error);
+        console.error("Error generating colleges from conference Id:", error);
         throw error;
     }
 }
