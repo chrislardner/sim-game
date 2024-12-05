@@ -3,7 +3,7 @@ import { getNextPlayerId } from "@/data/idTracker";
 import { savePlayerData } from "@/data/storage";
 import { Player } from "@/types/player";
 import { generate } from "facesjs";
-import { generateRandomFullName } from "./names";
+import { generateRandomFullName } from "./parseNames";
 
 export async function createPlayer(gameId: number, teamId: number, year: number = Math.random() < 0.5 ? 1 : (Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 3 : 4))): Promise<Player> {
 
@@ -27,7 +27,7 @@ export async function createPlayer(gameId: number, teamId: number, year: number 
         lastName: name.lastName,
         seasons,
         eventTypes: generateEventTypes(seasons),
-        face: JSON.stringify(face)
+        face
         };
 
     savePlayerData(gameId, player); // Save player to IndexedDB

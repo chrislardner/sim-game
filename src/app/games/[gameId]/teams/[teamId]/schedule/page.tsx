@@ -45,7 +45,7 @@ export default function TeamSchedulePage() {
                         <p className="text-gray-700 dark:text-gray-300">Meet Type: <span className="font-semibold">{meet.season} - {meet.year}</span></p>
                         <p className="text-gray-700 dark:text-gray-300">Meet ID: <span className="font-semibold">{meet.meetId}</span></p>
 
-                        <p className="text-gray-700 dark:text-gray-300">Teams: {meet.teams.map((teamId) => teamsMap[teamId as number]).join(', ')}</p>
+                        <p className="text-gray-700 dark:text-gray-300">Teams: {meet.teams.map(team => teamsMap[team.teamId]).join(', ')}</p>
                         <div className="mt-2">
                             <h3 className="text-lg font-semibold">Races:</h3>
                             <ul>

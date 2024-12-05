@@ -23,7 +23,7 @@ function createRacesForMeet(teams: Team[], gameId: number, seasonType: 'cross_co
         const participants = teams.flatMap(team => 
             team.players.filter(player => 
                 player.seasons.includes(seasonType) && player.eventTypes[seasonType].includes(eventType)
-            ).map(player => ({ playerId: player.playerId, playerTime: 0, points: 0 }))
+            ).map(player => ({ playerId: player.playerId, playerTime: 0, scoring: { points: 0, team_top_five: false } }))
         );
 
         let heats = 1;
@@ -51,14 +51,14 @@ function createRacesForMeet(teams: Team[], gameId: number, seasonType: 'cross_co
 
 export function mapWeekToGamePhase(gameWeek: number): { season: SeasonType, type: SeasonGamePhase } {
     if (gameWeek >= 1 && gameWeek <= 9) return { season: 'cross_country', type: 'regular' };
-    if (gameWeek >= 10 && gameWeek <= 12) return { season: 'cross_country', type: 'playoffs' };
+    if (gameWeek >= 10 && gameWeek <= 11) return { season: 'cross_country', type: 'playoffs' };
     if (gameWeek >= 12 && gameWeek <= 14) return { season: 'cross_country', type: 'offseason' };
     if (gameWeek >= 15 && gameWeek <= 24) return { season: 'track_field', type: 'regular' };
-    if (gameWeek >= 25 && gameWeek <= 27) return { season: 'track_field', type: 'playoffs' };
-    if (gameWeek >= 28 && gameWeek <= 29) return { season: 'track_field', type: 'offseason' };
+    if (gameWeek >= 25 && gameWeek <= 26) return { season: 'track_field', type: 'playoffs' };
+    if (gameWeek >= 27 && gameWeek <= 29) return { season: 'track_field', type: 'offseason' };
     if (gameWeek >= 30 && gameWeek <= 39) return { season: 'track_field', type: 'regular' };
-    if (gameWeek >= 40 && gameWeek <= 42) return { season: 'track_field', type: 'playoffs' };
-    if (gameWeek >= 43 && gameWeek <= 52) return { season: 'track_field', type: 'offseason' };
+    if (gameWeek >= 40 && gameWeek <= 41) return { season: 'track_field', type: 'playoffs' };
+    if (gameWeek >= 42 && gameWeek <= 52) return { season: 'track_field', type: 'offseason' };
 
     throw new Error('Invalid week number');
 }

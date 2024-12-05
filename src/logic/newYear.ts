@@ -24,7 +24,7 @@ export async function handleNewRecruits(game: Game): Promise<boolean> {
 
             // Add recruits as new freshmen
             for (let i = 0; i < graduatingSeniors; i++) {
-                let player = await createPlayer(game.gameId, team.teamId, 1);
+                const player = await createPlayer(game.gameId, team.teamId, 1);
                 team.players.push(player);
             }
         });

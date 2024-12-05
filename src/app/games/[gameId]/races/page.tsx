@@ -41,7 +41,11 @@ export default function RacesOverviewPage() {
     if (!gameData) return <div>Loading...</div>;
 
     const getTopWinners = (race: Race) => {
-        const playerTimes: {playerId: number, playerTime: number, points: number}[] = race.participants;
+        const playerTimes = race.participants.map(participant => ({
+            playerId: participant.playerId,
+            playerTime: participant.playerTime,
+            points: participant.scoring.points
+        }));
         playerTimes.sort((a, b) => a.playerTime - b.playerTime);
         return playerTimes.slice(0, 5).map(({ playerId, playerTime }) => ({
             player: playersMap[playerId],

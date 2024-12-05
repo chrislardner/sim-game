@@ -9,6 +9,9 @@ export interface Team {
     players: Player[];
     points: number;
     teamSchedule: TeamSchedule;
-    conference: string;
-    region: string;
+    conferenceId: number;
+    // region: string; // implement later when needed -- need to clean data
+    schoolId: number;
+    state: string;
+    city: string;
 }

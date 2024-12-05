@@ -14,7 +14,7 @@ export async function initializeNewGame(numTeams: number, numPlayersPerTeam: num
     initializeIDTracker(gameId, 0, 0, 0, 0);
 
     for (let i = 0; i < numTeams; i++) {
-        const team: Team = createTeam(gameId, currentYear);
+        const team: Team = await createTeam(gameId, currentYear);
         teams.push(team);
 
         for (let j = 0; j < numPlayersPerTeam; j++) {

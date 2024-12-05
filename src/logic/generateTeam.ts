@@ -1,44 +1,44 @@
 import { getNextTeamId } from "@/data/idTracker";
-import { saveTeamData } from "@/data/storage";
+import { generateRandomTeam } from "@/data/teamLoader";
+import { School } from "@/types/regionals";
 import { Team } from "@/types/team";
 
-export function createTeam(gameId: number, year: number): Team {
+export async function createTeam(gameId: number, year: number): Promise<Team> {
     const newTeamId: number = getNextTeamId(gameId);
-    const college = chooseCollege();
+
+    console.log("Creating team with ID:", newTeamId);
+
+    const school: School | null = await generateRandomTeam();
+
+    if (school === null || school.collegeId === -1) {
+        console.error("Failed to assign a college to a team.");
+        return {
+            teamId: -1,
+            college: "No College",
+            teamName: "No Team",
+            gameId,
+            players: [],
+            points: 0,
+            teamSchedule: { teamId: -1, meets: [], year },
+            conferenceId: -1,
+            schoolId: -1,
+            state: "Unknown",
+            city: "Unknown"
+        };
+    }
 
     const teamData: Team = {
         teamId: newTeamId,
-        college,
-        teamName: `Team ${newTeamId}`,
+        college: school.collegeName,
+        teamName: school.nickname,
         gameId,
         players: [],
         points: 0,
         teamSchedule: { teamId: newTeamId, meets: [], year},
-        conference: 'Midwest Conference',
-        region: 'Midwest Region'
+        conferenceId: school.conferenceId,
+        schoolId: school.collegeId,
+        state: school.state,
+        city: school.city
     };
-    saveTeamData(gameId, teamData);
     return teamData;
-}
-const colleges = [
-    'Knox College', 'Monmouth College', 'Illinois College',
-    'Lake Forest College', 'Grinnell College', 'Cornell College',
-    'Ripon College', 'Beloit College', 'Lawrence University', 'St. Norbert College',
-    'Carroll University'
-];
-const usedColleges = new Set<string>();
-
-function chooseCollege(): string {
-    if (usedColleges.size >= colleges.length) {
-        throw new Error("No more colleges available to choose from.");
-    }
-
-    let college: string;
-    do {
-        const randomIndex = Math.floor(Math.random() * colleges.length);
-        college = colleges[randomIndex];
-    } while (usedColleges.has(college));
-
-    usedColleges.add(college);
-    return college;
 }

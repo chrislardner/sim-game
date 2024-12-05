@@ -31,7 +31,7 @@ function getEventVariability(eventType: keyof typeof variability): number {
     // Variability increases with event distance
     return variability[eventType] || 0.1;
 }
-export function generateRaceTime(playerId: Number, eventType: string): number {
+export function generateRaceTime(playerId: number, eventType: string): number {
     const baseTime = getBaseTimeForEvent(eventType);
     const skillFactor = getPlayerSkill(playerId, eventType) / 10; // Normalize skill (1-10) to 0.1-1.0
 
@@ -52,7 +52,8 @@ export function generateRaceTime(playerId: Number, eventType: string): number {
     return clampTime(adjustedTime, eventType as keyof typeof minMax);
 }
 
-function getPlayerSkill(playerId: Number, eventType: string): number {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function getPlayerSkill(_playerId: number, _eventType: string): number {
     // Example skill fetching logic; replace with actual data logic
     // Skill is a value between 1 (novice) and 10 (elite)
     return Math.floor(Math.random() * 10) + 1;
@@ -106,7 +107,7 @@ function getRaceLength(eventType: string): number {
     }
 }
 
-export function updatePlayerStats(game: Game, playerId: Number, eventType: string, time: number) {
+export function updatePlayerStats(game: Game, playerId: number, eventType: string, time: number) {
     const player = game.teams.flatMap(team => team.players).find(p => p.playerId === playerId);
     if (player) {
         if (!player.stats[eventType]) {

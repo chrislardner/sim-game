@@ -1,7 +1,7 @@
 export interface Race {
     eventType: string;       // e.g., "100m", "8k Cross Country"
     heats: Heat[];           // Array of heats for this race
-    participants: {playerId: number, playerTime:number,  points: number}[];  // Array of players participating in the race
+    participants: {playerId: number, playerTime:number,  scoring: {points: number, team_top_five: boolean}}[];  // Array of players participating in the race
     raceId: number;
 }
 

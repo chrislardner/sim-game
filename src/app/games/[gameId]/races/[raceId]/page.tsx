@@ -11,7 +11,8 @@ export default function RaceResultsPage() {
     const [race, setRace] = useState<Race | null>(null);
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: string }>({});
     const [playersMap, setPlayersMap] = useState<{ [key: number]: {name: string, college: string} }>({});
-    const [meet, setMeet] = useState<Meet | null>();
+    const [meet, setMeet] = useState<Meet | null>(null);
+    const [teamPoints, setTeamPoints] = useState<{ [key: number]: number }>({});
 
     useEffect(() => {
         async function fetchData() {
@@ -25,7 +26,7 @@ export default function RaceResultsPage() {
 
             if (selectedRace) {
                 const selectedMeet = gameData.leagueSchedule.meets.find(meet => meet.races.some(r => r.raceId === selectedRace.raceId));
-                setMeet(selectedMeet);
+                setMeet(selectedMeet || null);
             }
 
             // Create a mapping of teamId to team college
@@ -46,6 +47,16 @@ export default function RaceResultsPage() {
                 return accumlated;
             }, {});
             setPlayersMap(playersMapping);
+
+            // Calculate team points
+            const pointsMapping = selectedRace?.participants.reduce((accumlated: { [key: number]: number }, participant) => {
+                const teamId = gameData.teams.find(team => team.players.some(player => player.playerId === participant.playerId))?.teamId;
+                if (teamId !== undefined) {
+                    accumlated[teamId] = (accumlated[teamId] || 0) + participant.scoring.points;
+                }
+                return accumlated;
+            }, {}) || {};
+            setTeamPoints(pointsMapping);
         }
         fetchData();
     }, [gameId, raceId]);
@@ -66,6 +77,14 @@ export default function RaceResultsPage() {
             position: index + 1,
         }));
 
+    const sortedTeamPoints = Object.entries(teamPoints).sort(([, pointsA], [, pointsB]) => {
+        if (meet?.season === 'cross_country') {
+            return Number(pointsA) - Number(pointsB); // Less points first
+        } else {
+            return Number(pointsB) - Number(pointsA); // More points first
+        }
+    });
+
     return (
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">Race Results</h1>
@@ -73,7 +92,7 @@ export default function RaceResultsPage() {
                 <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Meet: <span className="font-semibold">{meet?.week} - {meet?.season}</span></p>
             </Link>
             <p className="text-gray-700 dark:text-gray-300">Teams: {meet?.teams.map(team => teamsMap[team.teamId]).join(', ')}</p>
-            <p className="text-gray-700 dark:text-gray-300">Event: <span className="font-semibold">{race.eventType}</span></p>
+            <p className="text-gray-700 dark:text-gray-300">Event: <span className="font-semibold">{race?.eventType}</span></p>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Results</h2>
             <table className="min-w-full bg-white dark:bg-gray-800">
@@ -87,7 +106,7 @@ export default function RaceResultsPage() {
                     </tr>
                 </thead>
                 <tbody className="min-w-full">
-                    {sortedParticipants.map(({ playerId, playerTime, points, position }) => (
+                    {sortedParticipants.map(({ playerId, playerTime, scoring: { points }, position }) => (
                         <tr key={playerId}>
                             <td className="py-2 px-4 border-b text-center">{position}</td>
                             <td className="py-2 px-4 border-b text-center">
@@ -99,6 +118,24 @@ export default function RaceResultsPage() {
                                 {playersMap[Number(playerId)]?.college}
                             </td>
                             <td className="py-2 px-4 border-b text-center">{formatTime(playerTime)}</td>
+                            <td className="py-2 px-4 border-b text-center">{points}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Team Points</h2>
+            <table className="min-w-full bg-white dark:bg-gray-800">
+                <thead>
+                    <tr>
+                        <th className="py-2 px-4 border-b">Team</th>
+                        <th className="py-2 px-4 border-b">Points</th>
+                    </tr>
+                </thead>
+                <tbody className="min-w-full">
+                    {sortedTeamPoints.map(([teamId, points]) => (
+                        <tr key={teamId}>
+                            <td className="py-2 px-4 border-b text-center">{teamsMap[Number(teamId)]}</td>
                             <td className="py-2 px-4 border-b text-center">{points}</td>
                         </tr>
                     ))}

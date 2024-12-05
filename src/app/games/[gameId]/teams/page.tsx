@@ -25,10 +25,9 @@ export default function TeamsPage() {
                 {teams.map(team => (
                     <Link key={team.teamId} href={`/games/${gameId}/teams/${team.teamId}`}>
                         <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
-                            <h2 className="text-xl font-bold mb-2 text-accent">{team.teamName}</h2>
-                            <p className="text-gray-700 dark:text-gray-300">College: <span className="font-semibold">{team.college}</span></p>
-                            <p className="text-gray-700 dark:text-gray-300">Conference: <span className="font-semibold">{team.conference}</span></p>
-                            <p className="text-gray-700 dark:text-gray-300">Region: <span className="font-semibold">{team.region}</span></p>
+                            <h2 className="text-xl font-bold mb-2 text-accent">{team.college}</h2>
+                            <p className="text-gray-700 dark:text-gray-300">Team Name: <span className="font-semibold">{team.teamName}</span></p>
+                            <p className="text-gray-700 dark:text-gray-300">ConferenceId: <span className="font-semibold">{team.conferenceId}</span></p>
                         </div>
                     </Link>
                 ))}

@@ -23,9 +23,11 @@ export default function TeamPage() {
 
     return (
         <div className="p-4">
-            <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">{team.teamName}</h1>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">College: <span className="font-semibold">{team.college}</span></p>
-
+            <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">{team.college}</h1>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">College: <span className="font-semibold">{team.teamName}</span></p>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Conference: <span className="font-semibold">{team.conferenceId}</span></p>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Location: <span className="font-semibold">{team.city}, {team.state}</span></p>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">TeamId: <span className="font-semibold">{team.teamId}</span></p>
             <Link href={`/games/${gameId}/teams/${teamId}/schedule`}>
                 <button className="px-4 py-2 bg-accent text-white rounded-lg transition hover:bg-accent-dark mb-6">
                     View Team Schedule

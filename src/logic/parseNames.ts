@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Papa from "papaparse";
 
 type NameEntry = {
@@ -114,9 +116,11 @@ function getRandomNameFromWeights(
 }
 
 // Generate a single random full name
-async function generateRandomFullName(): Promise<{ firstName: string; lastName: string }> {
+export async function generateRandomFullName(): Promise<{ firstName: string; lastName: string }> {
     try {
-        await preloadCSV();
+        if (!isDataLoaded) {
+            await preloadCSV();
+        }
 
         if (firstNameWeights.length === 0 || lastNameWeights.length === 0) {
             throw new Error("Weights are empty. Ensure CSV data is valid and preloaded correctly.");
@@ -124,7 +128,6 @@ async function generateRandomFullName(): Promise<{ firstName: string; lastName: 
 
         const firstName = getRandomNameFromWeights(firstNameWeights);
         const lastName = getRandomNameFromWeights(lastNameWeights);
-
 
         return { firstName, lastName };
     } catch (error) {
@@ -134,7 +137,7 @@ async function generateRandomFullName(): Promise<{ firstName: string; lastName: 
 }
 
 // Generate thousands of names in a batch
-async function generateRandomNamesBatch(count: number): Promise<{ firstName: string; lastName: string }[]> {
+export async function generateRandomNamesBatch(count: number): Promise<{ firstName: string; lastName: string }[]> {
     try {
         await preloadCSV();
 
@@ -152,4 +155,3 @@ async function generateRandomNamesBatch(count: number): Promise<{ firstName: str
     }
 }
 
-export { generateRandomFullName, generateRandomNamesBatch };

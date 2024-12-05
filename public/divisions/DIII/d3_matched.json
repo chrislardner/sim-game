@@ -1,0 +1,4142 @@
+{
+    "conferences": [
+        {
+            "conferenceId": 1,
+            "conferenceName": "Michigan Intercollegiate Athletic Association",
+            "teamIds": [
+                1,
+                4,
+                9,
+                50,
+                148,
+                164,
+                278,
+                329,
+                366
+            ]
+        },
+        {
+            "conferenceId": 2,
+            "conferenceName": "Southern Collegiate Athletic Conference",
+            "teamIds": [
+                2,
+                16,
+                20,
+                27,
+                31,
+                61,
+                64,
+                76,
+                79,
+                83,
+                86,
+                97,
+                137,
+                142,
+                150,
+                152,
+                174,
+                183,
+                202,
+                205,
+                212,
+                220,
+                275,
+                280,
+                291,
+                306,
+                335,
+                342,
+                351,
+                361,
+                362,
+                368,
+                373,
+                393
+            ]
+        },
+        {
+            "conferenceId": 3,
+            "conferenceName": "Massachusetts State Collegiate Athletic Conference",
+            "teamIds": [
+                3,
+                14,
+                41,
+                75,
+                87,
+                105,
+                107,
+                114,
+                116,
+                178,
+                208,
+                210,
+                226,
+                242,
+                270,
+                303,
+                308,
+                325,
+                327,
+                338,
+                345,
+                397,
+                425
+            ]
+        },
+        {
+            "conferenceId": 4,
+            "conferenceName": "MAC Commonwealth",
+            "teamIds": [
+                5,
+                10,
+                98,
+                147,
+                216,
+                355,
+                403,
+                428
+            ]
+        },
+        {
+            "conferenceId": 5,
+            "conferenceName": "Allegheny Mountain Collegiate Conference",
+            "teamIds": [
+                6,
+                53,
+                143,
+                172,
+                230,
+                285,
+                286,
+                292,
+                293
+            ]
+        },
+        {
+            "conferenceId": 6,
+            "conferenceName": "Empire 8",
+            "teamIds": [
+                7,
+                104,
+                139,
+                149,
+                168,
+                239,
+                246,
+                252,
+                260,
+                319,
+                323,
+                375
+            ]
+        },
+        {
+            "conferenceId": 7,
+            "conferenceName": "Presidents' Athletic Conference",
+            "teamIds": [
+                8,
+                23,
+                32,
+                51,
+                66,
+                89,
+                90,
+                117,
+                121,
+                129,
+                141,
+                144,
+                159,
+                167,
+                199,
+                236,
+                238,
+                273,
+                276,
+                277,
+                279,
+                336,
+                363,
+                382,
+                385,
+                389,
+                398,
+                410,
+                422,
+                423
+            ]
+        },
+        {
+            "conferenceId": 8,
+            "conferenceName": "Northern Athletics Collegiate Conference",
+            "teamIds": [
+                11,
+                19,
+                29,
+                77,
+                80,
+                93,
+                101,
+                155,
+                176,
+                198,
+                221,
+                312,
+                332,
+                414
+            ]
+        },
+        {
+            "conferenceId": 9,
+            "conferenceName": "New England Small College Athletic Conference",
+            "teamIds": [
+                12,
+                26,
+                37,
+                74,
+                81,
+                133,
+                218,
+                367,
+                370,
+                394,
+                409
+            ]
+        },
+        {
+            "conferenceId": 10,
+            "conferenceName": "Heartland Collegiate Athletic Conference",
+            "teamIds": [
+                13,
+                30,
+                36,
+                96,
+                119,
+                136,
+                195,
+                233,
+                314,
+                365
+            ]
+        },
+        {
+            "conferenceId": 11,
+            "conferenceName": "MAC Freedom",
+            "teamIds": [
+                15,
+                88,
+                91,
+                111,
+                170,
+                180,
+                223,
+                354
+            ]
+        },
+        {
+            "conferenceId": 12,
+            "conferenceName": "Minnesota Intercollegiate Athletic Conference",
+            "teamIds": [
+                17,
+                34,
+                52,
+                78,
+                131,
+                134,
+                191,
+                320,
+                321,
+                324,
+                331,
+                333,
+                334
+            ]
+        },
+        {
+            "conferenceId": 13,
+            "conferenceName": "College Conference of Illinois and Wisconsin",
+            "teamIds": [
+                18,
+                55,
+                56,
+                103,
+                156,
+                219,
+                265,
+                267,
+                399
+            ]
+        },
+        {
+            "conferenceId": 14,
+            "conferenceName": "Old Dominion Athletic Conference",
+            "teamIds": [
+                21,
+                40,
+                100,
+                113,
+                130,
+                135,
+                146,
+                189,
+                300,
+                301,
+                309,
+                344,
+                360,
+                381,
+                386
+            ]
+        },
+        {
+            "conferenceId": 15,
+            "conferenceName": "New England Women's and Men's Athletic Conference",
+            "teamIds": [
+                22,
+                70,
+                72,
+                106,
+                225,
+                231,
+                340,
+                348,
+                353,
+                391,
+                399,
+                424
+            ]
+        },
+        {
+            "conferenceId": 16,
+            "conferenceName": "Liberty League",
+            "teamIds": [
+                24,
+                71,
+                145,
+                158,
+                304,
+                311,
+                328,
+                347,
+                372,
+                377,
+                408
+            ]
+        },
+        {
+            "conferenceId": 17,
+            "conferenceName": "City University of New York Athletic Conference",
+            "teamIds": [
+                25,
+                42,
+                59,
+                151,
+                160,
+                181,
+                213,
+                427
+            ]
+        },
+        {
+            "conferenceId": 18,
+            "conferenceName": "Midwest Conference",
+            "teamIds": [
+                28,
+                82,
+                128,
+                154,
+                171,
+                175,
+                179,
+                227,
+                307
+            ]
+        },
+        {
+            "conferenceId": 19,
+            "conferenceName": "Upper Midwest Athletic Conference",
+            "teamIds": [
+                33,
+                84,
+                200,
+                222,
+                266,
+                268,
+                269,
+                420
+            ]
+        },
+        {
+            "conferenceId": 20,
+            "conferenceName": "St. Louis Intercollegiate Athletic Conference",
+            "teamIds": [
+                35,
+                110,
+                115,
+                127,
+                190,
+                224,
+                297,
+                352,
+                390,
+                398
+            ]
+        },
+        {
+            "conferenceId": 21,
+            "conferenceName": "University Athletic Association",
+            "teamIds": [
+                38,
+                54,
+                57,
+                67,
+                108,
+                272,
+                310,
+                388
+            ]
+        },
+        {
+            "conferenceId": 22,
+            "conferenceName": "USA South Athletic Conference",
+            "teamIds": [
+                39,
+                126,
+                201,
+                215,
+                217,
+                264,
+                290,
+                337,
+                350,
+                407
+            ]
+        },
+        {
+            "conferenceId": 23,
+            "conferenceName": "United East Conference",
+            "teamIds": [
+                43,
+                47,
+                60,
+                120,
+                169,
+                177,
+                271,
+                283,
+                284,
+                287,
+                288,
+                289,
+                315,
+                322,
+                330,
+                376,
+                411
+            ]
+        },
+        {
+            "conferenceId": 24,
+            "conferenceName": "Centennial Conference",
+            "teamIds": [
+                44,
+                92,
+                118,
+                123,
+                140,
+                161,
+                211,
+                237,
+                359,
+                374,
+                387
+            ]
+        },
+        {
+            "conferenceId": 25,
+            "conferenceName": "American Rivers Conference",
+            "teamIds": [
+                45,
+                63,
+                73,
+                95,
+                186,
+                187,
+                240,
+                346,
+                384
+            ]
+        },
+        {
+            "conferenceId": 26,
+            "conferenceName": "State University of New York Athletic Conference",
+            "teamIds": [
+                46,
+                247,
+                249,
+                251,
+                254,
+                257,
+                258,
+                259,
+                261
+            ]
+        },
+        {
+            "conferenceId": 27,
+            "conferenceName": "Southern California Intercollegiate Athletic Conference",
+            "teamIds": [
+                48,
+                49,
+                65,
+                69,
+                173,
+                274,
+                295,
+                302,
+                401
+            ]
+        },
+        {
+            "conferenceId": 28,
+            "conferenceName": "Landmark Conference",
+            "teamIds": [
+                58,
+                94,
+                102,
+                125,
+                163,
+                188,
+                229,
+                343,
+                358,
+                404
+            ]
+        },
+        {
+            "conferenceId": 29,
+            "conferenceName": "Atlantic East Conference",
+            "teamIds": [
+                62,
+                132,
+                157,
+                204,
+                206,
+                241,
+                296
+            ]
+        },
+        {
+            "conferenceId": 30,
+            "conferenceName": "Coast to Coast Athletic Conference",
+            "teamIds": [
+                68,
+                203,
+                232,
+                339,
+                371,
+                383,
+                430
+            ]
+        },
+        {
+            "conferenceId": 31,
+            "conferenceName": "Conference of New England",
+            "teamIds": [
+                85,
+                109,
+                124,
+                138,
+                162,
+                243,
+                263,
+                313,
+                357,
+                392,
+                396
+            ]
+        },
+        {
+            "conferenceId": 32,
+            "conferenceName": "Little East Conference",
+            "teamIds": [
+                99,
+                166,
+                207,
+                209,
+                294,
+                305,
+                349,
+                378,
+                395
+            ]
+        },
+        {
+            "conferenceId": 33,
+            "conferenceName": "Skyline Conference",
+            "teamIds": [
+                112,
+                196,
+                214,
+                234,
+                235,
+                253,
+                256,
+                262,
+                326,
+                326,
+                341,
+                426
+            ]
+        },
+        {
+            "conferenceId": 34,
+            "conferenceName": "Northwest Conference",
+            "teamIds": [
+                122,
+                184,
+                185,
+                281,
+                282,
+                298,
+                400,
+                402,
+                405
+            ]
+        },
+        {
+            "conferenceId": 35,
+            "conferenceName": "North Atlantic Conference",
+            "teamIds": [
+                153,
+                182,
+                192,
+                193,
+                194,
+                248,
+                250,
+                364,
+                379,
+                380
+            ]
+        },
+        {
+            "conferenceId": 36,
+            "conferenceName": "New Jersey Athletic Conference",
+            "teamIds": [
+                165,
+                228,
+                244,
+                245,
+                255,
+                299,
+                316,
+                317,
+                318,
+                356,
+                406
+            ]
+        },
+        {
+            "conferenceId": 37,
+            "conferenceName": "Independent",
+            "teamIds": [
+                197,
+                369
+            ]
+        },
+        {
+            "conferenceId": 38,
+            "conferenceName": "Wisconsin Intercollegiate Athletic Conference",
+            "teamIds": [
+                412,
+                413,
+                415,
+                416,
+                417,
+                418,
+                419,
+                421
+            ]
+        },
+        {
+            "conferenceId": 39,
+            "conferenceName": "United States Collegiate Athletic Association",
+            "teamIds": [
+                429
+            ]
+        },
+        {
+            "conferenceId": 40,
+            "conferenceName": "Unmatched",
+            "teamIds": []
+        }
+    ],
+    "colleges": [
+        {
+            "collegeId": 1,
+            "collegeName": "Adrian College",
+            "conferenceId": 1,
+            "city": "Adrian",
+            "state": "MI",
+            "nickname": "Bulldogs"
+        },
+        {
+            "collegeId": 2,
+            "collegeName": "Agnes Scott College",
+            "conferenceId": 2,
+            "city": "Decatur",
+            "state": "GA",
+            "nickname": "Scotties"
+        },
+        {
+            "collegeId": 3,
+            "collegeName": "Albertus Magnus College",
+            "conferenceId": 3,
+            "city": "New Haven",
+            "state": "CT",
+            "nickname": "Falcons"
+        },
+        {
+            "collegeId": 4,
+            "collegeName": "Albion College",
+            "conferenceId": 1,
+            "city": "Albion",
+            "state": "MI",
+            "nickname": "Britons"
+        },
+        {
+            "collegeId": 5,
+            "collegeName": "Albright College",
+            "conferenceId": 4,
+            "city": "Reading",
+            "state": "PA",
+            "nickname": "Lions"
+        },
+        {
+            "collegeId": 6,
+            "collegeName": "Alfred State College",
+            "conferenceId": 5,
+            "city": "Alfred",
+            "state": "NY",
+            "nickname": "Pioneers"
+        },
+        {
+            "collegeId": 7,
+            "collegeName": "Alfred University",
+            "conferenceId": 6,
+            "city": "Alfred",
+            "state": "NY",
+            "nickname": "Saxons"
+        },
+        {
+            "collegeId": 8,
+            "collegeName": "Allegheny College",
+            "conferenceId": 7,
+            "city": "Meadville",
+            "state": "PA",
+            "nickname": "Gators"
+        },
+        {
+            "collegeId": 9,
+            "collegeName": "Alma College",
+            "conferenceId": 1,
+            "city": "Alma",
+            "state": "MI",
+            "nickname": "Scots"
+        },
+        {
+            "collegeId": 10,
+            "collegeName": "Alvernia University",
+            "conferenceId": 4,
+            "city": "Reading",
+            "state": "PA",
+            "nickname": "Golden Wolves"
+        },
+        {
+            "collegeId": 11,
+            "collegeName": "Alverno College",
+            "conferenceId": 8,
+            "city": "Milwaukee",
+            "state": "WI",
+            "nickname": "Inferno"
+        },
+        {
+            "collegeId": 12,
+            "collegeName": "Amherst College",
+            "conferenceId": 9,
+            "city": "Amherst",
+            "state": "MA",
+            "nickname": "Mammoths"
+        },
+        {
+            "collegeId": 13,
+            "collegeName": "Anderson University",
+            "conferenceId": 10,
+            "city": "Anderson",
+            "state": "IN",
+            "nickname": "Ravens and Lady Ravens"
+        },
+        {
+            "collegeId": 14,
+            "collegeName": "Anna Maria College",
+            "conferenceId": 3,
+            "city": "Paxton",
+            "state": "MA",
+            "nickname": "Amcats"
+        },
+        {
+            "collegeId": 15,
+            "collegeName": "Arcadia University",
+            "conferenceId": 11,
+            "city": "Glenside",
+            "state": "PA",
+            "nickname": "Knights"
+        },
+        {
+            "collegeId": 16,
+            "collegeName": "Asbury University",
+            "conferenceId": 2,
+            "city": "Wilmore",
+            "state": "KY",
+            "nickname": "Eagles"
+        },
+        {
+            "collegeId": 17,
+            "collegeName": "Augsburg University",
+            "conferenceId": 12,
+            "city": "Minneapolis",
+            "state": "MN",
+            "nickname": "Auggies"
+        },
+        {
+            "collegeId": 18,
+            "collegeName": "Augustana College",
+            "conferenceId": 13,
+            "city": "Rock Island",
+            "state": "IL",
+            "nickname": "Vikings"
+        },
+        {
+            "collegeId": 19,
+            "collegeName": "Aurora University",
+            "conferenceId": 8,
+            "city": "Aurora",
+            "state": "IL",
+            "nickname": "Spartans"
+        },
+        {
+            "collegeId": 20,
+            "collegeName": "Austin College",
+            "conferenceId": 2,
+            "city": "Sherman",
+            "state": "TX",
+            "nickname": "Kangaroos"
+        },
+        {
+            "collegeId": 21,
+            "collegeName": "Averett University",
+            "conferenceId": 14,
+            "city": "Danville",
+            "state": "VA",
+            "nickname": "Cougars"
+        },
+        {
+            "collegeId": 22,
+            "collegeName": "Babson College",
+            "conferenceId": 15,
+            "city": "Wellesley",
+            "state": "MA",
+            "nickname": "Beavers"
+        },
+        {
+            "collegeId": 23,
+            "collegeName": "Baldwin Wallace University",
+            "conferenceId": 7,
+            "city": "Berea",
+            "state": "OH",
+            "nickname": "Yellow Jackets"
+        },
+        {
+            "collegeId": 24,
+            "collegeName": "Bard College",
+            "conferenceId": 16,
+            "city": "Annandale-on-Hudson",
+            "state": "NY",
+            "nickname": "Raptors"
+        },
+        {
+            "collegeId": 25,
+            "collegeName": "Baruch College",
+            "conferenceId": 17,
+            "city": "New York",
+            "state": "NY",
+            "nickname": "Bearcats"
+        },
+        {
+            "collegeId": 26,
+            "collegeName": "Bates College",
+            "conferenceId": 9,
+            "city": "Lewiston",
+            "state": "ME",
+            "nickname": "Bobcats"
+        },
+        {
+            "collegeId": 27,
+            "collegeName": "Belhaven University",
+            "conferenceId": 2,
+            "city": "Jackson",
+            "state": "MS",
+            "nickname": "Blazers"
+        },
+        {
+            "collegeId": 28,
+            "collegeName": "Beloit College",
+            "conferenceId": 18,
+            "city": "Beloit",
+            "state": "WI",
+            "nickname": "Buccaneers"
+        },
+        {
+            "collegeId": 29,
+            "collegeName": "Benedictine University",
+            "conferenceId": 8,
+            "city": "Lisle",
+            "state": "IL",
+            "nickname": "Eagles"
+        },
+        {
+            "collegeId": 30,
+            "collegeName": "Berea College",
+            "conferenceId": 10,
+            "city": "Berea",
+            "state": "KY",
+            "nickname": "Mountaineers"
+        },
+        {
+            "collegeId": 31,
+            "collegeName": "Berry College",
+            "conferenceId": 2,
+            "city": "Mount Berry",
+            "state": "GA",
+            "nickname": "Vikings"
+        },
+        {
+            "collegeId": 32,
+            "collegeName": "Bethany College",
+            "conferenceId": 7,
+            "city": "Bethany",
+            "state": "WV",
+            "nickname": "Bison"
+        },
+        {
+            "collegeId": 33,
+            "collegeName": "Bethany Lutheran College",
+            "conferenceId": 19,
+            "city": "Mankato",
+            "state": "MN",
+            "nickname": "Vikings"
+        },
+        {
+            "collegeId": 34,
+            "collegeName": "Bethel University",
+            "conferenceId": 12,
+            "city": "Arden Hills",
+            "state": "MN",
+            "nickname": "Royals"
+        },
+        {
+            "collegeId": 35,
+            "collegeName": "Blackburn College",
+            "conferenceId": 20,
+            "city": "Carlinville",
+            "state": "IL",
+            "nickname": "Beavers"
+        },
+        {
+            "collegeId": 36,
+            "collegeName": "Bluffton University",
+            "conferenceId": 10,
+            "city": "Bluffton",
+            "state": "OH",
+            "nickname": "Beavers"
+        },
+        {
+            "collegeId": 37,
+            "collegeName": "Bowdoin College",
+            "conferenceId": 9,
+            "city": "Brunswick",
+            "state": "ME",
+            "nickname": "Polar Bears"
+        },
+        {
+            "collegeId": 38,
+            "collegeName": "Brandeis University",
+            "conferenceId": 21,
+            "city": "Waltham",
+            "state": "MA",
+            "nickname": "Judges"
+        },
+        {
+            "collegeId": 39,
+            "collegeName": "Brevard College",
+            "conferenceId": 22,
+            "city": "Brevard",
+            "state": "NC",
+            "nickname": "Tornados"
+        },
+        {
+            "collegeId": 40,
+            "collegeName": "Bridgewater College",
+            "conferenceId": 14,
+            "city": "Bridgewater",
+            "state": "VA",
+            "nickname": "Eagles"
+        },
+        {
+            "collegeId": 41,
+            "collegeName": "Bridgewater State University",
+            "conferenceId": 3,
+            "city": "Bridgewater",
+            "state": "MA",
+            "nickname": "Bears"
+        },
+        {
+            "collegeId": 42,
+            "collegeName": "Brooklyn College",
+            "conferenceId": 17,
+            "city": "Brooklyn",
+            "state": "NY",
+            "nickname": "Bulldogs"
+        },
+        {
+            "collegeId": 43,
+            "collegeName": "Bryn Athyn College",
+            "conferenceId": 23,
+            "city": "Bryn Athyn",
+            "state": "PA",
+            "nickname": "Lions"
+        },
+        {
+            "collegeId": 44,
+            "collegeName": "Bryn Mawr College",
+            "conferenceId": 24,
+            "city": "Bryn Mawr",
+            "state": "PA",
+            "nickname": "Owls"
+        },
+        {
+            "collegeId": 45,
+            "collegeName": "Buena Vista University",
+            "conferenceId": 25,
+            "city": "Storm Lake",
+            "state": "IA",
+            "nickname": "Beavers"
+        },
+        {
+            "collegeId": 46,
+            "collegeName": "Buffalo State University",
+            "conferenceId": 26,
+            "city": "Buffalo",
+            "state": "NY",
+            "nickname": "Bengals"
+        },
+        {
+            "collegeId": 47,
+            "collegeName": "Cairn University",
+            "conferenceId": 23,
+            "city": "Langhorne",
+            "state": "PA",
+            "nickname": "Highlanders"
+        },
+        {
+            "collegeId": 48,
+            "collegeName": "California Institute of Technology",
+            "conferenceId": 27,
+            "city": "Pasadena",
+            "state": "CA",
+            "nickname": "Beavers"
+        },
+        {
+            "collegeId": 49,
+            "collegeName": "California Lutheran University",
+            "conferenceId": 27,
+            "city": "Thousand Oaks",
+            "state": "CA",
+            "nickname": "Kingsmen and Regals"
+        },
+        {
+            "collegeId": 50,
+            "collegeName": "Calvin University",
+            "conferenceId": 1,
+            "city": "Grand Rapids",
+            "state": "MI",
+            "nickname": "Knights"
+        },
+        {
+            "collegeId": 51,
+            "collegeName": "Capital University",
+            "conferenceId": 7,
+            "city": "Bexley",
+            "state": "OH",
+            "nickname": "Crusaders"
+        },
+        {
+            "collegeId": 52,
+            "collegeName": "Carleton College",
+            "conferenceId": 12,
+            "city": "Northfield",
+            "state": "MN",
+            "nickname": "Knights"
+        },
+        {
+            "collegeId": 53,
+            "collegeName": "Carlow University",
+            "conferenceId": 5,
+            "city": "Pittsburgh",
+            "state": "PA",
+            "nickname": "Celtics"
+        },
+        {
+            "collegeId": 54,
+            "collegeName": "Carnegie Mellon University",
+            "conferenceId": 21,
+            "city": "Pittsburgh",
+            "state": "PA",
+            "nickname": "Tartans"
+        },
+        {
+            "collegeId": 55,
+            "collegeName": "Carroll University",
+            "conferenceId": 13,
+            "city": "Waukesha",
+            "state": "WI",
+            "nickname": "Pioneers"
+        },
+        {
+            "collegeId": 56,
+            "collegeName": "Carthage College",
+            "conferenceId": 13,
+            "city": "Kenosha",
+            "state": "WI",
+            "nickname": "Firebirds"
+        },
+        {
+            "collegeId": 57,
+            "collegeName": "Case Western Reserve University",
+            "conferenceId": 21,
+            "city": "Cleveland",
+            "state": "OH",
+            "nickname": "Spartans"
+        },
+        {
+            "collegeId": 58,
+            "collegeName": "Catholic University of America",
+            "conferenceId": 28,
+            "city": "Washington",
+            "state": "DC",
+            "nickname": "Cardinals"
+        },
+        {
+            "collegeId": 59,
+            "collegeName": "City College of New York",
+            "conferenceId": 17,
+            "city": "New York",
+            "state": "NY",
+            "nickname": "Beavers"
+        },
+        {
+            "collegeId": 60,
+            "collegeName": "Cedar Crest College",
+            "conferenceId": 23,
+            "city": "Allentown",
+            "state": "PA",
+            "nickname": "Falcons"
+        },
+        {
+            "collegeId": 61,
+            "collegeName": "Centenary College of Louisiana",
+            "conferenceId": 2,
+            "city": "Shreveport",
+            "state": "LA",
+            "nickname": "Gents and Ladies"
+        },
+        {
+            "collegeId": 62,
+            "collegeName": "Centenary University",
+            "conferenceId": 29,
+            "city": "Hackettstown",
+            "state": "NJ",
+            "nickname": "Cyclones"
+        },
+        {
+            "collegeId": 63,
+            "collegeName": "Central College",
+            "conferenceId": 25,
+            "city": "Pella",
+            "state": "IA",
+            "nickname": "Dutch"
+        },
+        {
+            "collegeId": 64,
+            "collegeName": "Centre College",
+            "conferenceId": 2,
+            "city": "Danville",
+            "state": "KY",
+            "nickname": "Colonels"
+        },
+        {
+            "collegeId": 65,
+            "collegeName": "Chapman University",
+            "conferenceId": 27,
+            "city": "Orange",
+            "state": "CA",
+            "nickname": "Panthers"
+        },
+        {
+            "collegeId": 66,
+            "collegeName": "Chatham University",
+            "conferenceId": 7,
+            "city": "Pittsburgh",
+            "state": "PA",
+            "nickname": "Cougars"
+        },
+        {
+            "collegeId": 67,
+            "collegeName": "University of Chicago",
+            "conferenceId": 21,
+            "city": "Chicago",
+            "state": "IL",
+            "nickname": "Maroons"
+        },
+        {
+            "collegeId": 68,
+            "collegeName": "Christopher Newport University",
+            "conferenceId": 30,
+            "city": "Newport News",
+            "state": "VA",
+            "nickname": "Captains"
+        },
+        {
+            "collegeId": 69,
+            "collegeName": "Claremont McKenna College, Harvey Mudd College, and Scripps College",
+            "conferenceId": 27,
+            "city": "Claremont",
+            "state": "CA",
+            "nickname": "Stags and Athenas"
+        },
+        {
+            "collegeId": 70,
+            "collegeName": "Clark University",
+            "conferenceId": 15,
+            "city": "Worcester",
+            "state": "MA",
+            "nickname": "Cougars"
+        },
+        {
+            "collegeId": 71,
+            "collegeName": "Clarkson University",
+            "conferenceId": 16,
+            "city": "Potsdam",
+            "state": "NY",
+            "nickname": "Golden Knights"
+        },
+        {
+            "collegeId": 72,
+            "collegeName": "United States Coast Guard Academy",
+            "conferenceId": 15,
+            "city": "New London",
+            "state": "CT",
+            "nickname": "Bears"
+        },
+        {
+            "collegeId": 73,
+            "collegeName": "Coe College",
+            "conferenceId": 25,
+            "city": "Cedar Rapids",
+            "state": "IA",
+            "nickname": "Kohawks"
+        },
+        {
+            "collegeId": 74,
+            "collegeName": "Colby College",
+            "conferenceId": 9,
+            "city": "Waterville",
+            "state": "ME",
+            "nickname": "Mules"
+        },
+        {
+            "collegeId": 75,
+            "collegeName": "Colby\u2013Sawyer College",
+            "conferenceId": 3,
+            "city": "New London",
+            "state": "NH",
+            "nickname": "Chargers"
+        },
+        {
+            "collegeId": 76,
+            "collegeName": "Colorado College",
+            "conferenceId": 2,
+            "city": "Colorado Springs",
+            "state": "CO",
+            "nickname": "Tigers"
+        },
+        {
+            "collegeId": 77,
+            "collegeName": "Concordia University Chicago",
+            "conferenceId": 8,
+            "city": "River Forest",
+            "state": "IL",
+            "nickname": "Cougars"
+        },
+        {
+            "collegeId": 78,
+            "collegeName": "Concordia College",
+            "conferenceId": 12,
+            "city": "Moorhead",
+            "state": "MN",
+            "nickname": "Cobbers"
+        },
+        {
+            "collegeId": 79,
+            "collegeName": "Concordia University Texas",
+            "conferenceId": 2,
+            "city": "Austin",
+            "state": "TX",
+            "nickname": "Tornados"
+        },
+        {
+            "collegeId": 80,
+            "collegeName": "Concordia University Wisconsin",
+            "conferenceId": 8,
+            "city": "Mequon",
+            "state": "WI",
+            "nickname": "Falcons"
+        },
+        {
+            "collegeId": 81,
+            "collegeName": "Connecticut College",
+            "conferenceId": 9,
+            "city": "New London",
+            "state": "CT",
+            "nickname": "Camels"
+        },
+        {
+            "collegeId": 82,
+            "collegeName": "Cornell College",
+            "conferenceId": 18,
+            "city": "Mount Vernon",
+            "state": "IA",
+            "nickname": "Rams"
+        },
+        {
+            "collegeId": 83,
+            "collegeName": "Covenant College",
+            "conferenceId": 2,
+            "city": "Lookout Mountain",
+            "state": "GA",
+            "nickname": "Scots"
+        },
+        {
+            "collegeId": 84,
+            "collegeName": "Crown College",
+            "conferenceId": 19,
+            "city": "St. Bonifacius",
+            "state": "MN",
+            "nickname": "Polars"
+        },
+        {
+            "collegeId": 85,
+            "collegeName": "Curry College",
+            "conferenceId": 31,
+            "city": "Milton",
+            "state": "MA",
+            "nickname": "Colonels"
+        },
+        {
+            "collegeId": 86,
+            "collegeName": "University of Dallas",
+            "conferenceId": 2,
+            "city": "Irving",
+            "state": "TX",
+            "nickname": "Crusaders"
+        },
+        {
+            "collegeId": 87,
+            "collegeName": "Dean College",
+            "conferenceId": 3,
+            "city": "Franklin",
+            "state": "MA",
+            "nickname": "Bulldogs"
+        },
+        {
+            "collegeId": 88,
+            "collegeName": "Delaware Valley University",
+            "conferenceId": 11,
+            "city": "Doylestown",
+            "state": "PA",
+            "nickname": "Aggies"
+        },
+        {
+            "collegeId": 89,
+            "collegeName": "Denison University",
+            "conferenceId": 7,
+            "city": "Granville",
+            "state": "OH",
+            "nickname": "Big Red"
+        },
+        {
+            "collegeId": 90,
+            "collegeName": "DePauw University",
+            "conferenceId": 7,
+            "city": "Greencastle",
+            "state": "IN",
+            "nickname": "Tigers"
+        },
+        {
+            "collegeId": 91,
+            "collegeName": "DeSales University",
+            "conferenceId": 11,
+            "city": "Center Valley",
+            "state": "PA",
+            "nickname": "Bulldogs"
+        },
+        {
+            "collegeId": 92,
+            "collegeName": "Dickinson College",
+            "conferenceId": 24,
+            "city": "Carlisle",
+            "state": "PA",
+            "nickname": "Red Devils"
+        },
+        {
+            "collegeId": 93,
+            "collegeName": "Dominican University",
+            "conferenceId": 8,
+            "city": "River Forest",
+            "state": "IL",
+            "nickname": "Stars"
+        },
+        {
+            "collegeId": 94,
+            "collegeName": "Drew University",
+            "conferenceId": 28,
+            "city": "Madison",
+            "state": "NJ",
+            "nickname": "Rangers"
+        },
+        {
+            "collegeId": 95,
+            "collegeName": "University of Dubuque",
+            "conferenceId": 25,
+            "city": "Dubuque",
+            "state": "IA",
+            "nickname": "Spartans"
+        },
+        {
+            "collegeId": 96,
+            "collegeName": "Earlham College",
+            "conferenceId": 10,
+            "city": "Richmond",
+            "state": "IN",
+            "nickname": "Quakers"
+        },
+        {
+            "collegeId": 97,
+            "collegeName": "East Texas Baptist University",
+            "conferenceId": 2,
+            "city": "Marshall",
+            "state": "TX",
+            "nickname": "Tigers"
+        },
+        {
+            "collegeId": 98,
+            "collegeName": "Eastern University",
+            "conferenceId": 4,
+            "city": "St. Davids",
+            "state": "PA",
+            "nickname": "Eagles"
+        },
+        {
+            "collegeId": 99,
+            "collegeName": "Eastern Connecticut State University",
+            "conferenceId": 32,
+            "city": "Willimantic",
+            "state": "CT",
+            "nickname": "Warriors"
+        },
+        {
+            "collegeId": 100,
+            "collegeName": "Eastern Mennonite University",
+            "conferenceId": 14,
+            "city": "Harrisonburg",
+            "state": "VA",
+            "nickname": "Royals"
+        },
+        {
+            "collegeId": 101,
+            "collegeName": "Edgewood College",
+            "conferenceId": 8,
+            "city": "Madison",
+            "state": "WI",
+            "nickname": "Eagles"
+        },
+        {
+            "collegeId": 102,
+            "collegeName": "Elizabethtown College",
+            "conferenceId": 28,
+            "city": "Elizabethtown",
+            "state": "PA",
+            "nickname": "Blue Jays"
+        },
+        {
+            "collegeId": 103,
+            "collegeName": "Elmhurst University",
+            "conferenceId": 13,
+            "city": "Elmhurst",
+            "state": "IL",
+            "nickname": "Bluejays"
+        },
+        {
+            "collegeId": 104,
+            "collegeName": "Elmira College",
+            "conferenceId": 6,
+            "city": "Elmira",
+            "state": "NY",
+            "nickname": "Soaring Eagles"
+        },
+        {
+            "collegeId": 105,
+            "collegeName": "Elms College",
+            "conferenceId": 3,
+            "city": "Chicopee",
+            "state": "MA",
+            "nickname": "Blazers"
+        },
+        {
+            "collegeId": 106,
+            "collegeName": "Emerson College",
+            "conferenceId": 15,
+            "city": "Boston",
+            "state": "MA",
+            "nickname": "Lions"
+        },
+        {
+            "collegeId": 107,
+            "collegeName": "Emmanuel College",
+            "conferenceId": 3,
+            "city": "Boston",
+            "state": "MA",
+            "nickname": "Saints"
+        },
+        {
+            "collegeId": 108,
+            "collegeName": "Emory University",
+            "conferenceId": 21,
+            "city": "Atlanta",
+            "state": "GA",
+            "nickname": "Eagles"
+        },
+        {
+            "collegeId": 109,
+            "collegeName": "Endicott College",
+            "conferenceId": 31,
+            "city": "Beverly",
+            "state": "MA",
+            "nickname": "Gulls"
+        },
+        {
+            "collegeId": 110,
+            "collegeName": "Eureka College",
+            "conferenceId": 20,
+            "city": "Eureka",
+            "state": "IL",
+            "nickname": "Red Devils"
+        },
+        {
+            "collegeId": 111,
+            "collegeName": "Fairleigh Dickinson University, Florham",
+            "conferenceId": 11,
+            "city": "Madison/Florham Park",
+            "state": "NJ",
+            "nickname": "Devils"
+        },
+        {
+            "collegeId": 112,
+            "collegeName": "Farmingdale State College",
+            "conferenceId": 33,
+            "city": "Farmingdale",
+            "state": "NY",
+            "nickname": "Rams"
+        },
+        {
+            "collegeId": 113,
+            "collegeName": "Ferrum College",
+            "conferenceId": 14,
+            "city": "Ferrum",
+            "state": "VA",
+            "nickname": "Panthers"
+        },
+        {
+            "collegeId": 114,
+            "collegeName": "Fitchburg State University",
+            "conferenceId": 3,
+            "city": "Fitchburg",
+            "state": "MA",
+            "nickname": "Falcons"
+        },
+        {
+            "collegeId": 115,
+            "collegeName": "Fontbonne University",
+            "conferenceId": 20,
+            "city": "St. Louis",
+            "state": "MO",
+            "nickname": "Griffins"
+        },
+        {
+            "collegeId": 116,
+            "collegeName": "Framingham State University",
+            "conferenceId": 3,
+            "city": "Framingham",
+            "state": "MA",
+            "nickname": "Rams"
+        },
+        {
+            "collegeId": 117,
+            "collegeName": "Franciscan University of Steubenville",
+            "conferenceId": 7,
+            "city": "Steubenville",
+            "state": "OH",
+            "nickname": "Barons"
+        },
+        {
+            "collegeId": 118,
+            "collegeName": "Franklin & Marshall College",
+            "conferenceId": 24,
+            "city": "Lancaster",
+            "state": "PA",
+            "nickname": "Diplomats"
+        },
+        {
+            "collegeId": 119,
+            "collegeName": "Franklin College",
+            "conferenceId": 10,
+            "city": "Franklin",
+            "state": "IN",
+            "nickname": "Grizzlies"
+        },
+        {
+            "collegeId": 120,
+            "collegeName": "Gallaudet University",
+            "conferenceId": 23,
+            "city": "Washington",
+            "state": "DC",
+            "nickname": "Bison"
+        },
+        {
+            "collegeId": 121,
+            "collegeName": "Geneva College",
+            "conferenceId": 7,
+            "city": "Beaver Falls",
+            "state": "PA",
+            "nickname": "Golden Tornadoes"
+        },
+        {
+            "collegeId": 122,
+            "collegeName": "George Fox University",
+            "conferenceId": 34,
+            "city": "Newberg",
+            "state": "OR",
+            "nickname": "Bruins"
+        },
+        {
+            "collegeId": 123,
+            "collegeName": "Gettysburg College",
+            "conferenceId": 24,
+            "city": "Gettysburg",
+            "state": "PA",
+            "nickname": "Bullets"
+        },
+        {
+            "collegeId": 124,
+            "collegeName": "Gordon College",
+            "conferenceId": 31,
+            "city": "Wenham",
+            "state": "MA",
+            "nickname": "Fighting Scots"
+        },
+        {
+            "collegeId": 125,
+            "collegeName": "Goucher College",
+            "conferenceId": 28,
+            "city": "Towson",
+            "state": "MD",
+            "nickname": "Gophers"
+        },
+        {
+            "collegeId": 126,
+            "collegeName": "Greensboro College",
+            "conferenceId": 22,
+            "city": "Greensboro",
+            "state": "NC",
+            "nickname": "Pride"
+        },
+        {
+            "collegeId": 127,
+            "collegeName": "Greenville University",
+            "conferenceId": 20,
+            "city": "Greenville",
+            "state": "IL",
+            "nickname": "Panthers"
+        },
+        {
+            "collegeId": 128,
+            "collegeName": "Grinnell College",
+            "conferenceId": 18,
+            "city": "Grinnell",
+            "state": "IA",
+            "nickname": "Pioneers"
+        },
+        {
+            "collegeId": 129,
+            "collegeName": "Grove City College",
+            "conferenceId": 7,
+            "city": "Grove City",
+            "state": "PA",
+            "nickname": "Wolverines"
+        },
+        {
+            "collegeId": 130,
+            "collegeName": "Guilford College",
+            "conferenceId": 14,
+            "city": "Greensboro",
+            "state": "NC",
+            "nickname": "Quakers"
+        },
+        {
+            "collegeId": 131,
+            "collegeName": "Gustavus Adolphus College",
+            "conferenceId": 12,
+            "city": "St. Peter",
+            "state": "MN",
+            "nickname": "Gusties"
+        },
+        {
+            "collegeId": 132,
+            "collegeName": "Gwynedd Mercy University",
+            "conferenceId": 29,
+            "city": "Lower Gwynedd Township",
+            "state": "PA",
+            "nickname": "Griffins"
+        },
+        {
+            "collegeId": 133,
+            "collegeName": "Hamilton College",
+            "conferenceId": 9,
+            "city": "Clinton",
+            "state": "NY",
+            "nickname": "Continentals"
+        },
+        {
+            "collegeId": 134,
+            "collegeName": "Hamline University",
+            "conferenceId": 12,
+            "city": "St. Paul",
+            "state": "MN",
+            "nickname": "Pipers"
+        },
+        {
+            "collegeId": 135,
+            "collegeName": "Hampden\u2013Sydney College",
+            "conferenceId": 14,
+            "city": "Hampden Sydney",
+            "state": "VA",
+            "nickname": "Tigers"
+        },
+        {
+            "collegeId": 136,
+            "collegeName": "Hanover College",
+            "conferenceId": 10,
+            "city": "Hanover",
+            "state": "IN",
+            "nickname": "Panthers"
+        },
+        {
+            "collegeId": 137,
+            "collegeName": "Hardin\u2013Simmons University",
+            "conferenceId": 2,
+            "city": "Abilene",
+            "state": "TX",
+            "nickname": "Cowboys and Cowgirls"
+        },
+        {
+            "collegeId": 138,
+            "collegeName": "University of Hartford",
+            "conferenceId": 31,
+            "city": "West Hartford",
+            "state": "CT",
+            "nickname": "Hawks"
+        },
+        {
+            "collegeId": 139,
+            "collegeName": "Hartwick College",
+            "conferenceId": 6,
+            "city": "Oneonta",
+            "state": "NY",
+            "nickname": "Hawks"
+        },
+        {
+            "collegeId": 140,
+            "collegeName": "Haverford College",
+            "conferenceId": 24,
+            "city": "Haverford",
+            "state": "PA",
+            "nickname": "Fords"
+        },
+        {
+            "collegeId": 141,
+            "collegeName": "Heidelberg University",
+            "conferenceId": 7,
+            "city": "Tiffin",
+            "state": "OH",
+            "nickname": "Student Princes"
+        },
+        {
+            "collegeId": 142,
+            "collegeName": "Hendrix College",
+            "conferenceId": 2,
+            "city": "Conway",
+            "state": "AR",
+            "nickname": "Warriors"
+        },
+        {
+            "collegeId": 143,
+            "collegeName": "Hilbert College",
+            "conferenceId": 5,
+            "city": "Hamburg",
+            "state": "NY",
+            "nickname": "Hawks"
+        },
+        {
+            "collegeId": 144,
+            "collegeName": "Hiram College",
+            "conferenceId": 7,
+            "city": "Hiram",
+            "state": "OH",
+            "nickname": "Terriers"
+        },
+        {
+            "collegeId": 145,
+            "collegeName": "Hobart College",
+            "conferenceId": 16,
+            "city": "Geneva",
+            "state": "NY",
+            "nickname": "Statesmen"
+        },
+        {
+            "collegeId": 146,
+            "collegeName": "Hollins University",
+            "conferenceId": 14,
+            "city": "Roanoke",
+            "state": "VA",
+            "nickname": "Nuns"
+        },
+        {
+            "collegeId": 147,
+            "collegeName": "Hood College",
+            "conferenceId": 4,
+            "city": "Frederick",
+            "state": "MD",
+            "nickname": "Blazers"
+        },
+        {
+            "collegeId": 148,
+            "collegeName": "Hope College",
+            "conferenceId": 1,
+            "city": "Holland",
+            "state": "MI",
+            "nickname": "Flying Dutchmen"
+        },
+        {
+            "collegeId": 149,
+            "collegeName": "Houghton University",
+            "conferenceId": 6,
+            "city": "Houghton",
+            "state": "NY",
+            "nickname": "Highlanders"
+        },
+        {
+            "collegeId": 150,
+            "collegeName": "Howard Payne University",
+            "conferenceId": 2,
+            "city": "Brownwood",
+            "state": "TX",
+            "nickname": "Yellow Jackets"
+        },
+        {
+            "collegeId": 151,
+            "collegeName": "Hunter College",
+            "conferenceId": 17,
+            "city": "New York",
+            "state": "NY",
+            "nickname": "Hawks"
+        },
+        {
+            "collegeId": 152,
+            "collegeName": "Huntingdon College",
+            "conferenceId": 2,
+            "city": "Montgomery",
+            "state": "AL",
+            "nickname": "Hawks"
+        },
+        {
+            "collegeId": 153,
+            "collegeName": "Husson University",
+            "conferenceId": 35,
+            "city": "Bangor",
+            "state": "ME",
+            "nickname": "Eagles"
+        },
+        {
+            "collegeId": 154,
+            "collegeName": "Illinois College",
+            "conferenceId": 18,
+            "city": "Jacksonville",
+            "state": "IL",
+            "nickname": "Blueboys and Lady Blues"
+        },
+        {
+            "collegeId": 155,
+            "collegeName": "Illinois Institute of Technology",
+            "conferenceId": 8,
+            "city": "Chicago",
+            "state": "IL",
+            "nickname": "Scarlet Hawks"
+        },
+        {
+            "collegeId": 156,
+            "collegeName": "Illinois Wesleyan University",
+            "conferenceId": 13,
+            "city": "Bloomington",
+            "state": "IL",
+            "nickname": "Titans"
+        },
+        {
+            "collegeId": 157,
+            "collegeName": "Immaculata University",
+            "conferenceId": 29,
+            "city": "Immaculata",
+            "state": "PA",
+            "nickname": "Mighty Macs"
+        },
+        {
+            "collegeId": 158,
+            "collegeName": "Ithaca College",
+            "conferenceId": 16,
+            "city": "Ithaca",
+            "state": "NY",
+            "nickname": "Bombers"
+        },
+        {
+            "collegeId": 159,
+            "collegeName": "John Carroll University",
+            "conferenceId": 7,
+            "city": "University Heights",
+            "state": "OH",
+            "nickname": "Blue Streaks"
+        },
+        {
+            "collegeId": 160,
+            "collegeName": "John Jay College of Criminal Justice",
+            "conferenceId": 17,
+            "city": "New York",
+            "state": "NY",
+            "nickname": "Bloodhounds"
+        },
+        {
+            "collegeId": 161,
+            "collegeName": "Johns Hopkins University",
+            "conferenceId": 24,
+            "city": "Baltimore",
+            "state": "MD",
+            "nickname": "Blue Jays"
+        },
+        {
+            "collegeId": 162,
+            "collegeName": "Johnson & Wales University",
+            "conferenceId": 31,
+            "city": "Providence",
+            "state": "RI",
+            "nickname": "Wildcats"
+        },
+        {
+            "collegeId": 163,
+            "collegeName": "Juniata College",
+            "conferenceId": 28,
+            "city": "Huntingdon",
+            "state": "PA",
+            "nickname": "Eagles"
+        },
+        {
+            "collegeId": 164,
+            "collegeName": "Kalamazoo College",
+            "conferenceId": 1,
+            "city": "Kalamazoo",
+            "state": "MI",
+            "nickname": "Hornets"
+        },
+        {
+            "collegeId": 165,
+            "collegeName": "Kean University",
+            "conferenceId": 36,
+            "city": "Union Township",
+            "state": "NJ",
+            "nickname": "Cougars"
+        },
+        {
+            "collegeId": 166,
+            "collegeName": "Keene State College",
+            "conferenceId": 32,
+            "city": "Keene",
+            "state": "NH",
+            "nickname": "Owls"
+        },
+        {
+            "collegeId": 167,
+            "collegeName": "Kenyon College",
+            "conferenceId": 7,
+            "city": "Gambier",
+            "state": "OH",
+            "nickname": "Owls"
+        },
+        {
+            "collegeId": 168,
+            "collegeName": "Keuka College",
+            "conferenceId": 6,
+            "city": "Keuka Park",
+            "state": "NY",
+            "nickname": "Wolves"
+        },
+        {
+            "collegeId": 169,
+            "collegeName": "Keystone College",
+            "conferenceId": 23,
+            "city": "La Plume Township",
+            "state": "PA",
+            "nickname": "Giants"
+        },
+        {
+            "collegeId": 170,
+            "collegeName": "King's College",
+            "conferenceId": 11,
+            "city": "Wilkes-Barre",
+            "state": "PA",
+            "nickname": "Monarchs"
+        },
+        {
+            "collegeId": 171,
+            "collegeName": "Knox College",
+            "conferenceId": 18,
+            "city": "Galesburg",
+            "state": "IL",
+            "nickname": "Prairie Fire"
+        },
+        {
+            "collegeId": 172,
+            "collegeName": "La Roche University",
+            "conferenceId": 5,
+            "city": "Pittsburgh",
+            "state": "PA",
+            "nickname": "Redhawks"
+        },
+        {
+            "collegeId": 173,
+            "collegeName": "University of La Verne",
+            "conferenceId": 27,
+            "city": "La Verne",
+            "state": "CA",
+            "nickname": "Leopards"
+        },
+        {
+            "collegeId": 174,
+            "collegeName": "LaGrange College",
+            "conferenceId": 2,
+            "city": "LaGrange",
+            "state": "GA",
+            "nickname": "Panthers"
+        },
+        {
+            "collegeId": 175,
+            "collegeName": "Lake Forest College",
+            "conferenceId": 18,
+            "city": "Lake Forest",
+            "state": "IL",
+            "nickname": "Foresters"
+        },
+        {
+            "collegeId": 176,
+            "collegeName": "Lakeland University",
+            "conferenceId": 8,
+            "city": "Sheboygan",
+            "state": "WI",
+            "nickname": "Muskies"
+        },
+        {
+            "collegeId": 177,
+            "collegeName": "Lancaster Bible College",
+            "conferenceId": 23,
+            "city": "Lancaster",
+            "state": "PA",
+            "nickname": "Chargers"
+        },
+        {
+            "collegeId": 178,
+            "collegeName": "Lasell University",
+            "conferenceId": 3,
+            "city": "Newton",
+            "state": "MA",
+            "nickname": "Lasers"
+        },
+        {
+            "collegeId": 179,
+            "collegeName": "Lawrence University",
+            "conferenceId": 18,
+            "city": "Appleton",
+            "state": "WI",
+            "nickname": "Vikings"
+        },
+        {
+            "collegeId": 180,
+            "collegeName": "Lebanon Valley College",
+            "conferenceId": 11,
+            "city": "Annville",
+            "state": "PA",
+            "nickname": "Flying Dutchmen"
+        },
+        {
+            "collegeId": 181,
+            "collegeName": "Lehman College",
+            "conferenceId": 17,
+            "city": "The Bronx",
+            "state": "NY",
+            "nickname": "Lightning"
+        },
+        {
+            "collegeId": 182,
+            "collegeName": "Lesley University",
+            "conferenceId": 35,
+            "city": "Boston",
+            "state": "MA",
+            "nickname": "Lynx"
+        },
+        {
+            "collegeId": 183,
+            "collegeName": "LeTourneau University",
+            "conferenceId": 2,
+            "city": "Longview",
+            "state": "TX",
+            "nickname": "Yellow Jackets"
+        },
+        {
+            "collegeId": 184,
+            "collegeName": "Lewis & Clark College",
+            "conferenceId": 34,
+            "city": "Portland",
+            "state": "OR",
+            "nickname": "Pioneers"
+        },
+        {
+            "collegeId": 185,
+            "collegeName": "Linfield University",
+            "conferenceId": 34,
+            "city": "McMinnville",
+            "state": "OR",
+            "nickname": "Wildcats"
+        },
+        {
+            "collegeId": 186,
+            "collegeName": "Loras College",
+            "conferenceId": 25,
+            "city": "Dubuque",
+            "state": "IA",
+            "nickname": "Duhawks"
+        },
+        {
+            "collegeId": 187,
+            "collegeName": "Luther College",
+            "conferenceId": 25,
+            "city": "Decorah",
+            "state": "IA",
+            "nickname": "Norse"
+        },
+        {
+            "collegeId": 188,
+            "collegeName": "Lycoming College",
+            "conferenceId": 28,
+            "city": "Williamsport",
+            "state": "PA",
+            "nickname": "Warriors"
+        },
+        {
+            "collegeId": 189,
+            "collegeName": "University of Lynchburg",
+            "conferenceId": 14,
+            "city": "Lynchburg",
+            "state": "VA",
+            "nickname": "Hornets"
+        },
+        {
+            "collegeId": 190,
+            "collegeName": "Lyon College",
+            "conferenceId": 20,
+            "city": "Batesville",
+            "state": "AR",
+            "nickname": "Scots"
+        },
+        {
+            "collegeId": 191,
+            "collegeName": "Macalester College",
+            "conferenceId": 12,
+            "city": "St. Paul",
+            "state": "MN",
+            "nickname": "Scots"
+        },
+        {
+            "collegeId": 192,
+            "collegeName": "University of Maine at Farmington",
+            "conferenceId": 35,
+            "city": "Farmington",
+            "state": "ME",
+            "nickname": "Beavers"
+        },
+        {
+            "collegeId": 193,
+            "collegeName": "Maine Maritime Academy",
+            "conferenceId": 35,
+            "city": "Castine",
+            "state": "ME",
+            "nickname": "Mariners"
+        },
+        {
+            "collegeId": 194,
+            "collegeName": "University of Maine at Presque Isle",
+            "conferenceId": 35,
+            "city": "Presque Isle",
+            "state": "ME",
+            "nickname": "Owls"
+        },
+        {
+            "collegeId": 195,
+            "collegeName": "Manchester University",
+            "conferenceId": 10,
+            "city": "North Manchester",
+            "state": "IN",
+            "nickname": "Spartans"
+        },
+        {
+            "collegeId": 196,
+            "collegeName": "Manhattanville University",
+            "conferenceId": 33,
+            "city": "Purchase",
+            "state": "NY",
+            "nickname": "Valiants"
+        },
+        {
+            "collegeId": 197,
+            "collegeName": "Maranatha Baptist University",
+            "conferenceId": 37,
+            "city": "Watertown",
+            "state": "WI",
+            "nickname": "Sabercats"
+        },
+        {
+            "collegeId": 198,
+            "collegeName": "Marian University",
+            "conferenceId": 8,
+            "city": "Fond du Lac",
+            "state": "WI",
+            "nickname": "Sabres"
+        },
+        {
+            "collegeId": 199,
+            "collegeName": "Marietta College",
+            "conferenceId": 7,
+            "city": "Marietta",
+            "state": "OH",
+            "nickname": "Pioneers"
+        },
+        {
+            "collegeId": 200,
+            "collegeName": "Martin Luther College",
+            "conferenceId": 19,
+            "city": "New Ulm",
+            "state": "MN",
+            "nickname": "Knights"
+        },
+        {
+            "collegeId": 201,
+            "collegeName": "Mary Baldwin University",
+            "conferenceId": 22,
+            "city": "Staunton",
+            "state": "VA",
+            "nickname": "Fighting Squirrels"
+        },
+        {
+            "collegeId": 202,
+            "collegeName": "University of Mary Hardin\u2013Baylor",
+            "conferenceId": 2,
+            "city": "Belton",
+            "state": "TX",
+            "nickname": "Crusaders"
+        },
+        {
+            "collegeId": 203,
+            "collegeName": "University of Mary Washington",
+            "conferenceId": 30,
+            "city": "Fredericksburg",
+            "state": "VA",
+            "nickname": "Eagles"
+        },
+        {
+            "collegeId": 204,
+            "collegeName": "Marymount University",
+            "conferenceId": 29,
+            "city": "Arlington",
+            "state": "VA",
+            "nickname": "Saints"
+        },
+        {
+            "collegeId": 205,
+            "collegeName": "Maryville College",
+            "conferenceId": 2,
+            "city": "Maryville",
+            "state": "TN",
+            "nickname": "Scots"
+        },
+        {
+            "collegeId": 206,
+            "collegeName": "Marywood University",
+            "conferenceId": 29,
+            "city": "Scranton",
+            "state": "PA",
+            "nickname": "Pacers"
+        },
+        {
+            "collegeId": 207,
+            "collegeName": "University of Massachusetts Boston",
+            "conferenceId": 32,
+            "city": "Boston",
+            "state": "MA",
+            "nickname": "Beacons"
+        },
+        {
+            "collegeId": 208,
+            "collegeName": "Massachusetts College of Liberal Arts",
+            "conferenceId": 3,
+            "city": "North Adams",
+            "state": "MA",
+            "nickname": "Trailblazers"
+        },
+        {
+            "collegeId": 209,
+            "collegeName": "University of Massachusetts Dartmouth",
+            "conferenceId": 32,
+            "city": "Dartmouth",
+            "state": "MA",
+            "nickname": "Corsairs"
+        },
+        {
+            "collegeId": 210,
+            "collegeName": "Massachusetts Maritime Academy",
+            "conferenceId": 3,
+            "city": "Buzzards Bay",
+            "state": "MA",
+            "nickname": "Buccaneers"
+        },
+        {
+            "collegeId": 211,
+            "collegeName": "McDaniel College",
+            "conferenceId": 24,
+            "city": "Westminster",
+            "state": "MD",
+            "nickname": "Green Terror"
+        },
+        {
+            "collegeId": 212,
+            "collegeName": "McMurry University",
+            "conferenceId": 2,
+            "city": "Abilene",
+            "state": "TX",
+            "nickname": "War Hawks"
+        },
+        {
+            "collegeId": 213,
+            "collegeName": "Medgar Evers College",
+            "conferenceId": 17,
+            "city": "Brooklyn",
+            "state": "NY",
+            "nickname": "Cougars"
+        },
+        {
+            "collegeId": 214,
+            "collegeName": "United States Merchant Marine Academy",
+            "conferenceId": 33,
+            "city": "Kings Point",
+            "state": "NY",
+            "nickname": "Mariners"
+        },
+        {
+            "collegeId": 215,
+            "collegeName": "Meredith College",
+            "conferenceId": 22,
+            "city": "Raleigh",
+            "state": "NC",
+            "nickname": "Angels"
+        },
+        {
+            "collegeId": 216,
+            "collegeName": "Messiah University",
+            "conferenceId": 4,
+            "city": "Grantham",
+            "state": "PA",
+            "nickname": "Falcons"
+        },
+        {
+            "collegeId": 217,
+            "collegeName": "Methodist University",
+            "conferenceId": 22,
+            "city": "Fayetteville",
+            "state": "NC",
+            "nickname": "Monarchs"
+        },
+        {
+            "collegeId": 218,
+            "collegeName": "Middlebury College",
+            "conferenceId": 9,
+            "city": "Middlebury",
+            "state": "VT",
+            "nickname": "Panthers"
+        },
+        {
+            "collegeId": 219,
+            "collegeName": "Millikin University",
+            "conferenceId": 13,
+            "city": "Decatur",
+            "state": "IL",
+            "nickname": "Big Blue"
+        },
+        {
+            "collegeId": 220,
+            "collegeName": "Millsaps College",
+            "conferenceId": 2,
+            "city": "Jackson",
+            "state": "MS",
+            "nickname": "Majors and Lady Majors"
+        },
+        {
+            "collegeId": 221,
+            "collegeName": "Milwaukee School of Engineering",
+            "conferenceId": 8,
+            "city": "Milwaukee",
+            "state": "WI",
+            "nickname": "Raiders"
+        },
+        {
+            "collegeId": 222,
+            "collegeName": "University of Minnesota Morris",
+            "conferenceId": 19,
+            "city": "Morris",
+            "state": "MN",
+            "nickname": "Cougars"
+        },
+        {
+            "collegeId": 223,
+            "collegeName": "Misericordia University",
+            "conferenceId": 11,
+            "city": "Dallas",
+            "state": "PA",
+            "nickname": "Cougars"
+        },
+        {
+            "collegeId": 224,
+            "collegeName": "Mississippi University for Women",
+            "conferenceId": 20,
+            "city": "Columbus",
+            "state": "MS",
+            "nickname": "Owls"
+        },
+        {
+            "collegeId": 225,
+            "collegeName": "Massachusetts Institute of Technology",
+            "conferenceId": 15,
+            "city": "Cambridge",
+            "state": "MA",
+            "nickname": "Engineers"
+        },
+        {
+            "collegeId": 226,
+            "collegeName": "Mitchell College",
+            "conferenceId": 3,
+            "city": "New London",
+            "state": "CT",
+            "nickname": "Mariners"
+        },
+        {
+            "collegeId": 227,
+            "collegeName": "Monmouth College",
+            "conferenceId": 18,
+            "city": "Monmouth",
+            "state": "IL",
+            "nickname": "Scots"
+        },
+        {
+            "collegeId": 228,
+            "collegeName": "Montclair State University",
+            "conferenceId": 36,
+            "city": "Montclair",
+            "state": "NJ",
+            "nickname": "Red Hawks"
+        },
+        {
+            "collegeId": 229,
+            "collegeName": "Moravian University",
+            "conferenceId": 28,
+            "city": "Bethlehem",
+            "state": "PA",
+            "nickname": "Greyhounds"
+        },
+        {
+            "collegeId": 230,
+            "collegeName": "Mount Aloysius College",
+            "conferenceId": 5,
+            "city": "Cresson",
+            "state": "PA",
+            "nickname": "Mounties"
+        },
+        {
+            "collegeId": 231,
+            "collegeName": "Mount Holyoke College",
+            "conferenceId": 15,
+            "city": "South Hadley",
+            "state": "MA",
+            "nickname": "Lyons"
+        },
+        {
+            "collegeId": 232,
+            "collegeName": "Mount Mary University",
+            "conferenceId": 30,
+            "city": "Milwaukee",
+            "state": "WI",
+            "nickname": "Blue Angels"
+        },
+        {
+            "collegeId": 233,
+            "collegeName": "Mount St. Joseph University",
+            "conferenceId": 10,
+            "city": "Cincinnati",
+            "state": "OH",
+            "nickname": "Lions"
+        },
+        {
+            "collegeId": 234,
+            "collegeName": "Mount Saint Mary College",
+            "conferenceId": 33,
+            "city": "Newburgh",
+            "state": "NY",
+            "nickname": "Knights"
+        },
+        {
+            "collegeId": 235,
+            "collegeName": "University of Mount Saint Vincent",
+            "conferenceId": 33,
+            "city": "The Bronx",
+            "state": "NY",
+            "nickname": "Dolphins"
+        },
+        {
+            "collegeId": 236,
+            "collegeName": "University of Mount Union",
+            "conferenceId": 7,
+            "city": "Alliance",
+            "state": "OH",
+            "nickname": "Purple Raiders"
+        },
+        {
+            "collegeId": 237,
+            "collegeName": "Muhlenberg College",
+            "conferenceId": 24,
+            "city": "Allentown",
+            "state": "PA",
+            "nickname": "Mules"
+        },
+        {
+            "collegeId": 238,
+            "collegeName": "Muskingum University",
+            "conferenceId": 7,
+            "city": "New Concord",
+            "state": "OH",
+            "nickname": "Fighting Muskies"
+        },
+        {
+            "collegeId": 239,
+            "collegeName": "Nazareth University",
+            "conferenceId": 6,
+            "city": "Pittsford",
+            "state": "NY",
+            "nickname": "Golden Flyers"
+        },
+        {
+            "collegeId": 240,
+            "collegeName": "Nebraska Wesleyan University",
+            "conferenceId": 25,
+            "city": "Lincoln",
+            "state": "NE",
+            "nickname": "Prairie Wolves"
+        },
+        {
+            "collegeId": 241,
+            "collegeName": "Neumann University",
+            "conferenceId": 29,
+            "city": "Aston",
+            "state": "PA",
+            "nickname": "Knights"
+        },
+        {
+            "collegeId": 242,
+            "collegeName": "New England College",
+            "conferenceId": 3,
+            "city": "Henniker",
+            "state": "NH",
+            "nickname": "Pilgrims"
+        },
+        {
+            "collegeId": 243,
+            "collegeName": "University of New England",
+            "conferenceId": 31,
+            "city": "Biddeford",
+            "state": "ME",
+            "nickname": "Nor'easters"
+        },
+        {
+            "collegeId": 244,
+            "collegeName": "The College of New Jersey",
+            "conferenceId": 36,
+            "city": "Ewing",
+            "state": "NJ",
+            "nickname": "Lions"
+        },
+        {
+            "collegeId": 245,
+            "collegeName": "New Jersey City University",
+            "conferenceId": 36,
+            "city": "Jersey City",
+            "state": "NJ",
+            "nickname": "Gothic Knights"
+        },
+        {
+            "collegeId": 246,
+            "collegeName": "State University of New York at Brockport",
+            "conferenceId": 6,
+            "city": "Brockport",
+            "state": "NY",
+            "nickname": "Golden Eagles"
+        },
+        {
+            "collegeId": 247,
+            "collegeName": "State University of New York at Canton",
+            "conferenceId": 26,
+            "city": "Canton",
+            "state": "NY",
+            "nickname": "Kangaroos"
+        },
+        {
+            "collegeId": 248,
+            "collegeName": "State University of New York at Cobleskill",
+            "conferenceId": 35,
+            "city": "Cobleskill",
+            "state": "NY",
+            "nickname": "Fighting Tigers"
+        },
+        {
+            "collegeId": 249,
+            "collegeName": "State University of New York at Cortland",
+            "conferenceId": 26,
+            "city": "Cortland",
+            "state": "NY",
+            "nickname": "Red Dragons"
+        },
+        {
+            "collegeId": 250,
+            "collegeName": "State University of New York at Delhi",
+            "conferenceId": 35,
+            "city": "Delhi",
+            "state": "NY",
+            "nickname": "Broncos"
+        },
+        {
+            "collegeId": 251,
+            "collegeName": "State University of New York at Fredonia",
+            "conferenceId": 26,
+            "city": "Fredonia",
+            "state": "NY",
+            "nickname": "Blue Devils"
+        },
+        {
+            "collegeId": 252,
+            "collegeName": "State University of New York at Geneseo",
+            "conferenceId": 6,
+            "city": "Geneseo",
+            "state": "NY",
+            "nickname": "Knights"
+        },
+        {
+            "collegeId": 253,
+            "collegeName": "State University of New York Maritime College",
+            "conferenceId": 33,
+            "city": "The Bronx",
+            "state": "NY",
+            "nickname": "Privateers"
+        },
+        {
+            "collegeId": 254,
+            "collegeName": "State University of New York at Morrisville",
+            "conferenceId": 26,
+            "city": "Morrisville",
+            "state": "NY",
+            "nickname": "Mustangs"
+        },
+        {
+            "collegeId": 255,
+            "collegeName": "State University of New York at New Paltz",
+            "conferenceId": 36,
+            "city": "New Paltz",
+            "state": "NY",
+            "nickname": "Hawks"
+        },
+        {
+            "collegeId": 256,
+            "collegeName": "State University of New York at Old Westbury",
+            "conferenceId": 33,
+            "city": "Old Westbury",
+            "state": "NY",
+            "nickname": "Panthers"
+        },
+        {
+            "collegeId": 257,
+            "collegeName": "State University of New York at Oneonta",
+            "conferenceId": 26,
+            "city": "Oneonta",
+            "state": "NY",
+            "nickname": "Red Dragons"
+        },
+        {
+            "collegeId": 258,
+            "collegeName": "State University of New York at Oswego",
+            "conferenceId": 26,
+            "city": "Oswego",
+            "state": "NY",
+            "nickname": "Lakers"
+        },
+        {
+            "collegeId": 259,
+            "collegeName": "State University of New York at Plattsburgh",
+            "conferenceId": 26,
+            "city": "Plattsburgh",
+            "state": "NY",
+            "nickname": "Cardinals"
+        },
+        {
+            "collegeId": 260,
+            "collegeName": "State University of New York Polytechnic Institute",
+            "conferenceId": 6,
+            "city": "Marcy",
+            "state": "NY",
+            "nickname": "Wildcats"
+        },
+        {
+            "collegeId": 261,
+            "collegeName": "State University of New York at Potsdam",
+            "conferenceId": 26,
+            "city": "Potsdam",
+            "state": "NY",
+            "nickname": "Bears"
+        },
+        {
+            "collegeId": 262,
+            "collegeName": "State University of New York at Purchase",
+            "conferenceId": 33,
+            "city": "Purchase",
+            "state": "NY",
+            "nickname": "Panthers"
+        },
+        {
+            "collegeId": 263,
+            "collegeName": "Nichols College",
+            "conferenceId": 31,
+            "city": "Dudley",
+            "state": "MA",
+            "nickname": "Bison"
+        },
+        {
+            "collegeId": 264,
+            "collegeName": "North Carolina Wesleyan University",
+            "conferenceId": 22,
+            "city": "Rocky Mount",
+            "state": "NC",
+            "nickname": "Bishops"
+        },
+        {
+            "collegeId": 265,
+            "collegeName": "North Central College",
+            "conferenceId": 13,
+            "city": "Naperville",
+            "state": "IL",
+            "nickname": "Cardinals"
+        },
+        {
+            "collegeId": 266,
+            "collegeName": "North Central University",
+            "conferenceId": 19,
+            "city": "Minneapolis",
+            "state": "MN",
+            "nickname": "Rams"
+        },
+        {
+            "collegeId": 267,
+            "collegeName": "North Park University",
+            "conferenceId": 13,
+            "city": "Chicago",
+            "state": "IL",
+            "nickname": "Vikings"
+        },
+        {
+            "collegeId": 268,
+            "collegeName": "Northland College",
+            "conferenceId": 19,
+            "city": "Ashland",
+            "state": "WI",
+            "nickname": "Lumberjacks and Lumberjills"
+        },
+        {
+            "collegeId": 269,
+            "collegeName": "University of Northwestern - St. Paul",
+            "conferenceId": 19,
+            "city": "Roseville",
+            "state": "MN",
+            "nickname": "Eagles"
+        },
+        {
+            "collegeId": 270,
+            "collegeName": "Norwich University",
+            "conferenceId": 3,
+            "city": "Northfield",
+            "state": "VT",
+            "nickname": "Cadets"
+        },
+        {
+            "collegeId": 271,
+            "collegeName": "Notre Dame of Maryland University",
+            "conferenceId": 23,
+            "city": "Baltimore",
+            "state": "MD",
+            "nickname": "Gators"
+        },
+        {
+            "collegeId": 272,
+            "collegeName": "New York University",
+            "conferenceId": 21,
+            "city": "New York",
+            "state": "NY",
+            "nickname": "Violets"
+        },
+        {
+            "collegeId": 273,
+            "collegeName": "Oberlin College",
+            "conferenceId": 7,
+            "city": "Oberlin",
+            "state": "OH",
+            "nickname": "Yeomen and Yeowomen"
+        },
+        {
+            "collegeId": 274,
+            "collegeName": "Occidental College",
+            "conferenceId": 27,
+            "city": "Los Angeles",
+            "state": "CA",
+            "nickname": "Tigers"
+        },
+        {
+            "collegeId": 275,
+            "collegeName": "Oglethorpe University",
+            "conferenceId": 2,
+            "city": "Atlanta",
+            "state": "GA",
+            "nickname": "Stormy Petrels"
+        },
+        {
+            "collegeId": 276,
+            "collegeName": "Ohio Northern University",
+            "conferenceId": 7,
+            "city": "Ada",
+            "state": "OH",
+            "nickname": "Polar Bears"
+        },
+        {
+            "collegeId": 277,
+            "collegeName": "Ohio Wesleyan University",
+            "conferenceId": 7,
+            "city": "Delaware",
+            "state": "OH",
+            "nickname": "Battling Bishops"
+        },
+        {
+            "collegeId": 278,
+            "collegeName": "University of Olivet",
+            "conferenceId": 1,
+            "city": "Olivet",
+            "state": "MI",
+            "nickname": "Comets"
+        },
+        {
+            "collegeId": 279,
+            "collegeName": "Otterbein University",
+            "conferenceId": 7,
+            "city": "Westerville",
+            "state": "OH",
+            "nickname": "Cardinals"
+        },
+        {
+            "collegeId": 280,
+            "collegeName": "University of the Ozarks",
+            "conferenceId": 2,
+            "city": "Clarksville",
+            "state": "AR",
+            "nickname": "Eagles"
+        },
+        {
+            "collegeId": 281,
+            "collegeName": "Pacific University",
+            "conferenceId": 34,
+            "city": "Forest Grove",
+            "state": "OR",
+            "nickname": "Boxers"
+        },
+        {
+            "collegeId": 282,
+            "collegeName": "Pacific Lutheran University",
+            "conferenceId": 34,
+            "city": "Tacoma",
+            "state": "WA",
+            "nickname": "Lutes"
+        },
+        {
+            "collegeId": 283,
+            "collegeName": "Pennsylvania College of Technology",
+            "conferenceId": 23,
+            "city": "Williamsport",
+            "state": "PA",
+            "nickname": "Wildcats"
+        },
+        {
+            "collegeId": 284,
+            "collegeName": "Pennsylvania State University, Abington",
+            "conferenceId": 23,
+            "city": "Abington",
+            "state": "PA",
+            "nickname": "Nittany Lions"
+        },
+        {
+            "collegeId": 285,
+            "collegeName": "Pennsylvania State University, Altoona",
+            "conferenceId": 5,
+            "city": "Altoona",
+            "state": "PA",
+            "nickname": "Lions"
+        },
+        {
+            "collegeId": 286,
+            "collegeName": "Pennsylvania State University, Behrend",
+            "conferenceId": 5,
+            "city": "Erie",
+            "state": "PA",
+            "nickname": "Lions"
+        },
+        {
+            "collegeId": 287,
+            "collegeName": "Pennsylvania State University, Berks College",
+            "conferenceId": 23,
+            "city": "Reading",
+            "state": "PA",
+            "nickname": "Nittany Lions"
+        },
+        {
+            "collegeId": 288,
+            "collegeName": "Pennsylvania State University, Brandywine",
+            "conferenceId": 23,
+            "city": "Media",
+            "state": "PA",
+            "nickname": "Lions"
+        },
+        {
+            "collegeId": 289,
+            "collegeName": "Pennsylvania State University, Harrisburg",
+            "conferenceId": 23,
+            "city": "Harrisburg",
+            "state": "PA",
+            "nickname": "Lions"
+        },
+        {
+            "collegeId": 290,
+            "collegeName": "Pfeiffer University",
+            "conferenceId": 22,
+            "city": "Misenheimer",
+            "state": "NC",
+            "nickname": "Falcons"
+        },
+        {
+            "collegeId": 291,
+            "collegeName": "Piedmont University",
+            "conferenceId": 2,
+            "city": "Demorest",
+            "state": "GA",
+            "nickname": "Lions"
+        },
+        {
+            "collegeId": 292,
+            "collegeName": "University of Pittsburgh at Bradford",
+            "conferenceId": 5,
+            "city": "Bradford",
+            "state": "PA",
+            "nickname": "Panthers"
+        },
+        {
+            "collegeId": 293,
+            "collegeName": "University of Pittsburgh at Greensburg",
+            "conferenceId": 5,
+            "city": "Greensburg",
+            "state": "PA",
+            "nickname": "Bobcats"
+        },
+        {
+            "collegeId": 294,
+            "collegeName": "Plymouth State University",
+            "conferenceId": 32,
+            "city": "Plymouth",
+            "state": "NH",
+            "nickname": "Panthers"
+        },
+        {
+            "collegeId": 295,
+            "collegeName": "Pomona College and Pitzer College",
+            "conferenceId": 27,
+            "city": "Claremont",
+            "state": "CA",
+            "nickname": "Sagehens"
+        },
+        {
+            "collegeId": 296,
+            "collegeName": "Pratt Institute",
+            "conferenceId": 29,
+            "city": "Brooklyn",
+            "state": "NY",
+            "nickname": "Cannoneers"
+        },
+        {
+            "collegeId": 297,
+            "collegeName": "Principia College",
+            "conferenceId": 20,
+            "city": "Elsah",
+            "state": "IL",
+            "nickname": "Panthers"
+        },
+        {
+            "collegeId": 298,
+            "collegeName": "University of Puget Sound",
+            "conferenceId": 34,
+            "city": "Tacoma",
+            "state": "WA",
+            "nickname": "Loggers"
+        },
+        {
+            "collegeId": 299,
+            "collegeName": "Ramapo College",
+            "conferenceId": 36,
+            "city": "Mahwah",
+            "state": "NJ",
+            "nickname": "Roadrunners"
+        },
+        {
+            "collegeId": 300,
+            "collegeName": "Randolph College",
+            "conferenceId": 14,
+            "city": "Lynchburg",
+            "state": "VA",
+            "nickname": "WildCats"
+        },
+        {
+            "collegeId": 301,
+            "collegeName": "Randolph\u2013Macon College",
+            "conferenceId": 14,
+            "city": "Ashland",
+            "state": "VA",
+            "nickname": "Yellow Jackets"
+        },
+        {
+            "collegeId": 302,
+            "collegeName": "University of Redlands",
+            "conferenceId": 27,
+            "city": "Redlands",
+            "state": "CA",
+            "nickname": "Bulldogs"
+        },
+        {
+            "collegeId": 303,
+            "collegeName": "Regis College",
+            "conferenceId": 3,
+            "city": "Weston",
+            "state": "MA",
+            "nickname": "Pride"
+        },
+        {
+            "collegeId": 304,
+            "collegeName": "Rensselaer Polytechnic Institute",
+            "conferenceId": 16,
+            "city": "Troy",
+            "state": "NY",
+            "nickname": "Engineers"
+        },
+        {
+            "collegeId": 305,
+            "collegeName": "Rhode Island College",
+            "conferenceId": 32,
+            "city": "Providence",
+            "state": "RI",
+            "nickname": "Anchormen"
+        },
+        {
+            "collegeId": 306,
+            "collegeName": "Rhodes College",
+            "conferenceId": 2,
+            "city": "Memphis",
+            "state": "TN",
+            "nickname": "Lynx"
+        },
+        {
+            "collegeId": 307,
+            "collegeName": "Ripon College",
+            "conferenceId": 18,
+            "city": "Ripon",
+            "state": "WI",
+            "nickname": "Red Hawks"
+        },
+        {
+            "collegeId": 308,
+            "collegeName": "Rivier University",
+            "conferenceId": 3,
+            "city": "Nashua",
+            "state": "NH",
+            "nickname": "Raiders"
+        },
+        {
+            "collegeId": 309,
+            "collegeName": "Roanoke College",
+            "conferenceId": 14,
+            "city": "Salem",
+            "state": "VA",
+            "nickname": "Maroons"
+        },
+        {
+            "collegeId": 310,
+            "collegeName": "University of Rochester",
+            "conferenceId": 21,
+            "city": "Rochester",
+            "state": "NY",
+            "nickname": "Yellowjackets"
+        },
+        {
+            "collegeId": 311,
+            "collegeName": "Rochester Institute of Technology",
+            "conferenceId": 16,
+            "city": "Rochester",
+            "state": "NY",
+            "nickname": "Tigers"
+        },
+        {
+            "collegeId": 312,
+            "collegeName": "Rockford University",
+            "conferenceId": 8,
+            "city": "Rockford",
+            "state": "IL",
+            "nickname": "Regents"
+        },
+        {
+            "collegeId": 313,
+            "collegeName": "Roger Williams University",
+            "conferenceId": 31,
+            "city": "Bristol",
+            "state": "RI",
+            "nickname": "Hawks"
+        },
+        {
+            "collegeId": 314,
+            "collegeName": "Rose-Hulman Institute of Technology",
+            "conferenceId": 10,
+            "city": "Terre Haute",
+            "state": "IN",
+            "nickname": "Fightin' Engineers"
+        },
+        {
+            "collegeId": 315,
+            "collegeName": "Rosemont College",
+            "conferenceId": 23,
+            "city": "Rosemont",
+            "state": "PA",
+            "nickname": "Ravens"
+        },
+        {
+            "collegeId": 316,
+            "collegeName": "Rowan University",
+            "conferenceId": 36,
+            "city": "Glassboro",
+            "state": "NJ",
+            "nickname": "Profs"
+        },
+        {
+            "collegeId": 317,
+            "collegeName": "Rutgers University\u2013Camden",
+            "conferenceId": 36,
+            "city": "Camden",
+            "state": "NJ",
+            "nickname": "Scarlet Raptors"
+        },
+        {
+            "collegeId": 318,
+            "collegeName": "Rutgers University\u2013Newark",
+            "conferenceId": 36,
+            "city": "Newark",
+            "state": "NJ",
+            "nickname": "Scarlet Raiders"
+        },
+        {
+            "collegeId": 319,
+            "collegeName": "Russell Sage College",
+            "conferenceId": 6,
+            "city": "Albany & Troy",
+            "state": "NY",
+            "nickname": "Gators"
+        },
+        {
+            "collegeId": 320,
+            "collegeName": "College of Saint Benedict",
+            "conferenceId": 12,
+            "city": "St. Joseph",
+            "state": "MN",
+            "nickname": "Bennies"
+        },
+        {
+            "collegeId": 321,
+            "collegeName": "St. Catherine University",
+            "conferenceId": 12,
+            "city": "St. Paul",
+            "state": "MN",
+            "nickname": "Wildcats"
+        },
+        {
+            "collegeId": 322,
+            "collegeName": "Saint Elizabeth University",
+            "conferenceId": 23,
+            "city": "Convent Station",
+            "state": "NJ",
+            "nickname": "Screaming Eagles"
+        },
+        {
+            "collegeId": 323,
+            "collegeName": "St. John Fisher University",
+            "conferenceId": 6,
+            "city": "Pittsford",
+            "state": "NY",
+            "nickname": "Cardinals"
+        },
+        {
+            "collegeId": 324,
+            "collegeName": "Saint John's University",
+            "conferenceId": 12,
+            "city": "Collegeville",
+            "state": "MN",
+            "nickname": "Johnnies"
+        },
+        {
+            "collegeId": 325,
+            "collegeName": "University of Saint Joseph",
+            "conferenceId": 3,
+            "city": "West Hartford",
+            "state": "CT",
+            "nickname": "Blue Jays"
+        },
+        {
+            "collegeId": 326,
+            "collegeName": "St. Joseph's University",
+            "conferenceId": 33,
+            "city": "Brooklyn",
+            "state": "NY",
+            "nickname": "Bears"
+        },
+        {
+            "collegeId": 326,
+            "collegeName": "St. Joseph's University",
+            "conferenceId": 33,
+            "city": "Long Island",
+            "state": "NY",
+            "nickname": "Golden Eagles"
+        },
+        {
+            "collegeId": 327,
+            "collegeName": "Saint Joseph's College of Maine",
+            "conferenceId": 3,
+            "city": "Standish",
+            "state": "ME",
+            "nickname": "Monks"
+        },
+        {
+            "collegeId": 328,
+            "collegeName": "St. Lawrence University",
+            "conferenceId": 16,
+            "city": "Canton",
+            "state": "NY",
+            "nickname": "Saints"
+        },
+        {
+            "collegeId": 329,
+            "collegeName": "Saint Mary's College",
+            "conferenceId": 1,
+            "city": "Notre Dame",
+            "state": "IN",
+            "nickname": "Belles"
+        },
+        {
+            "collegeId": 330,
+            "collegeName": "St. Mary's College of Maryland",
+            "conferenceId": 23,
+            "city": "St. Mary's City",
+            "state": "MD",
+            "nickname": "Seahawks"
+        },
+        {
+            "collegeId": 331,
+            "collegeName": "Saint Mary's University of Minnesota",
+            "conferenceId": 12,
+            "city": "Winona",
+            "state": "MN",
+            "nickname": "Cardinals"
+        },
+        {
+            "collegeId": 332,
+            "collegeName": "St. Norbert College",
+            "conferenceId": 8,
+            "city": "De Pere",
+            "state": "WI",
+            "nickname": "Green Knights"
+        },
+        {
+            "collegeId": 333,
+            "collegeName": "St. Olaf College",
+            "conferenceId": 12,
+            "city": "Northfield",
+            "state": "MN",
+            "nickname": "Oles"
+        },
+        {
+            "collegeId": 334,
+            "collegeName": "The College of St. Scholastica",
+            "conferenceId": 12,
+            "city": "Duluth",
+            "state": "MN",
+            "nickname": "Saints"
+        },
+        {
+            "collegeId": 335,
+            "collegeName": "University of St. Thomas (Texas)",
+            "conferenceId": 2,
+            "city": "Houston",
+            "state": "TX",
+            "nickname": "Celts"
+        },
+        {
+            "collegeId": 336,
+            "collegeName": "Saint Vincent College",
+            "conferenceId": 7,
+            "city": "Latrobe",
+            "state": "PA",
+            "nickname": "Bearcats"
+        },
+        {
+            "collegeId": 337,
+            "collegeName": "Salem College",
+            "conferenceId": 22,
+            "city": "Winston-Salem",
+            "state": "NC",
+            "nickname": "Spirits"
+        },
+        {
+            "collegeId": 338,
+            "collegeName": "Salem State University",
+            "conferenceId": 3,
+            "city": "Salem",
+            "state": "MA",
+            "nickname": "Vikings"
+        },
+        {
+            "collegeId": 339,
+            "collegeName": "Salisbury University",
+            "conferenceId": 30,
+            "city": "Salisbury",
+            "state": "MD",
+            "nickname": "Sea Gulls"
+        },
+        {
+            "collegeId": 340,
+            "collegeName": "Salve Regina University",
+            "conferenceId": 15,
+            "city": "Newport",
+            "state": "RI",
+            "nickname": "Seahawks"
+        },
+        {
+            "collegeId": 341,
+            "collegeName": "Sarah Lawrence College",
+            "conferenceId": 33,
+            "city": "Yonkers",
+            "state": "NY",
+            "nickname": "Gryphons"
+        },
+        {
+            "collegeId": 342,
+            "collegeName": "Schreiner University",
+            "conferenceId": 2,
+            "city": "Kerrville",
+            "state": "TX",
+            "nickname": "Mountaineers"
+        },
+        {
+            "collegeId": 343,
+            "collegeName": "University of Scranton",
+            "conferenceId": 28,
+            "city": "Scranton",
+            "state": "PA",
+            "nickname": "Royals"
+        },
+        {
+            "collegeId": 344,
+            "collegeName": "Shenandoah University",
+            "conferenceId": 14,
+            "city": "Winchester",
+            "state": "VA",
+            "nickname": "Hornets"
+        },
+        {
+            "collegeId": 345,
+            "collegeName": "Simmons University",
+            "conferenceId": 3,
+            "city": "Boston",
+            "state": "MA",
+            "nickname": "Sharks"
+        },
+        {
+            "collegeId": 346,
+            "collegeName": "Simpson College",
+            "conferenceId": 25,
+            "city": "Indianola",
+            "state": "IA",
+            "nickname": "Storm"
+        },
+        {
+            "collegeId": 347,
+            "collegeName": "Skidmore College",
+            "conferenceId": 16,
+            "city": "Saratoga Springs",
+            "state": "NY",
+            "nickname": "Thoroughbreds"
+        },
+        {
+            "collegeId": 348,
+            "collegeName": "Smith College",
+            "conferenceId": 15,
+            "city": "Northampton",
+            "state": "MA",
+            "nickname": "Pioneers"
+        },
+        {
+            "collegeId": 349,
+            "collegeName": "University of Southern Maine",
+            "conferenceId": 32,
+            "city": "Portland",
+            "state": "ME",
+            "nickname": "Huskies"
+        },
+        {
+            "collegeId": 350,
+            "collegeName": "Southern Virginia University",
+            "conferenceId": 22,
+            "city": "Buena Vista",
+            "state": "VA",
+            "nickname": "Knights"
+        },
+        {
+            "collegeId": 351,
+            "collegeName": "Southwestern University",
+            "conferenceId": 2,
+            "city": "Georgetown",
+            "state": "TX",
+            "nickname": "Pirates"
+        },
+        {
+            "collegeId": 352,
+            "collegeName": "Spalding University",
+            "conferenceId": 20,
+            "city": "Louisville",
+            "state": "KY",
+            "nickname": "Golden Eagles"
+        },
+        {
+            "collegeId": 353,
+            "collegeName": "Springfield College",
+            "conferenceId": 15,
+            "city": "Springfield",
+            "state": "MA",
+            "nickname": "Pride"
+        },
+        {
+            "collegeId": 354,
+            "collegeName": "Stevens Institute of Technology",
+            "conferenceId": 11,
+            "city": "Hoboken",
+            "state": "NJ",
+            "nickname": "Ducks"
+        },
+        {
+            "collegeId": 355,
+            "collegeName": "Stevenson University",
+            "conferenceId": 4,
+            "city": "Stevenson",
+            "state": "MD",
+            "nickname": "Mustangs"
+        },
+        {
+            "collegeId": 356,
+            "collegeName": "Stockton University",
+            "conferenceId": 36,
+            "city": "Pomona",
+            "state": "NJ",
+            "nickname": "Ospreys"
+        },
+        {
+            "collegeId": 357,
+            "collegeName": "Suffolk University",
+            "conferenceId": 31,
+            "city": "Boston",
+            "state": "MA",
+            "nickname": "Rams"
+        },
+        {
+            "collegeId": 358,
+            "collegeName": "Susquehanna University",
+            "conferenceId": 28,
+            "city": "Selinsgrove",
+            "state": "PA",
+            "nickname": "River Hawks"
+        },
+        {
+            "collegeId": 359,
+            "collegeName": "Swarthmore College",
+            "conferenceId": 24,
+            "city": "Swarthmore",
+            "state": "PA",
+            "nickname": "Garnet"
+        },
+        {
+            "collegeId": 360,
+            "collegeName": "Sweet Briar College",
+            "conferenceId": 14,
+            "city": "Sweet Briar",
+            "state": "VA",
+            "nickname": "Vixens"
+        },
+        {
+            "collegeId": 361,
+            "collegeName": "University of Texas at Dallas",
+            "conferenceId": 2,
+            "city": "Dallas",
+            "state": "TX",
+            "nickname": "Comets"
+        },
+        {
+            "collegeId": 362,
+            "collegeName": "Texas Lutheran University",
+            "conferenceId": 2,
+            "city": "Seguin",
+            "state": "TX",
+            "nickname": "Bulldogs"
+        },
+        {
+            "collegeId": 363,
+            "collegeName": "Thiel College",
+            "conferenceId": 7,
+            "city": "Greenville",
+            "state": "PA",
+            "nickname": "Tomcats"
+        },
+        {
+            "collegeId": 364,
+            "collegeName": "Thomas College",
+            "conferenceId": 35,
+            "city": "Waterville",
+            "state": "ME",
+            "nickname": "Terriers"
+        },
+        {
+            "collegeId": 365,
+            "collegeName": "Transylvania University",
+            "conferenceId": 10,
+            "city": "Lexington",
+            "state": "KY",
+            "nickname": "Pioneers"
+        },
+        {
+            "collegeId": 366,
+            "collegeName": "Trine University",
+            "conferenceId": 1,
+            "city": "Angola",
+            "state": "IN",
+            "nickname": "Thunder"
+        },
+        {
+            "collegeId": 367,
+            "collegeName": "Trinity College",
+            "conferenceId": 9,
+            "city": "Hartford",
+            "state": "CT",
+            "nickname": "Bantams"
+        },
+        {
+            "collegeId": 368,
+            "collegeName": "Trinity University",
+            "conferenceId": 2,
+            "city": "San Antonio",
+            "state": "TX",
+            "nickname": "Tigers"
+        },
+        {
+            "collegeId": 369,
+            "collegeName": "Trinity Washington University",
+            "conferenceId": 37,
+            "city": "Washington",
+            "state": "DC",
+            "nickname": "Tigers"
+        },
+        {
+            "collegeId": 370,
+            "collegeName": "Tufts University",
+            "conferenceId": 9,
+            "city": "Medford",
+            "state": "MA",
+            "nickname": "Jumbos"
+        },
+        {
+            "collegeId": 371,
+            "collegeName": "University of California, Santa Cruz",
+            "conferenceId": 30,
+            "city": "Santa Cruz",
+            "state": "CA",
+            "nickname": "Banana Slugs"
+        },
+        {
+            "collegeId": 372,
+            "collegeName": "Union College",
+            "conferenceId": 16,
+            "city": "Schenectady",
+            "state": "NY",
+            "nickname": "Garnet Chargers"
+        },
+        {
+            "collegeId": 373,
+            "collegeName": "University of the South",
+            "conferenceId": 2,
+            "city": "Sewanee",
+            "state": "TN",
+            "nickname": "Tigers"
+        },
+        {
+            "collegeId": 374,
+            "collegeName": "Ursinus College",
+            "conferenceId": 24,
+            "city": "Collegeville",
+            "state": "PA",
+            "nickname": "Bears"
+        },
+        {
+            "collegeId": 375,
+            "collegeName": "Utica University",
+            "conferenceId": 6,
+            "city": "Utica",
+            "state": "NY",
+            "nickname": "Pioneers"
+        },
+        {
+            "collegeId": 376,
+            "collegeName": "University of Valley Forge",
+            "conferenceId": 23,
+            "city": "Phoenixville",
+            "state": "PA",
+            "nickname": "Patriots"
+        },
+        {
+            "collegeId": 377,
+            "collegeName": "Vassar College",
+            "conferenceId": 16,
+            "city": "Poughkeepsie",
+            "state": "NY",
+            "nickname": "Brewers"
+        },
+        {
+            "collegeId": 378,
+            "collegeName": "Vermont State University\u2013Castleton",
+            "conferenceId": 32,
+            "city": "Castleton",
+            "state": "VT",
+            "nickname": "Spartans"
+        },
+        {
+            "collegeId": 379,
+            "collegeName": "Vermont State University\u2013Johnson",
+            "conferenceId": 35,
+            "city": "Johnson",
+            "state": "VT",
+            "nickname": "Badgers"
+        },
+        {
+            "collegeId": 380,
+            "collegeName": "Vermont State University\u2013Lyndon",
+            "conferenceId": 35,
+            "city": "Lyndonville",
+            "state": "VT",
+            "nickname": "Hornets"
+        },
+        {
+            "collegeId": 381,
+            "collegeName": "Virginia Wesleyan University",
+            "conferenceId": 14,
+            "city": "Virginia Beach",
+            "state": "VA",
+            "nickname": "Marlins"
+        },
+        {
+            "collegeId": 382,
+            "collegeName": "Wabash College",
+            "conferenceId": 7,
+            "city": "Crawfordsville",
+            "state": "IN",
+            "nickname": "Little Giants"
+        },
+        {
+            "collegeId": 383,
+            "collegeName": "Warren Wilson College",
+            "conferenceId": 30,
+            "city": "Swannanoa",
+            "state": "NC",
+            "nickname": "Owls"
+        },
+        {
+            "collegeId": 384,
+            "collegeName": "Wartburg College",
+            "conferenceId": 25,
+            "city": "Waverly",
+            "state": "IA",
+            "nickname": "Knights"
+        },
+        {
+            "collegeId": 385,
+            "collegeName": "Washington & Jefferson College",
+            "conferenceId": 7,
+            "city": "Washington",
+            "state": "PA",
+            "nickname": "Presidents"
+        },
+        {
+            "collegeId": 386,
+            "collegeName": "Washington and Lee University",
+            "conferenceId": 14,
+            "city": "Lexington",
+            "state": "VA",
+            "nickname": "Generals"
+        },
+        {
+            "collegeId": 387,
+            "collegeName": "Washington College",
+            "conferenceId": 24,
+            "city": "Chestertown",
+            "state": "MD",
+            "nickname": "Shoremen"
+        },
+        {
+            "collegeId": 388,
+            "collegeName": "Washington University in St. Louis",
+            "conferenceId": 21,
+            "city": "St. Louis",
+            "state": "MO",
+            "nickname": "Bears"
+        },
+        {
+            "collegeId": 389,
+            "collegeName": "Waynesburg University",
+            "conferenceId": 7,
+            "city": "Waynesburg",
+            "state": "PA",
+            "nickname": "Yellow Jackets"
+        },
+        {
+            "collegeId": 390,
+            "collegeName": "Webster University",
+            "conferenceId": 20,
+            "city": "St. Louis",
+            "state": "MO",
+            "nickname": "Gorloks"
+        },
+        {
+            "collegeId": 391,
+            "collegeName": "Wellesley College",
+            "conferenceId": 15,
+            "city": "Wellesley",
+            "state": "MA",
+            "nickname": "Blue"
+        },
+        {
+            "collegeId": 392,
+            "collegeName": "Wentworth Institute of Technology",
+            "conferenceId": 31,
+            "city": "Boston",
+            "state": "MA",
+            "nickname": "Leopards"
+        },
+        {
+            "collegeId": 393,
+            "collegeName": "Wesleyan College",
+            "conferenceId": 2,
+            "city": "Macon",
+            "state": "GA",
+            "nickname": "Wolves"
+        },
+        {
+            "collegeId": 394,
+            "collegeName": "Wesleyan University",
+            "conferenceId": 9,
+            "city": "Middletown",
+            "state": "CT",
+            "nickname": "Cardinals"
+        },
+        {
+            "collegeId": 395,
+            "collegeName": "Western Connecticut State University",
+            "conferenceId": 32,
+            "city": "Danbury",
+            "state": "CT",
+            "nickname": "Wolves"
+        },
+        {
+            "collegeId": 396,
+            "collegeName": "Western New England University",
+            "conferenceId": 31,
+            "city": "Springfield",
+            "state": "MA",
+            "nickname": "Golden Bears"
+        },
+        {
+            "collegeId": 397,
+            "collegeName": "Westfield State University",
+            "conferenceId": 3,
+            "city": "Westfield",
+            "state": "MA",
+            "nickname": "Owls"
+        },
+        {
+            "collegeId": 398,
+            "collegeName": "Westminster College",
+            "conferenceId": 20,
+            "city": "Fulton",
+            "state": "MO",
+            "nickname": "Blue Jays"
+        },
+        {
+            "collegeId": 398,
+            "collegeName": "Westminster College",
+            "conferenceId": 7,
+            "city": "New Wilmington",
+            "state": "PA",
+            "nickname": "Titans"
+        },
+        {
+            "collegeId": 399,
+            "collegeName": "Wheaton College",
+            "conferenceId": 13,
+            "city": "Wheaton",
+            "state": "IL",
+            "nickname": "Thunder"
+        },
+        {
+            "collegeId": 399,
+            "collegeName": "Wheaton College",
+            "conferenceId": 15,
+            "city": "Norton",
+            "state": "MA",
+            "nickname": "Lyons"
+        },
+        {
+            "collegeId": 400,
+            "collegeName": "Whitman College",
+            "conferenceId": 34,
+            "city": "Walla Walla",
+            "state": "WA",
+            "nickname": "Blues"
+        },
+        {
+            "collegeId": 401,
+            "collegeName": "Whittier College",
+            "conferenceId": 27,
+            "city": "Whittier",
+            "state": "CA",
+            "nickname": "Poets"
+        },
+        {
+            "collegeId": 402,
+            "collegeName": "Whitworth University",
+            "conferenceId": 34,
+            "city": "Spokane",
+            "state": "WA",
+            "nickname": "Pirates"
+        },
+        {
+            "collegeId": 403,
+            "collegeName": "Widener University",
+            "conferenceId": 4,
+            "city": "Chester",
+            "state": "PA",
+            "nickname": "Pride"
+        },
+        {
+            "collegeId": 404,
+            "collegeName": "Wilkes University",
+            "conferenceId": 28,
+            "city": "Wilkes-Barre",
+            "state": "PA",
+            "nickname": "Colonels"
+        },
+        {
+            "collegeId": 405,
+            "collegeName": "Willamette University",
+            "conferenceId": 34,
+            "city": "Salem",
+            "state": "OR",
+            "nickname": "Bearcats"
+        },
+        {
+            "collegeId": 406,
+            "collegeName": "William Paterson University",
+            "conferenceId": 36,
+            "city": "Wayne",
+            "state": "NJ",
+            "nickname": "Pioneers"
+        },
+        {
+            "collegeId": 407,
+            "collegeName": "William Peace University",
+            "conferenceId": 22,
+            "city": "Raleigh",
+            "state": "NC",
+            "nickname": "Pacers"
+        },
+        {
+            "collegeId": 408,
+            "collegeName": "William Smith College",
+            "conferenceId": 16,
+            "city": "Geneva",
+            "state": "NY",
+            "nickname": "Herons"
+        },
+        {
+            "collegeId": 409,
+            "collegeName": "Williams College",
+            "conferenceId": 9,
+            "city": "Williamstown",
+            "state": "MA",
+            "nickname": "Ephs"
+        },
+        {
+            "collegeId": 410,
+            "collegeName": "Wilmington College",
+            "conferenceId": 7,
+            "city": "Wilmington",
+            "state": "OH",
+            "nickname": "Quakers"
+        },
+        {
+            "collegeId": 411,
+            "collegeName": "Wilson College",
+            "conferenceId": 23,
+            "city": "Chambersburg",
+            "state": "PA",
+            "nickname": "Phoenix"
+        },
+        {
+            "collegeId": 412,
+            "collegeName": "University of Wisconsin\u2013Eau Claire",
+            "conferenceId": 38,
+            "city": "Eau Claire",
+            "state": "WI",
+            "nickname": "Blugolds"
+        },
+        {
+            "collegeId": 413,
+            "collegeName": "University of Wisconsin\u2013La Crosse",
+            "conferenceId": 38,
+            "city": "La Crosse",
+            "state": "WI",
+            "nickname": "Eagles"
+        },
+        {
+            "collegeId": 414,
+            "collegeName": "Wisconsin Lutheran College",
+            "conferenceId": 8,
+            "city": "Milwaukee",
+            "state": "WI",
+            "nickname": "Warriors"
+        },
+        {
+            "collegeId": 415,
+            "collegeName": "University of Wisconsin\u2013Oshkosh",
+            "conferenceId": 38,
+            "city": "Oshkosh",
+            "state": "WI",
+            "nickname": "Titans"
+        },
+        {
+            "collegeId": 416,
+            "collegeName": "University of Wisconsin\u2013Platteville",
+            "conferenceId": 38,
+            "city": "Platteville",
+            "state": "WI",
+            "nickname": "Pioneers"
+        },
+        {
+            "collegeId": 417,
+            "collegeName": "University of Wisconsin\u2013River Falls",
+            "conferenceId": 38,
+            "city": "River Falls",
+            "state": "WI",
+            "nickname": "Falcons"
+        },
+        {
+            "collegeId": 418,
+            "collegeName": "University of Wisconsin\u2013Stevens Point",
+            "conferenceId": 38,
+            "city": "Stevens Point",
+            "state": "WI",
+            "nickname": "Pointers"
+        },
+        {
+            "collegeId": 419,
+            "collegeName": "University of Wisconsin\u2013Stout",
+            "conferenceId": 38,
+            "city": "Menomonie",
+            "state": "WI",
+            "nickname": "Blue Devils"
+        },
+        {
+            "collegeId": 420,
+            "collegeName": "University of Wisconsin\u2013Superior",
+            "conferenceId": 19,
+            "city": "Superior",
+            "state": "WI",
+            "nickname": "Yellow Jackets"
+        },
+        {
+            "collegeId": 421,
+            "collegeName": "University of Wisconsin\u2013Whitewater",
+            "conferenceId": 38,
+            "city": "Whitewater",
+            "state": "WI",
+            "nickname": "Warhawks"
+        },
+        {
+            "collegeId": 422,
+            "collegeName": "Wittenberg University",
+            "conferenceId": 7,
+            "city": "Springfield",
+            "state": "OH",
+            "nickname": "Tigers"
+        },
+        {
+            "collegeId": 423,
+            "collegeName": "College of Wooster",
+            "conferenceId": 7,
+            "city": "Wooster",
+            "state": "OH",
+            "nickname": "Fighting Scots"
+        },
+        {
+            "collegeId": 424,
+            "collegeName": "Worcester Polytechnic Institute",
+            "conferenceId": 15,
+            "city": "Worcester",
+            "state": "MA",
+            "nickname": "Engineers"
+        },
+        {
+            "collegeId": 425,
+            "collegeName": "Worcester State University",
+            "conferenceId": 3,
+            "city": "Worcester",
+            "state": "MA",
+            "nickname": "Lancers"
+        },
+        {
+            "collegeId": 426,
+            "collegeName": "Yeshiva University",
+            "conferenceId": 33,
+            "city": "New York",
+            "state": "NY",
+            "nickname": "Maccabees"
+        },
+        {
+            "collegeId": 427,
+            "collegeName": "York College, City University of New York",
+            "conferenceId": 17,
+            "city": "Queens",
+            "state": "NY",
+            "nickname": "Cardinals"
+        },
+        {
+            "collegeId": 428,
+            "collegeName": "York College of Pennsylvania",
+            "conferenceId": 4,
+            "city": "York",
+            "state": "PA",
+            "nickname": "Spartans"
+        },
+        {
+            "collegeId": 429,
+            "collegeName": "Johnson & Wales University Charlotte",
+            "conferenceId": 39,
+            "city": "Charlotte",
+            "state": "NC",
+            "nickname": "Wildcats"
+        },
+        {
+            "collegeId": 430,
+            "collegeName": "Regent University",
+            "conferenceId": 30,
+            "city": "Virginia Beach",
+            "state": "VA",
+            "nickname": "Royals"
+        }
+    ]
+}
