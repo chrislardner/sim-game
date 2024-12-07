@@ -11,7 +11,7 @@ export function createMeet(teams: Team[], week: number, year: number, gameId: nu
         meetId: getNextMeetId(gameId),
         date: map.type === 'playoffs' ? 'Playoff Round' : 'Regular Season Meet',
         year,
-        teams: teams.map(team => ({ teamId: team.teamId, points: 0 })),
+        teams: teams.map(team => ({ teamId: team.teamId, points: 0, has_five_racers: false })),
         races: createRacesForMeet(teams, gameId, map.season),
         season: map.season,
         type: map.type
@@ -23,7 +23,7 @@ function createRacesForMeet(teams: Team[], gameId: number, seasonType: 'cross_co
         const participants = teams.flatMap(team => 
             team.players.filter(player => 
                 player.seasons.includes(seasonType) && player.eventTypes[seasonType].includes(eventType)
-            ).map(player => ({ playerId: player.playerId, playerTime: 0, scoring: { points: 0, team_top_five: false } }))
+            ).map(player => ({ playerId: player.playerId, playerTime: 0, scoring: { points: 0, team_top_five: false, team_top_seven: false } }))
         );
 
         let heats = 1;
@@ -39,12 +39,13 @@ function createRacesForMeet(teams: Team[], gameId: number, seasonType: 'cross_co
             const heatIndex = index % heats;
             newHeats[heatIndex].players.push(participant.playerId);
         });
-
+        
         return {
             participants,
             eventType,
             heats: newHeats,
-            raceId: getNextRaceId(gameId)
+            raceId: getNextRaceId(gameId),
+            teams: teams.map(team => ({ teamId: team.teamId, points: 0 }))
         };
     });
 }

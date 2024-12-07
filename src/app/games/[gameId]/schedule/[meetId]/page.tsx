@@ -27,30 +27,25 @@ export default function MeetPage() {
             setTeamsMap(teamsMapping);
 
             // Calculate team points
-            const pointsMapping = meet?.races.reduce((accumlated: { [key: number]: number }, race) => {
-                race?.participants.forEach(participant => {
-                    const teamId = gameData.teams.find(team => team.players.some(player => player.playerId === participant.playerId))?.teamId;
-                    if (teamId !== undefined) {
-                        accumlated[teamId] = (accumlated[teamId] || 0) + participant.scoring.points;
-                    }
-                });
+            const pointsMapping = meet?.teams.reduce((accumlated: { [key: number]: number }, team) => {
+                if (team.points > 0) {
+                    accumlated[team.teamId] = team.points;
+                }
                 return accumlated;
             }, {}) || {};
             setTeamPoints(pointsMapping);
 
-            // Calculate team points for each race
-            const racePointsMapping = meet?.races.reduce((accumlated: { [key: number]: { [key: number]: number } }, race) => {
-                const racePoints = race.participants.reduce((raceAccumlated: { [key: number]: number }, participant) => {
-                    const teamId = gameData.teams.find(team => team.players.some(player => player.playerId === participant.playerId))?.teamId;
-                    if (teamId !== undefined) {
-                        raceAccumlated[teamId] = (raceAccumlated[teamId] || 0) + participant.scoring.points;
+            // Calculate team points for each race, excluding teams with 0 points
+            const racePointsMapping: { [key: number]: { [key: number]: number } } = {};
+            meet?.races.forEach(race => {
+                racePointsMapping[race.raceId] = race.teams.reduce((accumulated: { [key: number]: number }, team) => {
+                    if (team.points > 0) {
+                        accumulated[team.teamId] = team.points;
                     }
-                    return raceAccumlated;
+                    return accumulated;
                 }, {});
-
-                accumlated[race.raceId] = racePoints;
-                return accumlated;
-            }, {}) || {};
+            });
+            
             setRacePoints(racePointsMapping);
         }
         fetchData();
@@ -68,7 +63,15 @@ export default function MeetPage() {
         return 0;
     });
 
-    
+    const handleTestData = () => {
+        console.log(meet, "meet");
+        console.log(meet?.races, "races");
+        meet?.races.forEach(race => {
+            console.log(race, "race");
+            console.log(race.teams, "teams");
+        });
+    };
+
     return (
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">Meet on {meet.date}</h1>
@@ -81,6 +84,11 @@ export default function MeetPage() {
                     <li key={teamId} className="text-lg text-gray-700 dark:text-gray-300">{teamsMap[Number(teamId)]}: {points} points</li>
                 ))}
             </ul>
+
+            
+            <button onClick={handleTestData} className="px-4 py-2 bg-blue-500 text-white rounded-lg mb-4">
+                Test Data
+            </button>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Teams Participating</h2>
             <ul className="list-disc list-inside mb-6">

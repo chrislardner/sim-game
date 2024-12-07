@@ -49,11 +49,8 @@ export default function RaceResultsPage() {
             setPlayersMap(playersMapping);
 
             // Calculate team points
-            const pointsMapping = selectedRace?.participants.reduce((accumlated: { [key: number]: number }, participant) => {
-                const teamId = gameData.teams.find(team => team.players.some(player => player.playerId === participant.playerId))?.teamId;
-                if (teamId !== undefined) {
-                    accumlated[teamId] = (accumlated[teamId] || 0) + participant.scoring.points;
-                }
+            const pointsMapping = selectedRace?.teams.reduce((accumlated: { [key: number]: number }, team) => {
+                accumlated[team.teamId] = team.points;
                 return accumlated;
             }, {}) || {};
             setTeamPoints(pointsMapping);

@@ -60,8 +60,11 @@ export async function initializeNewGame(conferenceIds: number[], numPlayersPerTe
         schools,
         conferences
     };
+    console.log(game, "game created");
 
     saveGameData(game);
+    console.log("game saved in IndexedDB");
+
     return game;
 }
 

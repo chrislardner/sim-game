@@ -1,11 +1,12 @@
 import { Game } from '@/types/game';
 import { saveGameData, loadGameData } from '@/data/storage';
 import { handleNewRecruits, handleNewYearSchedule } from './newYear';
-import { createMeet, mapWeekToGamePhase } from '@/logic/meetGenerator';
-import { Meet, Race } from '@/types/schedule';
+import { mapWeekToGamePhase } from '@/logic/meetGenerator';
+import { Meet, Race, RaceParticipant } from '@/types/schedule';
 import { Team } from '@/types/team';
 import { SeasonGamePhase } from '@/constants/seasons';
 import { generateRaceTime, updatePlayerStats, } from './generateRaceTimes';
+import { createMeetsForWeek } from './scheduleGenerator';
 
 export async function simulateWeek(gameId: number) {
     const game: Game = await loadGameData(gameId);
@@ -49,29 +50,22 @@ async function simulateRegularSeason(game: Game): Promise<boolean> {
 
 function createPlayoffMeets(game: Game) {
     try {
-        const matches: Meet[] = [];
+        let matches: Meet[] = [];
         game.remainingTeams = shuffleArray(game.remainingTeams); // Shuffle remaining teams
+        const remainingTeams = game.teams.filter(team => game.remainingTeams.includes(team.teamId));
 
-        for (let i = 0; i < game.remainingTeams.length; i += 2) {
-            const teamPairIds: number[] = game.remainingTeams.slice(i, i + 2);
+        matches = createMeetsForWeek(game.gameId, remainingTeams, game.currentWeek, game.currentYear);
 
-            const teamPair: Team[] = game.teams.filter(team => teamPairIds.includes(team.teamId));
-
-            try {
-                // Create the playoff meet
-                const meet = createMeet(teamPair, game.currentWeek, game.currentYear, game.gameId);
-                matches.push(meet);
-
-                // Add the meet to each team's schedule
-                for (const team of teamPair) {
-                    addMeetsToTeam(team, meet);
-                }
-            } catch (error) {
-                console.error(`Error creating or adding meet for teams ${teamPairIds.join(', ')}`, error);
-                return false;
+        game.leagueSchedule.meets.push(...matches);
+        for (const team of remainingTeams) {
+            const match = matches.find(match => match.teams.some(t => t.teamId === team.teamId));
+            if (match) {
+                addMeetsToTeam(team, match);
+            } else {
+                console.error(`No match found for team ${team.teamId}`);
             }
         }
-        game.leagueSchedule.meets.push(...matches);
+
         return true;
     }
     catch (error) {
@@ -119,56 +113,34 @@ export async function determineWinnersByPoints(matches: Meet[], game: Game): Pro
             if (meet.season === 'cross_country') {
                 // Cross-country scoring
                 meet.races.forEach(race => {
-                    race.participants.forEach(participant => {
-                        if (participant.scoring.team_top_five) {
-                            const teamId = getParticipantTeamId(participant.playerId, game);
-                            if (teamId !== -1) {
-                                if (!teamScores[teamId]) {
-                                    teamScores[teamId] = 0;
-                                }
-                                teamScores[teamId] += participant.scoring.points;
-                            }
+                    race.teams.forEach(team => {
+                        if (team.points > 0) {
+                            teamScores[team.teamId] = (teamScores[team.teamId] || 0) + team.points;
                         }
                     });
                 });
 
-                // Determine the team with the lowest points (winner)
-                const minScore = Math.min(...Object.values(teamScores));
-                const topTeams: number[] = Object.entries(teamScores)
-                    .filter(([, score]) => score === minScore)
-                    .map(([teamId]) => Number(teamId));
+                const sortedTeams = Object.entries(teamScores).sort(([, a], [, b]) => a - b);
+                const numberOfTeamsToPush = Math.max(Math.ceil(sortedTeams.length * 0.25), 2);
+                const teamsToPush = sortedTeams.slice(0, numberOfTeamsToPush).map(([teamId]) => Number(teamId));
 
-                if (topTeams.length === 1) {
-                    winners.push(topTeams[0]); // Clear winner
-                } else if (topTeams.length > 1) {
-                    // Randomly select a winner in case of a tie
-                    const winner = topTeams[Math.floor(Math.random() * topTeams.length)];
-                    winners.push(winner);
-                }
+                winners.push(...teamsToPush);
+
             } else if (meet.season === 'track_field') {
                 // Track & field scoring
                 meet.races.forEach(race => {
-                    race.participants.forEach(participant => {
-                        const teamId = getParticipantTeamId(participant.playerId, game);
-                        if (teamId !== null) {
-                            teamScores[teamId] = (teamScores[teamId] || 0) + participant.scoring.points;
+                    race.teams.forEach(team => {
+                        if (team.points > 0) {
+                            teamScores[team.teamId] = (teamScores[team.teamId] || 0) + team.points;
                         }
                     });
                 });
 
-                // Determine the team with the highest points (winner)
-                const maxScore = Math.max(...Object.values(teamScores));
-                const topTeams: number[] = Object.entries(teamScores)
-                    .filter(([, score]) => score === maxScore)
-                    .map(([teamId]) => Number(teamId));
+                const sortedTeams = Object.entries(teamScores).sort(([, a], [, b]) => b - a);
+                const numberOfTeamsToPush = Math.max(Math.ceil(sortedTeams.length * 0.25), 2);
+                const teamsToPush = sortedTeams.slice(0, numberOfTeamsToPush).map(([teamId]) => Number(teamId));
 
-                if (topTeams.length === 1) {
-                    winners.push(topTeams[0]); // Clear winner
-                } else if (topTeams.length > 1) {
-                    // Randomly select a winner in case of a tie
-                    const winner = topTeams[Math.floor(Math.random() * topTeams.length)];
-                    winners.push(winner);
-                }
+                winners.push(...teamsToPush);
             }
         }
     } catch (error) {
@@ -264,59 +236,84 @@ function updateTeamAndPlayerPoints(game: Game): void {
                 });
             }
         });
-    } catch (error) {
+    }
+    catch (error) {
         console.error("Error updating team and player points", error);
     }
 }
 
 function handleCrossCountryScoring(race: Race, game: Game, meet: Meet): void {
     try {
-        const sortedParticipants = race.participants.sort((a, b) => a.playerTime - b.playerTime);
+        const teamParticipants: { [teamId: number]: RaceParticipant[] } = {};
 
-        sortedParticipants.forEach((participant, index) => {
-            try {
-                const points = index + 1; // Position in the race (1st place = 1 point)
-                participant.scoring.points = points;
-
-                const team = game.teams.find(t => t.players.some(p => p.playerId === participant.playerId));
-                if (team) {
-                    const player = team.players.find(p => p.playerId === participant.playerId);
-                    if (player) {
-                        player.stats.points = (player.stats.points || 0) + points;
-                    }
-
-                    const meetTeam = meet.teams.find(t => t.teamId === team.teamId);
-                    if (meetTeam) {
-                        meetTeam.points += points;
-                    }
-                }
-            } catch (error) {
-                console.error(`Error processing participant ${participant.playerId}`, error);
-            }
-        });
-
-        // Mark top five participants for each team
-        const teamScores: Record<number, number[]> = {};
-        sortedParticipants.forEach(participant => {
+        // Group participants by team and take top 7
+        race.participants.forEach(participant => {
             const teamId = getParticipantTeamId(participant.playerId, game);
-            if (teamId !== null) {
-                if (!teamScores[teamId]) {
-                    teamScores[teamId] = [];
+            if (teamId !== -1) {
+                if (!teamParticipants[teamId]) {
+                    teamParticipants[teamId] = [];
                 }
-                teamScores[teamId].push(participant.playerId);
+                teamParticipants[teamId].push(participant);
             }
         });
 
-        Object.keys(teamScores).forEach(teamIdStr => {
-            const teamId = parseInt(teamIdStr);
-            const topFive = teamScores[teamId].slice(0, 5);
-            topFive.forEach(playerId => {
-                const participant = race.participants.find(p => p.playerId === playerId);
-                if (participant) {
-                    participant.scoring.team_top_five = true;
-                }
-            });
+        // Sort each team's participants and take top 7
+        for (const teamId in teamParticipants) {
+            teamParticipants[teamId] = teamParticipants[teamId]
+                .sort((a, b) => a.playerTime - b.playerTime)
+                .slice(0, 7);
+        }
+
+        // Create a combined list of all top 7 participants from each team
+        const combinedParticipants = Object.values(teamParticipants).flat();
+        combinedParticipants.sort((a, b) => a.playerTime - b.playerTime);
+
+        // Filter out participants from teams with less than 5 racers
+        const validParticipants = combinedParticipants.filter(participant => {
+            const teamId = getParticipantTeamId(participant.playerId, game);
+            return teamParticipants[teamId] && teamParticipants[teamId].length >= 5;
         });
+
+        // Assign points based on position in the filtered list
+        validParticipants.forEach((participant, index) => {
+            const points = index + 1; // Position in the race (1st place = 1 point)
+            participant.scoring.points = points;
+        });
+
+        // Add points to meet teams for teams with at least 5 participants
+        const teamPoints: { [teamId: number]: number } = {};
+
+        validParticipants.forEach(participant => {
+            const teamId = getParticipantTeamId(participant.playerId, game);
+            if (!teamPoints[teamId] || teamId === -1) {
+                teamPoints[teamId] = 0;
+            }
+            if (teamParticipants[teamId].indexOf(participant) < 5) {
+                participant.scoring.team_top_five = true;
+                participant.scoring.team_top_seven = true;
+
+                teamPoints[teamId] += participant.scoring.points;
+            } else if (teamParticipants[teamId].indexOf(participant) < 7) {
+                participant.scoring.team_top_seven = true;
+            }
+        });
+        for (const teamId in teamPoints) {
+            const meetTeam = meet.teams.find(t => t.teamId === Number(teamId));
+            if (meetTeam) {
+                meetTeam.has_five_racers = true;
+                meetTeam.points = teamPoints[teamId];
+                const raceTeam = race.teams.find(t => t.teamId === Number(teamId));
+                if (raceTeam) {
+                    raceTeam.points = teamPoints[teamId];
+                    console.log(raceTeam.points, "points");
+                } else {
+                    console.error(`Race team not found for teamId ${teamId}`);
+                }
+            } else {
+                console.error(`Meet team not found for teamId ${teamId}`);
+            }
+        }
+
     } catch (error) {
         console.error("Error handling cross country scoring", error);
     }
@@ -338,14 +335,16 @@ function handleTrackFieldScoring(race: Race, game: Game, meet: Meet): void {
             if (player) {
                 player.stats.points = (player.stats.points || 0) + points;
             }
-
+            const raceTeam = race.teams.find(t => t.teamId === team.teamId);
             const meetTeam = meet.teams.find(t => t.teamId === team.teamId);
-            if (meetTeam) {
+            if (meetTeam && raceTeam) {
                 meetTeam.points += points;
+                raceTeam.points += points;
             }
         }
     });
 }
+
 function getParticipantTeamId(playerId: number, game: Game): number {
     try {
         for (const team of game.teams) {
