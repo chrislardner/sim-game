@@ -1,25 +1,25 @@
 import { Team } from '@/types/team';
 import { Heat, Meet, Race } from '@/types/schedule';
-import { getNextMeetId, getNextRaceId } from '@/data/idTracker';
 import { raceTypes } from '@/constants/raceTypes';
 import { SeasonGamePhase, SeasonType } from '@/constants/seasons';
+import { getNextMeetId, getNextRaceId } from '@/data/storage';
 
-export function createMeet(teams: Team[], week: number, year: number, gameId: number): Meet {
+export async function createMeet(teams: Team[], week: number, year: number, gameId: number): Promise<Meet> {
     const map = mapWeekToGamePhase(week);
     return {
         week,
-        meetId: getNextMeetId(gameId),
+        meetId: await getNextMeetId(gameId),
         date: map.type === 'playoffs' ? 'Playoff Round' : 'Regular Season Meet',
         year,
         teams: teams.map(team => ({ teamId: team.teamId, points: 0, has_five_racers: false })),
-        races: createRacesForMeet(teams, gameId, map.season),
+        races: await createRacesForMeet(teams, gameId, map.season),
         season: map.season,
         type: map.type
     };
 }
 
-function createRacesForMeet(teams: Team[], gameId: number, seasonType: 'cross_country' | 'track_field'): Race[] {
-    return raceTypes[seasonType].map(eventType => {
+async function createRacesForMeet(teams: Team[], gameId: number, seasonType: 'cross_country' | 'track_field'): Promise<Race[]> {
+    const races = await Promise.all(raceTypes[seasonType].map(async eventType => {
         const participants = teams.flatMap(team => 
             team.players.filter(player => 
                 player.seasons.includes(seasonType) && player.eventTypes[seasonType].includes(eventType)
@@ -44,10 +44,11 @@ function createRacesForMeet(teams: Team[], gameId: number, seasonType: 'cross_co
             participants,
             eventType,
             heats: newHeats,
-            raceId: getNextRaceId(gameId),
+            raceId: await getNextRaceId(gameId),
             teams: teams.map(team => ({ teamId: team.teamId, points: 0 }))
         };
-    });
+    }));
+    return races;
 }
 
 export function mapWeekToGamePhase(gameWeek: number): { season: SeasonType, type: SeasonGamePhase } {

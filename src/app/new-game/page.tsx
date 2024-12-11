@@ -9,6 +9,7 @@ import { Conference, School } from '@/types/regionals';
 export default function NewGamePage() {
     const [conferenceIds, setConferenceIds] = useState<number[]>([]);
     const [numPlayers, setNumPlayers] = useState(10);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [schools, setSchools] = useState<School[]>([]);
     const [conferences, setConferences] = useState<Conference[]>([]);
     const router = useRouter();
@@ -24,12 +25,11 @@ export default function NewGamePage() {
     }, []);
 
     const handleCreateGame = async () => {
-        console.log(conferenceIds);
         if (conferenceIds.length === 0) {
             alert("Please select at least one conference to start the game.");
             return;
         }
-        const newGame = await initializeNewGame(conferenceIds, numPlayers, schools, conferences);
+        const newGame = await initializeNewGame(conferenceIds, numPlayers);
         // Redirect to the newly created game's page
         router.push(`/games/${newGame.gameId}`);
     };

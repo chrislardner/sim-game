@@ -37,7 +37,7 @@ export async function handleNewRecruits(game: Game): Promise<boolean> {
 
 export async function handleNewYearSchedule(game: Game): Promise<boolean> {
     try {
-        const leagueSchedule = generateYearlyLeagueSchedule(game.gameId, game.teams, game.currentYear);
+        const leagueSchedule = await generateYearlyLeagueSchedule(game.gameId, game.teams, game.currentYear);
         const teamSchedules = generateTeamSchedules(leagueSchedule, game.teams, game.currentYear);
         game.leagueSchedule = leagueSchedule;
         

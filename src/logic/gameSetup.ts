@@ -1,20 +1,20 @@
-import { saveGameData } from '@/data/storage';
+import { getNextGameId, initializeGameCounter, initializeIDTracker, saveGame } from '@/data/storage';
 import { generateYearlyLeagueSchedule, generateTeamSchedules } from '@/logic/scheduleGenerator';
 import { Team } from '@/types/team';
 import { Game } from '@/types/game';
-import { getNextGameId, getCurrentIDs, initializeIDTracker } from '@/data/idTracker';
 import { createPlayer } from './generatePlayer';
 import { createTeamsForConference } from './generateTeam';
 import { getAllColleges, getAllConferences } from '@/data/parseSchools';
 import { Conference, School } from '@/types/regionals';
 
-export async function initializeNewGame(conferenceIds: number[], numPlayersPerTeam: number, schools: School[], conferences: Conference[]): Promise<Game> {
-    const gameId = getNextGameId();
+export async function initializeNewGame(conferenceIds: number[], numPlayersPerTeam: number): Promise<Game> {
     const teams: Team[] = [];
-    const currentYear = 2024
-    initializeIDTracker(gameId, 0, 0, 0, 0);
+    const currentYear = 2024;
 
-    console.log(conferenceIds);
+    initializeGameCounter();
+    const gameId = await getNextGameId();
+    initializeIDTracker(gameId);
+
 
     for (let i = 0; i < conferenceIds.length; i++) {
         const conferenceTeams = await createTeamsForConference(gameId, currentYear, conferenceIds[i]);
@@ -26,18 +26,10 @@ export async function initializeNewGame(conferenceIds: number[], numPlayersPerTe
         }
         teams.push(...conferenceTeams);
     }
-    console.log(teams, "teams created");
 
-    const leagueSchedule = generateYearlyLeagueSchedule(gameId, teams, currentYear);
-    const teamSchedules = generateTeamSchedules(leagueSchedule, teams, currentYear);
-
-    const ids = getCurrentIDs(gameId);
-
-    const lastPlayerId = ids.lastPlayerId;
-    const lastTeamId = ids.lastTeamId;
-    const lastMeetId = ids.lastMeetId;
-    const lastRaceId = ids.lastRaceId;
-
+    const leagueSchedule = await generateYearlyLeagueSchedule(gameId, teams, currentYear);
+    const teamSchedules = generateTeamSchedules(await leagueSchedule, teams, currentYear);
+    
     const game: Game = {
         gameId,
         teams: teams.map(team => ({
@@ -46,24 +38,15 @@ export async function initializeNewGame(conferenceIds: number[], numPlayersPerTe
                 teamId: team.teamId,
                 year: currentYear,
                 meets: teamSchedules.find(s => s.teamId === team.teamId)?.meets || []
-            }
-        })),
+            }})),
         currentWeek: 1,
         currentYear,
         gamePhase: 'regular',
         leagueSchedule,
-        lastPlayerId,
-        lastTeamId,
-        lastMeetId,
         remainingTeams: teams.map(team => team.teamId),
-        lastRaceId,
-        schools,
-        conferences
     };
-    console.log(game, "game created");
 
-    saveGameData(game);
-    console.log("game saved in IndexedDB");
+    saveGame(game);
 
     return game;
 }

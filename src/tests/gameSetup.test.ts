@@ -1,5 +1,5 @@
 import { initializeNewGame } from '@/logic/gameSetup';
-import { loadGameData } from '@/data/storage';
+import { loadGameData } from '@/data/storageDev';
 
 test('Create new game with teams and players', async () => {
     const gameData = await initializeNewGame(3, 5); // Example: 3 teams, 5 players each

@@ -5,34 +5,34 @@ import { createMeet } from './meetGenerator';
 import { mapWeekToGamePhase } from './meetGenerator';
 
 // Generate League Schedule
-export function generateYearlyLeagueSchedule(gameId: number, teams: Team[], year: number): YearlyLeagueSchedule {
+export async function generateYearlyLeagueSchedule(gameId: number, teams: Team[], year: number): Promise<YearlyLeagueSchedule> {
     const leagueSchedule: YearlyLeagueSchedule = {
         year,
         meets: []
     };
     const regularSeasonPhase = mappedSeasonPhases.regularCrossCountry;
     for (let week = regularSeasonPhase.startWeek; week <= regularSeasonPhase.endWeek; week++) {
-        const meetsForWeek = createMeetsForWeek(gameId, teams, week, year);
+        const meetsForWeek = await createMeetsForWeek(gameId, teams, week, year);
         leagueSchedule.meets.push(...meetsForWeek);
     }
     const trackField1RegularSeasonPhase = mappedSeasonPhases.regularTrackField1;
     for (let week = trackField1RegularSeasonPhase.startWeek; week <= trackField1RegularSeasonPhase.endWeek; week++) {
-        const meetsForWeek = createMeetsForWeek(gameId, teams, week, year);
+        const meetsForWeek = await createMeetsForWeek(gameId, teams, week, year);
         leagueSchedule.meets.push(...meetsForWeek);
     }
 
     const trackField2RegularSeasonPhase = mappedSeasonPhases.regularTrackField2;
     for (let week = trackField2RegularSeasonPhase.startWeek; week <= trackField2RegularSeasonPhase.endWeek; week++) {
-        const meetsForWeek = createMeetsForWeek(gameId, teams, week, year);
+        const meetsForWeek = await createMeetsForWeek(gameId, teams, week, year);
         leagueSchedule.meets.push(...meetsForWeek);
     }
     return leagueSchedule;
 }
 
 // Generate Meets for a Given Week
-export function createMeetsForWeek(gameId: number, teams: Team[],  week: number, year: number): Meet[] {
+export async function createMeetsForWeek(gameId: number, teams: Team[],  week: number, year: number): Promise<Meet[]> {
     const teamGroups = groupTeams(teams, week);
-    return teamGroups.map(group => createMeet(group, week, year, gameId));
+    return Promise.all(teamGroups.map(async group => await createMeet(group, week, year, gameId)));
 }
 
 // Group Teams for Meets depending on the week and number of teams

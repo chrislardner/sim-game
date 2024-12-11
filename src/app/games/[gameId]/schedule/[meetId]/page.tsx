@@ -49,7 +49,7 @@ export default function MeetPage() {
             setRacePoints(racePointsMapping);
         }
         fetchData();
-    }, [gameId, meetId, meet?.races, meet?.season]);
+    }, [gameId, meetId, meet?.races, meet?.season, meet?.teams]);
 
     if (!meet) return <div>Loading...</div>;
 
@@ -62,15 +62,6 @@ export default function MeetPage() {
         }
         return 0;
     });
-
-    const handleTestData = () => {
-        console.log(meet, "meet");
-        console.log(meet?.races, "races");
-        meet?.races.forEach(race => {
-            console.log(race, "race");
-            console.log(race.teams, "teams");
-        });
-    };
 
     return (
         <div className="p-4">
@@ -85,10 +76,6 @@ export default function MeetPage() {
                 ))}
             </ul>
 
-            
-            <button onClick={handleTestData} className="px-4 py-2 bg-blue-500 text-white rounded-lg mb-4">
-                Test Data
-            </button>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Teams Participating</h2>
             <ul className="list-disc list-inside mb-6">

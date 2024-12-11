@@ -8,7 +8,7 @@ import { simulateWeek } from '@/logic/simulation';
 
 export default function GameDashboard() {
     const { gameId } = useParams();
-    const [gameData, setGameData] = useState<Game | null>(null);
+    const [gameData, setGameData] = useState<Game>();
 
     useEffect(() => {
         async function fetchData() {
@@ -22,7 +22,7 @@ export default function GameDashboard() {
         if (gameData) {
             await simulateWeek(gameData.gameId);
             const updatedGame = await loadGameData(gameData.gameId); // Reload to get updated state
-            setGameData(updatedGame ?? null);
+            setGameData(updatedGame);
         }
     };
 
@@ -40,19 +40,19 @@ export default function GameDashboard() {
                 <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                     <h2 className="text-lg font-semibold">Current Team</h2>
                     {/* <p>{gameData.currentTeam}</p> */ }
-                    <p>{gameData.teams[0].college}</p>
+                    <p>{gameData?.teams[0]?.college}</p>
                 </div>
                 <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                     <h2 className="text-lg font-semibold">Current Week</h2>
-                    <p>{gameData.currentWeek} </p>
+                    <p>{gameData?.currentWeek} </p>
                 </div>
                 <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                     <h2 className="text-lg font-semibold">Game Phase</h2>
-                    <p>{gameData.gamePhase}</p>
+                    <p>{gameData?.gamePhase}</p>
                 </div>
                 <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                     <h2 className="text-lg font-semibold">Current Year</h2>
-                    <p>{gameData.currentYear} </p>
+                    <p>{gameData?.currentYear} </p>
                 </div>
             </div>
         </div>

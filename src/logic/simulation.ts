@@ -1,5 +1,5 @@
 import { Game } from '@/types/game';
-import { saveGameData, loadGameData } from '@/data/storage';
+import { saveGame, loadGameData } from '@/data/storage';
 import { handleNewRecruits, handleNewYearSchedule } from './newYear';
 import { mapWeekToGamePhase } from '@/logic/meetGenerator';
 import { Meet, Race, RaceParticipant } from '@/types/schedule';
@@ -39,7 +39,7 @@ export async function simulateWeek(gameId: number) {
         return;
     }
 
-    saveGameData(game);
+    saveGame(game);
 }
 
 async function simulateRegularSeason(game: Game): Promise<boolean> {
@@ -48,13 +48,13 @@ async function simulateRegularSeason(game: Game): Promise<boolean> {
     return true;
 }
 
-function createPlayoffMeets(game: Game) {
+async function createPlayoffMeets(game: Game) {
     try {
         let matches: Meet[] = [];
         game.remainingTeams = shuffleArray(game.remainingTeams); // Shuffle remaining teams
         const remainingTeams = game.teams.filter(team => game.remainingTeams.includes(team.teamId));
 
-        matches = createMeetsForWeek(game.gameId, remainingTeams, game.currentWeek, game.currentYear);
+        matches = await createMeetsForWeek(game.gameId, remainingTeams, game.currentWeek, game.currentYear);
 
         game.leagueSchedule.meets.push(...matches);
         for (const team of remainingTeams) {
@@ -77,16 +77,16 @@ function createPlayoffMeets(game: Game) {
 
 export async function simulatePlayoffs(game: Game): Promise<boolean> {
     try {
-        createPlayoffMeets(game);
+        await createPlayoffMeets(game);
         simulateMeetsForWeek(game);
         updateTeamAndPlayerPoints(game);
 
         const matches = game.leagueSchedule.meets.filter(meet => meet.week === game.currentWeek);
 
-        game.remainingTeams = await determineWinnersByPoints(matches, game);
+        game.remainingTeams = await determineWinnersByPoints(matches);
 
         // Check if the playoffs are over
-        if (game.remainingTeams.length === 1) {
+        if (game.currentWeek === 12 || game.currentWeek === 27 || game.currentWeek === 42) {
             console.log(`Champion determined: Team ${game.remainingTeams[0]}`);
             return true; // Playoffs are complete
         }
@@ -95,7 +95,7 @@ export async function simulatePlayoffs(game: Game): Promise<boolean> {
             return true; // Playoffs continue
         }
 
-        console.log("game.remainingTeams is undefined");
+        console.error("game.remainingTeams is undefined");
         return false;
     } catch (error) {
         console.error("Error simulating playoffs", error);
@@ -103,7 +103,7 @@ export async function simulatePlayoffs(game: Game): Promise<boolean> {
     }
 }
 
-export async function determineWinnersByPoints(matches: Meet[], game: Game): Promise<number[]> {
+export async function determineWinnersByPoints(matches: Meet[]): Promise<number[]> {
     const winners: number[] = [];
 
     try {
@@ -186,6 +186,10 @@ function addMeetsToTeam(team: Team, match: Meet) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function handleOffseason(game: Game): Promise<boolean> {
+    console.log("game.currentWeek", game.currentWeek);
+    if (game.currentWeek === 12 || game.currentWeek === 27 || game.currentWeek === 42) {
+        console.log(`Champion determined: Team ${game.remainingTeams[0]}`);
+    }
     game.remainingTeams = game.teams.map(team => team.teamId); // Reset for the next season
     return true;
 }
@@ -305,7 +309,6 @@ function handleCrossCountryScoring(race: Race, game: Game, meet: Meet): void {
                 const raceTeam = race.teams.find(t => t.teamId === Number(teamId));
                 if (raceTeam) {
                     raceTeam.points = teamPoints[teamId];
-                    console.log(raceTeam.points, "points");
                 } else {
                     console.error(`Race team not found for teamId ${teamId}`);
                 }
