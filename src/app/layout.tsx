@@ -1,7 +1,5 @@
-// src/app/layout.tsx
 "use client";
 
-import Link from 'next/link';
 import { usePathname, useParams } from 'next/navigation';
 import GameSidebar from '@/components/GameSidebar';
 import '@/styles/globals.css';
