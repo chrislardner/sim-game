@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { loadGameData } from '@/data/storage';
+import { loadPlayers } from '@/data/storage';
 import { Player } from '@/types/player';
 import Link from 'next/link';
 
@@ -12,8 +12,8 @@ export default function PlayersPage() {
 
     useEffect(() => {
         async function fetchData() {
-            const gameData = await loadGameData(Number(gameId));
-            setPlayers(gameData?.teams.flatMap(team => team.players) || []);
+            const playersData = await loadPlayers(Number(gameId));
+            setPlayers(playersData);
         }
         fetchData();
     }, [gameId]);

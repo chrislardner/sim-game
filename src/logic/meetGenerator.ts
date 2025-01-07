@@ -3,27 +3,34 @@ import { Heat, Meet, Race } from '@/types/schedule';
 import { raceTypes } from '@/constants/raceTypes';
 import { SeasonGamePhase, SeasonType } from '@/constants/seasons';
 import { getNextMeetId, getNextRaceId } from '@/data/storage';
+import { Player } from '@/types/player';
 
-export async function createMeet(teams: Team[], week: number, year: number, gameId: number): Promise<Meet> {
+export async function createMeet(teams: Team[], players: Player[], week: number, year: number, gameId: number): Promise<{meet: Meet, races: Race[]}> {
     const map = mapWeekToGamePhase(week);
-    return {
+    const meetId = await getNextMeetId(gameId);
+    const races = await createRacesForMeet(teams, players, gameId, map.season, meetId, year)
+    const meet: Meet = {
         week,
-        meetId: await getNextMeetId(gameId),
+        meetId,
         date: map.type === 'playoffs' ? 'Playoff Round' : 'Regular Season Meet',
         year,
         teams: teams.map(team => ({ teamId: team.teamId, points: 0, has_five_racers: false })),
-        races: await createRacesForMeet(teams, gameId, map.season),
+        races: races.map(r => r.raceId),
         season: map.season,
-        type: map.type
+        type: map.type,
+        gameId,
     };
+    return { meet, races };
 }
 
-async function createRacesForMeet(teams: Team[], gameId: number, seasonType: 'cross_country' | 'track_field'): Promise<Race[]> {
+export async function createRacesForMeet(teams: Team[], players: Player[], gameId: number, seasonType: 'cross_country' | 'track_field', meetId: number, year: number): Promise<Race[]> {
+    const playerMap = new Map(players.map(player => [player.playerId, player]));
     const races = await Promise.all(raceTypes[seasonType].map(async eventType => {
         const participants = teams.flatMap(team => 
-            team.players.filter(player => 
-                player.seasons.includes(seasonType) && player.eventTypes[seasonType].includes(eventType)
-            ).map(player => ({ playerId: player.playerId, playerTime: 0, scoring: { points: 0, team_top_five: false, team_top_seven: false } }))
+            team.players.map(playerId => playerMap.get(playerId))
+                .filter(player => 
+                    player && player.seasons.includes(seasonType) && player.eventTypes[seasonType].includes(eventType)
+                ).map(player => ({ playerId: player!.playerId, playerTime: 0, scoring: { points: 0, team_top_five: false, team_top_seven: false } }))
         );
 
         let heats = 1;
@@ -45,7 +52,10 @@ async function createRacesForMeet(teams: Team[], gameId: number, seasonType: 'cr
             eventType,
             heats: newHeats,
             raceId: await getNextRaceId(gameId),
-            teams: teams.map(team => ({ teamId: team.teamId, points: 0 }))
+            teams: teams.map(team => ({ teamId: team.teamId, points: 0, })),
+            meetId,
+            gameId,
+            year,
         };
     }));
     return races;

@@ -1,4 +1,3 @@
-import { Team } from './team';
 import { YearlyLeagueSchedule } from './schedule';
 import { SeasonGamePhase } from '@/constants/seasons';
 import { Conference, School } from './regionals';
@@ -6,7 +5,8 @@ import { Conference, School } from './regionals';
 export interface Game {
     gamePhase: SeasonGamePhase;
     gameId: number;
-    teams: Team[];
+    teams: number[];
+    players: number[];
     currentYear: number;  
     currentWeek: number;     
     leagueSchedule: YearlyLeagueSchedule;    // Full season schedule

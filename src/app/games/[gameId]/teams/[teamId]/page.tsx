@@ -3,18 +3,24 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { loadGameData } from '@/data/storage';
+import { loadPlayers, loadTeams } from '@/data/storage';
 import { Team } from '@/types/team';
+import { Player } from '@/types/player';
 
 export default function TeamPage() {
     const { gameId, teamId } = useParams();
-    const [team, setTeam] = useState<Team | null>(null);
+    const [team, setTeam] = useState<Team>();
+    const [players, setTeamPlayers] = useState<Player[]>();
+
 
     useEffect(() => {
         async function fetchData() {
-            const gameData = await loadGameData(Number(gameId));
-            const selectedTeam = gameData?.teams.find(t => t.teamId === Number(teamId));
-            setTeam(selectedTeam || null);
+            const temaData = await loadTeams(Number(gameId));
+            const selectedTeam = temaData?.find(t => t.teamId === Number(teamId));
+            setTeam(selectedTeam);
+            const playerData = await loadPlayers(Number(gameId));
+            const teamPlayers = playerData?.filter((p: Player) => p.teamId === Number(teamId));
+            setTeamPlayers(teamPlayers);
         }
         fetchData();
     }, [gameId, teamId]);
@@ -36,7 +42,7 @@ export default function TeamPage() {
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Players</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {team.players.map(player => (
+                {players && players.map((player: Player) => (
                     <Link key={player.playerId} href={`/games/${gameId}/players/${player.playerId}`}>
                         <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors cursor-pointer hover:shadow-xl">
                             <h3 className="text-xl font-semibold text-accent">{player.firstName} {player.lastName}</h3>

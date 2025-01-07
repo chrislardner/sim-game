@@ -19,20 +19,7 @@ export async function createTeam(gameId: number, year: number, school: School): 
 
 
     if (school === null || school.collegeId === -1) {
-        console.error("Failed to assign a college to a team.");
-        return {
-            teamId: -1,
-            college: "No College",
-            teamName: "No Team",
-            gameId,
-            players: [],
-            points: 0,
-            teamSchedule: { teamId: -1, meets: [], year },
-            conferenceId: -1,
-            schoolId: -1,
-            state: "Unknown",
-            city: "Unknown"
-        };
+        throw new Error("Failed to assign a college to a team.");
     }
 
     const teamData: Team = {
@@ -48,5 +35,6 @@ export async function createTeam(gameId: number, year: number, school: School): 
         state: school.state,
         city: school.city
     };
+  
     return teamData;
 }

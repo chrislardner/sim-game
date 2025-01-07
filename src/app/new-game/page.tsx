@@ -3,21 +3,18 @@
 import { useEffect, useState } from 'react';
 import { initializeNewGame } from '@/logic/gameSetup';
 import { useRouter } from 'next/navigation';
-import { getAllColleges, getAllConferences } from '@/data/parseSchools';
-import { Conference, School } from '@/types/regionals';
+import { getAllConferences } from '@/data/parseSchools';
+import { Conference } from '@/types/regionals';
 
 export default function NewGamePage() {
     const [conferenceIds, setConferenceIds] = useState<number[]>([]);
     const [numPlayers, setNumPlayers] = useState(10);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [schools, setSchools] = useState<School[]>([]);
     const [conferences, setConferences] = useState<Conference[]>([]);
     const router = useRouter();
 
     useEffect(() => {
         const fetchData = async () => {
-            const schools = await getAllColleges();
-            setSchools(schools);
             const conferences = await getAllConferences();
             setConferences(conferences);
         };

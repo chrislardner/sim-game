@@ -1,38 +1,60 @@
-import { Team } from '@/types/team';
-import { YearlyLeagueSchedule, TeamSchedule, Meet } from '@/types/schedule';
+import { Team, TeamSchedule } from '@/types/team';
+import { Meet, Race } from '@/types/schedule';
 import { mappedSeasonPhases } from '@/constants/seasonPhases';
 import { createMeet } from './meetGenerator';
 import { mapWeekToGamePhase } from './meetGenerator';
+import { Player } from '@/types/player';
 
 // Generate League Schedule
-export async function generateYearlyLeagueSchedule(gameId: number, teams: Team[], year: number): Promise<YearlyLeagueSchedule> {
-    const leagueSchedule: YearlyLeagueSchedule = {
-        year,
-        meets: []
-    };
+export async function generateYearlyLeagueSchedule(gameId: number, teams: Team[], players: Player[], year: number): Promise<{ meets: Meet[], races: Race[] }> {
+    const meets: Meet[] = [];
+    const races: Race[] = [];
     const regularSeasonPhase = mappedSeasonPhases.regularCrossCountry;
     for (let week = regularSeasonPhase.startWeek; week <= regularSeasonPhase.endWeek; week++) {
-        const meetsForWeek = await createMeetsForWeek(gameId, teams, week, year);
-        leagueSchedule.meets.push(...meetsForWeek);
+        const meetsForWeek = await createMeetsForWeek(gameId, teams, players, week, year);
+        meets.push(...meetsForWeek.meets);
+        races.push(...meetsForWeek.races);
+    }
+    const playoffSeasonPhase = mappedSeasonPhases.crossCountryPlayoffs;
+    for (let week = playoffSeasonPhase.startWeek; week <= playoffSeasonPhase.endWeek; week++) {
+        const meetsForWeek = await createMeetsForWeek(gameId, teams, players, week, year);
+        meets.push(...meetsForWeek.meets);
+        races.push(...meetsForWeek.races);
     }
     const trackField1RegularSeasonPhase = mappedSeasonPhases.regularTrackField1;
     for (let week = trackField1RegularSeasonPhase.startWeek; week <= trackField1RegularSeasonPhase.endWeek; week++) {
-        const meetsForWeek = await createMeetsForWeek(gameId, teams, week, year);
-        leagueSchedule.meets.push(...meetsForWeek);
+        const meetsForWeek = await createMeetsForWeek(gameId, teams, players, week, year);
+        meets.push(...meetsForWeek.meets);
+        races.push(...meetsForWeek.races);
     }
-
+    const trackField1PlayoffSeasonPhase = mappedSeasonPhases.trackFieldPlayoffs1;
+    for (let week = trackField1PlayoffSeasonPhase.startWeek; week <= trackField1PlayoffSeasonPhase.endWeek; week++) {
+        const meetsForWeek = await createMeetsForWeek(gameId, teams, players, week, year);
+        meets.push(...meetsForWeek.meets);
+        races.push(...meetsForWeek.races);
+    }
     const trackField2RegularSeasonPhase = mappedSeasonPhases.regularTrackField2;
     for (let week = trackField2RegularSeasonPhase.startWeek; week <= trackField2RegularSeasonPhase.endWeek; week++) {
-        const meetsForWeek = await createMeetsForWeek(gameId, teams, week, year);
-        leagueSchedule.meets.push(...meetsForWeek);
+        const meetsForWeek = await createMeetsForWeek(gameId, teams, players, week, year);
+        meets.push(...meetsForWeek.meets);
+        races.push(...meetsForWeek.races);
     }
-    return leagueSchedule;
+    const trackField2PlayoffSeasonPhase = mappedSeasonPhases.trackFieldPlayoffs2;
+    for (let week = trackField2PlayoffSeasonPhase.startWeek; week <= trackField2PlayoffSeasonPhase.endWeek; week++) {
+        const meetsForWeek = await createMeetsForWeek(gameId, teams, players, week, year);
+        meets.push(...meetsForWeek.meets);
+        races.push(...meetsForWeek.races);
+    }
+    return { meets, races };
 }
 
 // Generate Meets for a Given Week
-export async function createMeetsForWeek(gameId: number, teams: Team[],  week: number, year: number): Promise<Meet[]> {
+export async function createMeetsForWeek(gameId: number, teams: Team[], players: Player[], week: number, year: number): Promise<{ meets: Meet[], races: Race[] }> {
     const teamGroups = groupTeams(teams, week);
-    return Promise.all(teamGroups.map(async group => await createMeet(group, week, year, gameId)));
+    const results = await Promise.all(teamGroups.map(async group => await createMeet(group, players, week, year, gameId)));
+    const meets = results.flatMap(result => result.meet);
+    const races = results.flatMap(result => result.races);
+    return { meets, races };
 }
 
 // Group Teams for Meets depending on the week and number of teams
@@ -78,12 +100,17 @@ function groupTeams(teams: Team[], week: number): Team[][] {
 }
 
 // Generate Individual Team Schedules from League Schedule
-export function generateTeamSchedules(leagueSchedule: YearlyLeagueSchedule, teams: Team[], year: number): TeamSchedule[] {
-    return teams.map(team => ({
+export function generateTeamSchedules(meets: Meet[], teams: Team[], year: number): TeamSchedule[] {
+
+    const teamSchedule = teams.map(team => ({
         teamId: team.teamId,
         year,
-        meets: leagueSchedule.meets
-            .filter(meet => meet.teams.some(t => t.teamId === team.teamId))
-            .map(meet => meet.meetId)
+        meets: meets
+            .filter(meet => meet.teams.some((t: { teamId: number }) => t.teamId === team.teamId))
+            .map((meet: Meet) => meet.meetId)
     }));
+
+    console.log(teamSchedule);
+
+    return teamSchedule;
 }

@@ -25,14 +25,13 @@ export async function createPlayer(gameId: number, teamId: number, year: number 
     const player: Player = {
         playerId: newPlayerId,
         teamId,
-        stats: {},
-        personality: {},
         year,
         firstName: name.firstName,
         lastName: name.lastName,
         seasons,
         eventTypes: generateEventTypes(seasons),
-        face
+        face,
+        gameId,
     };
 
     await savePlayer(gameId, player); // Save player to IndexedDB

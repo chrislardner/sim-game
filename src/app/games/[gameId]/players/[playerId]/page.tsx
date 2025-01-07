@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { loadGameData } from '@/data/storage';
+import { loadPlayers } from '@/data/storage';
 import { Player } from '@/types/player';
 import { display } from 'facesjs';
 
@@ -13,8 +13,8 @@ export default function PlayerPage() {
 
     useEffect(() => {
         async function fetchData() {
-            const gameData = await loadGameData(Number(gameId));
-            const selectedPlayer = gameData?.teams.flatMap(team => team.players).find(p => p.playerId === Number(playerId));
+            const playerData = await loadPlayers(Number(gameId));
+            const selectedPlayer = playerData.find(p => p.playerId === Number(playerId));
             setPlayer(selectedPlayer);
 
             if (faceContainerRef.current && selectedPlayer?.face) {
@@ -44,18 +44,18 @@ export default function PlayerPage() {
             <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg mt-4 transition-colors">
                 <h2 className="text-xl font-semibold text-accent mb-2">Player Personality</h2>
                 <ul className="text-gray-700 dark:text-gray-300">
-                    <li>Leadership: {player.personality?.leadership}</li>
+                    {/* <li>Leadership: {player.personality?.leadership}</li>
                     <li>Loyalty: {player.personality?.loyalty}</li>
-                    <li>Work Ethic: {player.personality?.workEthic}</li>
+                    <li>Work Ethic: {player.personality?.workEthic}</li> */}
                     {/* Additional personality attributes */}
                 </ul>
             </div>
             <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg mt-4 transition-colors">
                 <h2 className="text-xl font-semibold text-accent mb-2">Player Stats</h2>
                 <ul className="text-gray-700 dark:text-gray-300">
-                    <li>Strength: {player.stats?.strength}</li>
+                    {/* <li>Strength: {player.stats?.strength}</li>
                     <li>Speed: {player.stats?.speed}</li>
-                    <li>Endurance: {player.stats?.endurance}</li>
+                    <li>Endurance: {player.stats?.endurance}</li> */}
                     {/* Additional stats */}
                 </ul>
             </div>

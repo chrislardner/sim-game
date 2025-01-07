@@ -2,32 +2,49 @@ import { Team } from '@/types/team';
 import { createPlayer } from '@/logic/generatePlayer';
 import { Game } from '@/types/game';
 import { generateTeamSchedules, generateYearlyLeagueSchedule } from './scheduleGenerator';
+import { Player } from '@/types/player';
+import { Meet, Race } from '@/types/schedule';
+import { assignTeamSchedules } from './gameSetup';
+import { savePlayers, saveTeams } from '@/data/storage';
 
 
 // Transition to next season: graduating seniors and adding new recruits
-export async function handleNewRecruits(game: Game): Promise<boolean> {
+export async function handleNewRecruits(teams: Team[], players: Player[], gameId: number): Promise<boolean> {
     try {
-        const teams: Team[] = game.teams;
-        teams.forEach(async team => {
+        teams.forEach(async (team: Team) => {
             // Count graduating seniors
-            const graduatingSeniors = team.players.filter(player => player.year === 4).length;
+            const teamPlayers: Player[] = players.filter((player: Player) => team.players.includes(player.playerId));
+            const graduatingSeniors: Player[] = teamPlayers.filter((player: Player) => player.year === 4);
 
             // Remove graduating seniors
-            team.players = team.players.filter(player => player.year !== 4);
+            const teamNonGraduatingSeniors: Player[] = teamPlayers.filter((player: Player) => player.year !== 4);
+            const teamNonGraduatingSeniorsIds: number[] = teamNonGraduatingSeniors.map((player: Player) => player.playerId);
+            team.players = team.players.filter((playerId: number) => teamNonGraduatingSeniorsIds.includes(playerId));
+
+            const teamGraduatedplayers = teamPlayers.filter((player: Player) => player.year === 4);
+            teamGraduatedplayers.forEach(player => {
+                player.teamId = -1;
+            });
+
+            players = players.filter((player: Player) => !teamGraduatedplayers.includes(player)); // Remove graduated players from players list
 
             // Promote remaining players
-            team.players.forEach(player => {
+            teamNonGraduatingSeniors.forEach(player => {
                 if (player.year == 3) player.year = 4;
                 else if (player.year == 2) player.year = 3;
                 else if (player.year == 1) player.year = 2;
             });
 
             // Add recruits as new freshmen
-            for (let i = 0; i < graduatingSeniors; i++) {
-                const player = await createPlayer(game.gameId, team.teamId, 1);
-                team.players.push(player);
+            for (let i = 0; i < graduatingSeniors.length; i++) {
+                const player = await createPlayer(gameId, team.teamId, 1);
+                team.players.push(player.playerId);
+                players.push(player);
             }
         });
+        await savePlayers(gameId, players);
+        await saveTeams(gameId, teams);
+
         return true;
     } catch (error) {
         console.error('Error handling offseason:', error);
@@ -35,25 +52,28 @@ export async function handleNewRecruits(game: Game): Promise<boolean> {
     }
 }
 
-export async function handleNewYearSchedule(game: Game): Promise<boolean> {
+export async function handleNewYearSchedule(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
     try {
-        const leagueSchedule = await generateYearlyLeagueSchedule(game.gameId, game.teams, game.currentYear);
-        const teamSchedules = generateTeamSchedules(leagueSchedule, game.teams, game.currentYear);
-        game.leagueSchedule = leagueSchedule;
-        
-        game.teams = game.teams.map(team => ({
-            ...team,
-            teamSchedule: {
-                teamId: team.teamId,
-                year: game.currentYear,
-                meets: teamSchedules.find(s => s.teamId === team.teamId)?.meets || []
-            }
-        }));
+        const scheduleObject: { meets: Meet[], races: Race[] } = await generateYearlyLeagueSchedule(game.gameId, teams, players, game.currentYear);
 
-        return true;
+        const leagueSchedule = {
+            year: game.currentYear,
+            meets: scheduleObject.meets.map(meet => meet.meetId)
+        };
+
+        const teamSchedules = generateTeamSchedules(scheduleObject.meets, teams, game.currentYear);
+
+        assignTeamSchedules(teams, teamSchedules);
+
+        game.leagueSchedule = leagueSchedule;
+
+        meets.push(...scheduleObject.meets);
+        races.push(...scheduleObject.races);
+
     } catch (error) {
         console.error('Error handling new year schedule:', error);
         return false;
     }
+    return true;
 }
 

@@ -3,57 +3,62 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { loadGameData } from '@/data/storage';
+import { loadMeets, loadPlayers, loadRaces, loadTeams } from '@/data/storage';
 import { Meet, Race } from '@/types/schedule';
+import { Player } from '@/types/player';
+import { Team } from '@/types/team';
 
 export default function RaceResultsPage() {
     const { gameId, raceId } = useParams();
-    const [race, setRace] = useState<Race | null>(null);
-    const [teamsMap, setTeamsMap] = useState<{ [key: number]: string }>({});
-    const [playersMap, setPlayersMap] = useState<{ [key: number]: {name: string, college: string} }>({});
-    const [meet, setMeet] = useState<Meet | null>(null);
+    const [race, setRace] = useState<Race>();
+    const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
+    const [playersMap, setPlayersMap] = useState<{ [key: number]: { player: Player, team: Team } }>({});
+    const [meet, setMeet] = useState<Meet>();
     const [teamPoints, setTeamPoints] = useState<{ [key: number]: number }>({});
 
     useEffect(() => {
         async function fetchData() {
-            const gameData = await loadGameData(Number(gameId));
-            const selectedRace =
-                gameData.leagueSchedule.meets
-                    .flatMap(meet => meet.races)
-                    .find(race => race.raceId === Number(raceId));
+            const raceData = await loadRaces(Number(gameId));
+            const playerData = await loadPlayers(Number(gameId));
+            const meetData = await loadMeets(Number(gameId));
+            const teams: Team[] = await loadTeams(Number(gameId));
 
-            setRace(selectedRace || null);
+            const selectRace = raceData.find(r => r.raceId === Number(raceId));
+            const selectMeet = meetData.find(m => m.meetId === Number(selectRace?.meetId));
 
-            if (selectedRace) {
-                const selectedMeet = gameData.leagueSchedule.meets.find(meet => meet.races.some(r => r.raceId === selectedRace.raceId));
-                setMeet(selectedMeet || null);
-            }
+            setRace(selectRace);
+            setMeet(selectMeet);
+            const selectPlayers = playerData.filter(player => selectRace?.participants.some(participant => participant.playerId === player.playerId));
 
             // Create a mapping of teamId to team college
-            const teamsMapping = gameData.teams.reduce((accumlated: { [key: number]: string }, team) => {
-                accumlated[team.teamId] = team.college;
-                return accumlated;
-            }, {});
+            const teamsMapping: { [key: number]: Team } = {};
+            teams.forEach(t => { teamsMapping[t.teamId] = t; });
             setTeamsMap(teamsMapping);
 
             // Create a mapping of playerId to player first name and player team college
-            const playersMapping = gameData.teams.reduce((accumlated: { [key: number]: {name: string, college: string} }, team) => {
-                team.players.forEach(player => {
-                    accumlated[player.playerId] = {
-                        name: player.firstName + ' ' + player.lastName,
-                        college: team.college
-                    };
+            const playersMapping = teams.reduce((accumlated: { [key: number]: { player: Player, team: Team } }, team) => {
+                team.players.forEach(playerId => {
+                    const player = selectPlayers.find(p => p.playerId === playerId);
+                    if (player) {
+                        accumlated[playerId] = {
+                            player,
+                            team,
+                        };
+                    }
                 });
                 return accumlated;
             }, {});
             setPlayersMap(playersMapping);
 
-            // Calculate team points
-            const pointsMapping = selectedRace?.teams.reduce((accumlated: { [key: number]: number }, team) => {
-                accumlated[team.teamId] = team.points;
-                return accumlated;
-            }, {}) || {};
-            setTeamPoints(pointsMapping);
+            const teamPoints = selectRace?.teams.reduce((accumulated: { [key: number]: number }, team) => {
+                if(team.points > 0) {
+                    accumulated[team.teamId] = team.points;
+                }
+                return accumulated;
+            }, {});
+            if (teamPoints) {
+                setTeamPoints(teamPoints);
+            }
         }
         fetchData();
     }, [gameId, raceId]);
@@ -88,7 +93,7 @@ export default function RaceResultsPage() {
             <Link href={`/games/${gameId}/schedule/${meet?.meetId}`}>
                 <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Meet: <span className="font-semibold">{meet?.week} - {meet?.season}</span></p>
             </Link>
-            <p className="text-gray-700 dark:text-gray-300">Teams: {meet?.teams.map(team => teamsMap[team.teamId]).join(', ')}</p>
+            <p className="text-gray-700 dark:text-gray-300">Teams: {meet?.teams.map(team => teamsMap[team.teamId].college).join(', ')}</p>
             <p className="text-gray-700 dark:text-gray-300">Event: <span className="font-semibold">{race?.eventType}</span></p>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Results</h2>
@@ -108,11 +113,11 @@ export default function RaceResultsPage() {
                             <td className="py-2 px-4 border-b text-center">{position}</td>
                             <td className="py-2 px-4 border-b text-center">
                                 <Link href={`/games/${gameId}/players/${playerId}`}>
-                                    {playersMap[Number(playerId)]?.name}
+                                    {playersMap[Number(playerId)]?.player.firstName + ' ' + playersMap[Number(playerId)]?.player.lastName}
                                 </Link>
                             </td>
                             <td className="py-2 px-4 border-b text-center">
-                                {playersMap[Number(playerId)]?.college}
+                                {playersMap[Number(playerId)]?.team.college}
                             </td>
                             <td className="py-2 px-4 border-b text-center">{formatTime(playerTime)}</td>
                             <td className="py-2 px-4 border-b text-center">{points}</td>
@@ -132,7 +137,7 @@ export default function RaceResultsPage() {
                 <tbody className="min-w-full">
                     {sortedTeamPoints.map(([teamId, points]) => (
                         <tr key={teamId}>
-                            <td className="py-2 px-4 border-b text-center">{teamsMap[Number(teamId)]}</td>
+                            <td className="py-2 px-4 border-b text-center">{teamsMap[Number(teamId)].college}</td>
                             <td className="py-2 px-4 border-b text-center">{points}</td>
                         </tr>
                     ))}

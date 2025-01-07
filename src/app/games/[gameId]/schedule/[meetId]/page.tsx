@@ -3,53 +3,64 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { loadGameData } from '@/data/storage';
-import { Meet } from '@/types/schedule';
+import { loadMeets, loadRaces, loadTeams } from '@/data/storage';
+import { Meet, Race } from '@/types/schedule';
+import { Team } from '@/types/team';
 
 export default function MeetPage() {
     const { gameId, meetId } = useParams();
-    const [meet, setMeet] = useState<Meet | null>(null);
-    const [teamsMap, setTeamsMap] = useState<{ [key: number]: string }>({});
+    const [meet, setMeet] = useState<Meet>();
+    const [teams, setTeams] = useState<Team[]>([]);
+    const [races, setRaces] = useState<Race[]>([]);
+    const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
     const [teamPoints, setTeamPoints] = useState<{ [key: number]: number }>({});
-    const [racePoints, setRacePoints] = useState<{ [key: number]: { [key: number]: number } }>({});
+    const [racesMap, setRacesMap] = useState<{ [key: number]: Race }>({});
 
     useEffect(() => {
         async function fetchData() {
-            const gameData = await loadGameData(Number(gameId));
-            const selectedMeet = gameData?.leagueSchedule.meets.find(m => m.meetId === Number(meetId));
-            setMeet(selectedMeet || null);
+            const meets = await loadMeets(Number(gameId));
+            const selectedMeet = meets.find(meet => meet.meetId === Number(meetId));
+            if (!selectedMeet) throw new Error('Meet not found');
+            setMeet(selectedMeet);
+
+            const teamsData = await loadTeams(Number(gameId));
+            const racesData = await loadRaces(Number(gameId));
+            setTeams(teamsData);
+            setRaces(racesData);
 
             // Create a mapping of teamId to team college
-            const teamsMapping = gameData.teams.reduce((accumlated: { [key: number]: string }, team) => {
-                accumlated[team.teamId] = team.college;
-                return accumlated;
-            }, {});
+            const teamsMapping: { [key: number]: Team } = {};
+            teamsData.forEach(t => teamsMapping[t.teamId] = t);
             setTeamsMap(teamsMapping);
 
             // Calculate team points
-            const pointsMapping = meet?.teams.reduce((accumlated: { [key: number]: number }, team) => {
+            const pointsMapping = meet?.teams.reduce((accumulated: { [key: number]: number }, team) => {
                 if (team.points > 0) {
-                    accumlated[team.teamId] = team.points;
+                    accumulated[team.teamId] = team.points;
                 }
-                return accumlated;
+                return accumulated;
             }, {}) || {};
             setTeamPoints(pointsMapping);
 
             // Calculate team points for each race, excluding teams with 0 points
             const racePointsMapping: { [key: number]: { [key: number]: number } } = {};
-            meet?.races.forEach(race => {
-                racePointsMapping[race.raceId] = race.teams.reduce((accumulated: { [key: number]: number }, team) => {
-                    if (team.points > 0) {
-                        accumulated[team.teamId] = team.points;
-                    }
+            meet?.races.forEach(raceId => {
+                racePointsMapping[raceId] = races.reduce((accumulated: { [key: number]: number }, race) => {
+                    race.teams.forEach(team => {
+                        if (team.points > 0) {
+                            accumulated[team.teamId] = team.points;
+                        }
+                    });
                     return accumulated;
                 }, {});
             });
-            
-            setRacePoints(racePointsMapping);
+
+            const racesMapping: { [key: number]: Race } = {};
+            races.forEach(r => { racesMapping[r.raceId] = r; });
+            setRacesMap(racesMapping);
         }
         fetchData();
-    }, [gameId, meetId, meet?.races, meet?.season, meet?.teams]);
+    }, [gameId, meetId, meet?.races, meet?.season, meet?.teams, teams, races, teamPoints]);
 
     if (!meet) return <div>Loading...</div>;
 
@@ -72,41 +83,32 @@ export default function MeetPage() {
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Team Points</h2>
             <ul className="list-disc list-inside mb-6">
                 {sortedTeamPoints.map(([teamId, points]) => (
-                    <li key={teamId} className="text-lg text-gray-700 dark:text-gray-300">{teamsMap[Number(teamId)]}: {points} points</li>
+                    <li key={teamId} className="text-lg text-gray-700 dark:text-gray-300">{teamsMap[Number(teamId)]?.college}: {points} points</li>
                 ))}
             </ul>
-
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Teams Participating</h2>
             <ul className="list-disc list-inside mb-6">
                 {meet.teams.map((team, index) => (
-                    <li key={index} className="text-lg text-gray-700 dark:text-gray-300">{teamsMap[Number(team?.teamId)]}</li>
+                    <li key={index} className="text-lg text-gray-700 dark:text-gray-300">{teamsMap[Number(team?.teamId)]?.college}</li>
                 ))}
             </ul>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Races</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {meet.races.map((race, index) => {
+                {meet.races.map((raceId, index) => {
                     return (
                         <div key={index} className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
-                            <h3 className="text-xl font-semibold text-accent">{race.eventType}</h3>
-                            <p className="text-gray-700 dark:text-gray-300">Participants: <span className="font-semibold">{race.participants.length}</span></p>
+                            <h3 className="text-xl font-semibold text-accent">{racesMap[raceId]?.eventType}</h3>
+                            <p className="text-gray-700 dark:text-gray-300">Participants: <span className="font-semibold">{racesMap[raceId]?.participants.length}</span></p>
                             <h4 className="text-lg font-semibold mt-2">Team Points</h4>
                             <ul className="list-disc list-inside mb-4">
-                                {Object.entries(racePoints[race.raceId] || {})
-                                    .sort(([, pointsA], [, pointsB]) => {
-                                        if (meet.season === 'track_field') {
-                                            return pointsB - pointsA; // Descending order for track and field
-                                        } else if (meet.season === 'cross_country') {
-                                            return pointsA - pointsB; // Ascending order for cross country
-                                        }
-                                        return 0;
-                                    })
+                                {sortedTeamPoints
                                     .map(([teamId, points]) => (
-                                        <li key={teamId} className="text-gray-700 dark:text-gray-300">{teamsMap[Number(teamId)]}: {points} points</li>
+                                        <li key={teamId} className="text-gray-700 dark:text-gray-300">{teamsMap[Number(teamId)]?.college}: {points} points</li>
                                     ))}
                             </ul>
-                            <Link href={`/games/${gameId}/races/${race.raceId}`}>
+                            <Link href={`/games/${gameId}/races/${raceId}`}>
                                 <button className="px-4 py-2 bg-accent bg-accent-dark text-white rounded-lg transition hover:bg-accent-light mt-4">
                                     View Race Details
                                 </button>
@@ -118,4 +120,5 @@ export default function MeetPage() {
         </div>
     );
 }
+
 

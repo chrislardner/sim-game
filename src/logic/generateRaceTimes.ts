@@ -1,5 +1,3 @@
-import { Game } from "@/types/game";
-
 function getBaseTimeForEvent(eventType: string): number {
     const baselines = {
         '100m': (minMax['100m'][0] + minMax['100m'][1]) / 2,
@@ -33,36 +31,30 @@ function getEventVariability(eventType: keyof typeof variability): number {
 }
 export function generateRaceTime(playerId: number, eventType: string): number {
     const baseTime = getBaseTimeForEvent(eventType);
-    const skillFactor = getPlayerSkill(playerId, eventType) / 10; // Normalize skill (1-10) to 0.1-1.0
+    const skillFactor = getPlayerSkill(playerId, eventType) / 10; 
 
-    // Normal distribution parameters
     const mean = baseTime * (1 - skillFactor * 0.1); // Faster players skew closer to elite times
-    const stdDev = getEventVariability(eventType as keyof typeof variability); // Variability specific to the event
+    const stdDev = getEventVariability(eventType as keyof typeof variability); 
 
-    // Generate a time using normal distribution
-    const randomFactor = Math.random(); // Generate a random number between 0 and 1
-    const z = Math.sqrt(-2 * Math.log(randomFactor)) * Math.cos(2 * Math.PI * Math.random()); // Standard normal (z-score)
-    const raceTime = mean + stdDev * z; // Normal transformation
+    const randomFactor = Math.random(); 
+    const z = Math.sqrt(-2 * Math.log(randomFactor)) * Math.cos(2 * Math.PI * Math.random()); 
+    const raceTime = mean + stdDev * z;
 
-    // Apply environmental adjustments (e.g., weather, fatigue)
     const environmentalAdjustment = getEnvironmentalFactor(eventType);
     const adjustedTime = raceTime + environmentalAdjustment;
 
-    // Ensure time remains within plausible bounds
     return clampTime(adjustedTime, eventType as keyof typeof minMax);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getPlayerSkill(_playerId: number, _eventType: string): number {
-    // Example skill fetching logic; replace with actual data logic
     // Skill is a value between 1 (novice) and 10 (elite)
     return Math.floor(Math.random() * 10) + 1;
 }
 
 function getEnvironmentalFactor(eventType: string): number {
-    // Add small variability based on external factors
     const eventLength = getRaceLength(eventType);
-    return (Math.random() - 0.5) * (eventLength / 1000) * 2; // Small adjustment
+    return (Math.random() - 0.5) * (eventLength / 1000) * 2; 
 }
 
 const minMax = {
@@ -107,12 +99,3 @@ function getRaceLength(eventType: string): number {
     }
 }
 
-export function updatePlayerStats(game: Game, playerId: number, eventType: string, time: number) {
-    const player = game.teams.flatMap(team => team.players).find(p => p.playerId === playerId);
-    if (player) {
-        if (!player.stats[eventType]) {
-            player.stats[eventType] = 0;
-        }
-        player.stats[eventType] += time;
-    }
-}
