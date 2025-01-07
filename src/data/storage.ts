@@ -6,7 +6,7 @@ import { Meet, Race } from '@/types/schedule';
 
 // Database constants
 const DATABASE_NAME = 'sportsSimDB';
-const DATABASE_VERSION = 8;
+const DATABASE_VERSION = 10;
 
 export interface IDTracker {
     gameId: number;
@@ -19,105 +19,186 @@ export interface IDTracker {
 let db: IDBPDatabase | null = null;
 
 // Initialize the database
-export async function initializeDB() {
-    if (db) return db;
-
-    db = await openDB(DATABASE_NAME, DATABASE_VERSION, {
-        upgrade(db) {
-            if (!db.objectStoreNames.contains('global_ids')) {
-                db.createObjectStore('global_ids', { keyPath: 'key' }); // For tracking game_counter
+export async function initializeDB() {  
+    try {
+        db = await openDB(DATABASE_NAME, DATABASE_VERSION, {
+            upgrade(db) {
+                if (!db.objectStoreNames.contains('global_ids')) {
+                    db.createObjectStore('global_ids', { keyPath: 'key' }); // For tracking game_counter
+                }
+                if (!db.objectStoreNames.contains('games')) {
+                    db.createObjectStore('games', { keyPath: 'gameId' });
+                }
+                if (!db.objectStoreNames.contains('teams')) {
+                    db.createObjectStore('teams', { keyPath: ['gameId', 'teamId'] }).createIndex('by_game', 'gameId');
+                }
+                if (!db.objectStoreNames.contains('players')) {
+                    const playerStore = db.createObjectStore('players', { keyPath: ['gameId', 'playerId'] });
+                    playerStore.createIndex('by_team', ['gameId', 'teamId']);
+                    playerStore.createIndex('by_game', 'gameId');
+                }
+                if (!db.objectStoreNames.contains('meets')) {
+                    db.createObjectStore('meets', { keyPath: ['gameId', 'meetId'] }).createIndex('by_game', 'gameId');
+                }
+                if (!db.objectStoreNames.contains('races')) {
+                    const raceStore = db.createObjectStore('races', { keyPath: ['gameId', 'raceId'] });
+                    raceStore.createIndex('by_meet', ['gameId', 'meetId']);
+                    raceStore.createIndex('by_game', 'gameId');
+                }
+                if (!db.objectStoreNames.contains('id_trackers')) {
+                    db.createObjectStore('id_trackers', { keyPath: 'gameId' });
+                }
+            },
+            blocked() {
+                console.log('DB blocked');
+            },
+            terminated() {
+                console.log('DB terminated');
+            },
+            blocking() {     
+                console.log('DB blocking');
             }
-            if (!db.objectStoreNames.contains('games')) {
-                db.createObjectStore('games', { keyPath: 'gameId' });
-            }
-            if (!db.objectStoreNames.contains('teams')) {
-                db.createObjectStore('teams', { keyPath: ['gameId', 'teamId'] }).createIndex('by_game', 'gameId');
-            }
-            if (!db.objectStoreNames.contains('players')) {
-                db.createObjectStore('players', { keyPath: ['gameId', 'playerId'] }).createIndex('by_team', ['gameId', 'teamId']);
-            }
-            if (!db.objectStoreNames.contains('meets')) {
-                db.createObjectStore('meets', { keyPath: ['gameId', 'meetId'] }).createIndex('by_game', 'gameId');
-            }
-            if (!db.objectStoreNames.contains('races')) {
-                db.createObjectStore('races', { keyPath: ['gameId', 'raceId'] }).createIndex('by_meet', ['gameId', 'meetId']);
-            }
-            if (!db.objectStoreNames.contains('id_trackers')) {
-                db.createObjectStore('id_trackers', { keyPath: 'gameId' });
-            }
-        },
-    });
+        });
+    } catch (error) {
+        console.error('Failed to initialize the database:', error);
+        throw new Error('Failed to initialize the database');
+    }
 
     return db;
 }
 
-export async function saveGame(game: Game) {
-    const db = await initializeDB();
-    await db.put('games', game);
+async function putData(storeName: string, data: unknown): Promise<IDBValidKey> {
+    if (data === undefined || data === null) {
+        console.warn(`Attempted to put undefined or null data into ${storeName}`);
+        throw new Error(`Invalid data for ${storeName}`);
+    }
+
+    try {
+        const db = await initializeDB();
+        if (db) {
+            const dbSuccess = await db.put(storeName, data);
+            return dbSuccess;
+        } else {
+            console.error(`Database is not initialized. Failed to put data into ${storeName}`);
+            throw new Error(`Database is not initialized for ${storeName}`);
+        }
+    } catch (error) {
+        console.error(`Failed to put data into ${storeName}:`, error);
+        throw error;
+    }
 }
 
-export async function saveTeam(gameId: number, team: Team) {
-    const db = await initializeDB();
-    await db.put('teams', { ...team, gameId });
+export async function saveGame(game: Game): Promise<IDBValidKey> {
+    return await putData('games', game);
 }
 
-export async function savePlayer(gameId: number, player: Player) {
-    const db = await initializeDB();
-    await db.put('players', { ...player, gameId });
+export async function saveTeam(gameId: number, team: Team): Promise<IDBValidKey> {
+    return await putData('teams', { ...team, gameId });
 }
 
-export async function saveMeet(gameId: number, meet: Meet) {
-    const db = await initializeDB();
-    await db.put('meets', { ...meet, gameId });
+export async function savePlayer(gameId: number, player: Player): Promise<IDBValidKey> {
+    return await putData('players', { ...player, gameId });
 }
 
-export async function saveRace(gameId: number, race: Race) {
-    const db = await initializeDB();
-    await db.put('races', { ...race, gameId });
+export async function saveMeet(gameId: number, meet: Meet): Promise<IDBValidKey> {
+    return await putData('meets', { ...meet, gameId });
+}
+
+export async function saveRace(gameId: number, race: Race): Promise<IDBValidKey> {
+    return await putData('races', { ...race, gameId });
+}
+
+async function getData(storeName: string, key: unknown) {
+    try {
+        const db = await initializeDB();
+        if (db) {
+            return await db.get(storeName, key as IDBValidKey);
+        } else {
+            console.error(`Database is not initialized. Failed to get data from ${storeName}`);
+            return null;
+        }
+    } catch (error) {
+        console.error(`Failed to get data from ${storeName}:`, error);
+    }
 }
 
 export async function loadGameData(gameId: number) {
-    const db = await initializeDB();
-    const game = await db.get('games', gameId);
-    return game;
+    return await getData('games', gameId);
+}
+
+async function getAllFromIndex(storeName: string, indexName: string, key: unknown) {
+    try {
+        const db = await initializeDB();
+        if (db) {
+            return await db.getAllFromIndex(storeName, indexName, key as IDBValidKey);
+        } else {
+            console.error(`Database is not initialized. Failed to get data from index ${indexName} in ${storeName}`);
+            return null;
+        }
+    } catch (error) {
+        console.error(`Failed to get data from index ${indexName} in ${storeName}:`, error);
+    }
+}
+
+export async function loadTeams(gameId: number): Promise<Team[]> {
+    return await getAllFromIndex('teams', 'by_game', gameId) as Team[];
+}
+
+export async function loadPlayers(gameId: number): Promise<Player[]> {
+    return await getAllFromIndex('players', 'by_game', gameId) as Player[];
+}
+
+export async function loadMeets(gameId: number): Promise<Meet[]> {
+    return await getAllFromIndex('meets', 'by_game', gameId) as Meet[];
+}
+
+export async function loadRaces(gameId: number): Promise<Race[]> {
+    return await getAllFromIndex('races', 'by_game', gameId) as Race[];
 }
 
 export async function deleteGameData(gameId: number) {
-    const db = await initializeDB();
+    try {
+        const db = await initializeDB();
 
-    const game = await db.get('games', gameId);
-    if (!game) {
-        console.warn(`Game with ID ${gameId} does not exist.`);
-        return;
+        const game = await db.get('games', gameId);
+        if (!game) {
+            console.warn(`Game with ID ${gameId} does not exist.`);
+            return;
+        }
+
+        console.log(`Deleting game ${gameId} and all related data...`);
+
+        const deleteTx = db.transaction(['games', 'teams', 'players', 'meets', 'races', 'id_trackers'], 'readwrite');
+        const promises = [
+            deleteTx.objectStore('games').delete(gameId),
+            deleteTx.objectStore('teams').delete(IDBKeyRange.bound([gameId, 0], [gameId, Infinity])),
+            deleteTx.objectStore('players').delete(IDBKeyRange.bound([gameId, 0], [gameId, Infinity])),
+            deleteTx.objectStore('meets').delete(IDBKeyRange.bound([gameId, 0], [gameId, Infinity])),
+            deleteTx.objectStore('races').delete(IDBKeyRange.bound([gameId, 0], [gameId, Infinity])),
+            deleteTx.objectStore('id_trackers').delete(gameId),
+        ];
+        await Promise.all(promises);
+        await deleteTx.done;
+
+        if (!db) {
+            console.error('Database is not initialized.');
+            return;
+        }
+        const allGames = await db.getAllKeys('games');
+
+        const counterTx = db.transaction('global_ids', 'readwrite');
+        const counterStore = counterTx.objectStore('global_ids');
+
+        const newCounter = allGames.length > 0 ? Math.max(...allGames.map(Number)) : 0;
+        await counterStore.put({ key: 'game_counter', value: newCounter });
+        await counterTx.done;
+    } catch (error) {
+        console.error(`Failed to delete game data for gameId ${gameId}:`, error);
     }
-
-    console.log(`Deleting game ${gameId} and all related data...`);
-
-    const deleteTx = db.transaction(['games', 'teams', 'players', 'meets', 'races', 'id_trackers'], 'readwrite');
-    const promises = [
-        deleteTx.objectStore('games').delete(gameId),
-        deleteTx.objectStore('teams').delete(IDBKeyRange.only(gameId)),
-        deleteTx.objectStore('players').delete(IDBKeyRange.bound([gameId, 0], [gameId, Infinity])),
-        deleteTx.objectStore('meets').delete(IDBKeyRange.only(gameId)),
-        deleteTx.objectStore('races').delete(IDBKeyRange.bound([gameId, 0], [gameId, Infinity])),
-        deleteTx.objectStore('id_trackers').delete(gameId),
-    ];
-    await Promise.all(promises);
-    await deleteTx.done;
-
-    const allGames = await db.getAllKeys('games');
-
-    const counterTx = db.transaction('global_ids', 'readwrite');
-    const counterStore = counterTx.objectStore('global_ids');
-
-    const newCounter = allGames.length > 0 ? Math.max(...allGames.map(Number)) : 0;
-    await counterStore.put({ key: 'game_counter', value: newCounter });
-    await counterTx.done;
 }
 
 export async function initializeIDTracker(gameId: number) {
-    const db = await initializeDB();
-    await db.put('id_trackers', {
+    await putData('id_trackers', {
         gameId,
         lastPlayerId: 0,
         lastTeamId: 0,
@@ -127,44 +208,64 @@ export async function initializeIDTracker(gameId: number) {
 }
 
 export async function initializeGameCounter() {
-    const db = await initializeDB();
-    const tx = db.transaction('global_ids', 'readwrite');
-    const store = tx.objectStore('global_ids');
+    try {
+        const db = await initializeDB();
+        if (!db) {
+            throw new Error('Database is not initialized.');
+        }
+        const tx = db.transaction('global_ids', 'readwrite');
+        const store = tx.objectStore('global_ids');
 
-    const existingCounter = await store.get('game_counter');
-    if (!existingCounter) {
-        await store.put({ key: 'game_counter', value: 0 });
+        const existingCounter = await store.get('game_counter');
+        if (!existingCounter) {
+            await store.put({ key: 'game_counter', value: 0 });
+        }
+
+        await tx.done;
+    } catch (error) {
+        console.error('Failed to initialize game counter:', error);
     }
-
-    await tx.done;
 }
 
 export async function getNextGameId(): Promise<number> {
-    const db = await initializeDB();
-    const tx = db.transaction('global_ids', 'readwrite');
-    const store = tx.objectStore('global_ids');
+    try {
+        const db = await initializeDB();
+        const tx = db.transaction('global_ids', 'readwrite');
+        const store = tx.objectStore('global_ids');
 
-    const counter = await store.get('game_counter');
-    const newId = (counter?.value || 0) + 1;
+        const counter = await store.get('game_counter');
+        const newId = (counter?.value || 0) + 1;
 
-    await store.put({ key: 'game_counter', value: newId });
-    await tx.done;
+        await store.put({ key: 'game_counter', value: newId });
+        await tx.done;
 
-    return newId;
+        return newId;
+    } catch (error) {
+        console.error('Failed to get next game ID:', error);
+        throw error;
+    }
 }
 
 async function getNextId(gameId: number, field: keyof IDTracker): Promise<number> {
-    const db = await initializeDB();
-    const tx = db.transaction('id_trackers', 'readwrite');
-    const tracker = await tx.objectStore('id_trackers').get(gameId);
+    try {
+        const db = await initializeDB();
+        if (!db) {
+            throw new Error('Database is not initialized.');
+        }
+        const tx = db.transaction('id_trackers', 'readwrite');
+        const tracker = await tx.objectStore('id_trackers').get(gameId);
 
-    if (!tracker) throw new Error(`ID Tracker not initialized for game ${gameId}`);
+        if (!tracker) throw new Error(`ID Tracker not initialized for game ${gameId}`);
 
-    tracker[field]++;
-    await tx.objectStore('id_trackers').put(tracker);
+        tracker[field]++;
+        await tx.objectStore('id_trackers').put(tracker);
 
-    await tx.done;
-    return tracker[field];
+        await tx.done;
+        return tracker[field];
+    } catch (error) {
+        console.error(`Failed to get next ID for field ${field} in game ${gameId}:`, error);
+        throw error;
+    }
 }
 
 export const getNextPlayerId = (gameId: number) => getNextId(gameId, 'lastPlayerId');
@@ -173,32 +274,125 @@ export const getNextMeetId = (gameId: number) => getNextId(gameId, 'lastMeetId')
 export const getNextRaceId = (gameId: number) => getNextId(gameId, 'lastRaceId');
 
 export async function loadAllGames() {
-    const db = await initializeDB();
-    return db.getAll('games');
+    try {
+        const db = await initializeDB();
+        return await db.getAll('games');
+    } catch (error) {
+        console.error('Failed to load all games:', error);
+    }
 }
 
 export async function deleteAllGames() {
-    const db = await initializeDB();
+    try {
+        const db = await initializeDB();
 
-    console.log("Deleting all games and related data...");
+        console.log("Deleting all games and related data...");
 
-    const tx = db.transaction(['games', 'teams', 'players', 'meets', 'races', 'id_trackers'], 'readwrite');
+        const tx = db.transaction(['games', 'teams', 'players', 'meets', 'races', 'id_trackers'], 'readwrite');
 
-    await Promise.all([
-        tx.objectStore('games').clear(),
-        tx.objectStore('teams').clear(),
-        tx.objectStore('players').clear(),
-        tx.objectStore('meets').clear(),
-        tx.objectStore('races').clear(),
-        tx.objectStore('id_trackers').clear(),
-    ]);
+        await Promise.all([
+            tx.objectStore('games').clear(),
+            tx.objectStore('teams').clear(),
+            tx.objectStore('players').clear(),
+            tx.objectStore('meets').clear(),
+            tx.objectStore('races').clear(),
+            tx.objectStore('id_trackers').clear(),
+        ]);
 
-    await tx.done;
+        await tx.done;
 
-    const counterTx = db.transaction('global_ids', 'readwrite');
-    const counterStore = counterTx.objectStore('global_ids');
+        const counterTx = db.transaction('global_ids', 'readwrite');
+        const counterStore = counterTx.objectStore('global_ids');
 
-    await counterStore.put({ key: 'game_counter', value: 0 });
-    await counterTx.done;
+        await counterStore.put({ key: 'game_counter', value: 0 });
+        await counterTx.done;
+    } catch (error) {
+        console.error('Failed to delete all games:', error);
+    }
+}
 
+async function saveMultiple<T>(storeName: string, gameId: number, items: T[]): Promise<boolean> {
+    try {
+        const db = await initializeDB();
+        if (!db) {
+            console.error('Database is not initialized. Failed to save multiple items.');
+            return Promise.reject('Database is not initialized');
+        }
+        const tx = db.transaction(storeName, 'readwrite');
+        const store = tx.objectStore(storeName);
+        for (const item of items) {
+            if (item === undefined || item === null) {
+                console.warn(`Attempted to put undefined or null data into ${storeName}`);
+                continue;
+            }
+            store.put({ ...item, gameId });
+        }
+        await tx.done;
+        return Promise.resolve(true);
+    } catch (error) {
+        console.error(`Failed to save multiple items into ${storeName}:`, error);
+        return Promise.reject(error);
+    }
+}
+
+export async function saveTeams(gameId: number, teams: Team[]): Promise<boolean> {
+    return await saveMultiple('teams', gameId, teams);
+}
+
+export async function savePlayers(gameId: number, players: Player[]): Promise<boolean> {
+    return await saveMultiple('players', gameId, players);
+}
+
+export async function saveRaces(gameId: number, races: Race[]): Promise<boolean> {
+    return await saveMultiple('races', gameId, races);
+}
+
+export async function saveMeets(gameId: number, meets: Meet[]): Promise<boolean> {
+    return await saveMultiple('meets', gameId, meets);
+}
+
+export async function deleteMeet(gameId: number, meetId: number) {
+    try {
+        console.log(`Attempting to delete meet with gameId: ${gameId}, meetId: ${meetId}`);
+        const db = await initializeDB();
+        if (!db) {
+            console.error('Database is not initialized. Failed to delete meet.');
+            return;
+        }
+        const tx = db.transaction('meets', 'readwrite');
+        const store = tx.objectStore('meets');
+        const meet = await store.get([gameId, meetId]);
+        if (!meet) {
+            console.error(`Meet with gameId: ${gameId}, meetId: ${meetId} does not exist.`);
+            return;
+        }
+        await store.delete([gameId, meetId]);
+        await tx.done;
+        console.log(`Successfully deleted meet with gameId: ${gameId}, meetId: ${meetId}`);
+    } catch (error) {
+        console.error(`Failed to delete meet ${meetId}:`, error);
+    }
+}
+
+export async function deleteRace(gameId: number, raceId: number) {
+    try {
+        console.log(`Attempting to delete race with gameId: ${gameId}, raceId: ${raceId}`);
+        const db = await initializeDB();
+        if (!db) {
+            console.error('Database is not initialized. Failed to delete race.');
+            return;
+        }
+        const tx = db.transaction('races', 'readwrite');
+        const store = tx.objectStore('races');
+        const race = await store.get([gameId, raceId]);
+        if (!race) {
+            console.error(`Race with gameId: ${gameId}, raceId: ${raceId} does not exist.`);
+            return;
+        }
+        await store.delete([gameId, raceId]);
+        await tx.done;
+        console.log(`Successfully deleted race with gameId: ${gameId}, raceId: ${raceId}`);
+    } catch (error) {
+        console.error(`Failed to delete race ${raceId}:`, error);
+    }
 }
