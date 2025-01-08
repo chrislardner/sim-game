@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { loadGameData, loadTeams } from '@/data/storage';
 import { Game } from '@/types/game';
@@ -8,7 +8,8 @@ import { simulateWeek } from '@/logic/simulation';
 import { Team } from '@/types/team';
 
 export default function GameDashboard() {
-    const { gameId } = useParams();
+    const router = useRouter();
+    const { gameId } = router.query;
     const [gameData, setGameData] = useState<Game>();
     const [teams, setTeamsData] = useState<Team[]>();
 
