@@ -1,3 +1,4 @@
+// src/app/games/[gameId]/players/[playerId]/page.tsx
 "use client";
 
 import { useParams } from 'next/navigation';
