@@ -1,25 +1,27 @@
 // src/app/games/[gameId]/players/[playerId]/page.tsx
 "use client";
 
-import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { loadPlayers } from '@/data/storage';
 import { Player } from '@/types/player';
 import { display } from 'facesjs';
+import { use } from 'react';
 
-export default function PlayerPage() {
-    const { gameId, playerId } = useParams();
+export default function PlayerPage({ params }: { params: Promise<{ gameId: string, playerId: string }> }) {
+    const { gameId, playerId } = use(params);
     const [player, setPlayer] = useState<Player>();
     const faceContainerRef = useRef(null);
 
     useEffect(() => {
         async function fetchData() {
-            const playerData = await loadPlayers(Number(gameId));
-            const selectedPlayer = playerData.find(p => p.playerId === Number(playerId));
-            setPlayer(selectedPlayer);
+            if (gameId && playerId) {
+                const playerData = await loadPlayers(Number(gameId));
+                const selectedPlayer = playerData.find(p => p.playerId === Number(playerId));
+                setPlayer(selectedPlayer);
 
-            if (faceContainerRef.current && selectedPlayer?.face) {
-                display(faceContainerRef.current, selectedPlayer.face);
+                if (faceContainerRef.current && selectedPlayer?.face) {
+                    display(faceContainerRef.current, selectedPlayer.face);
+                }
             }
         }
         fetchData();

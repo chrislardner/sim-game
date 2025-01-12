@@ -1,15 +1,14 @@
 "use client";
 
-import { usePathname, useParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import GameSidebar from '@/components/GameSidebar';
 import '@/styles/globals.css';
 import { ThemeProvider } from '@/context/ThemeContext';
 import MainNav from '@/components/MainNav';
 
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const { gameId } = useParams();
+    const gameId = pathname.split('/games/')[1]?.split('/')[0] || '';
 
     const isInGameRoute = pathname.includes(`/games/${gameId}`);
 
@@ -19,8 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <ThemeProvider>
                     <div className="flex">
                         {/* Sidebar for game-specific navigation */}
-                        {isInGameRoute && <GameSidebar />}
-                        {/* Main content area with top-level navigation */}
+                        {isInGameRoute && <GameSidebar params={Promise.resolve({ gameId })} />}
                         <main className={`${isInGameRoute ? 'ml-64' : ''} flex-1`}>
                             <MainNav />
                             {children}

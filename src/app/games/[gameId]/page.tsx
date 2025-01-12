@@ -1,14 +1,13 @@
 "use client";
 
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { loadGameData, loadTeams } from '@/data/storage';
 import { Game } from '@/types/game';
 import { simulateWeek } from '@/logic/simulation';
 import { Team } from '@/types/team';
 
-export default function GameDashboard() {
-    const { gameId } = useParams();
+export default function GameDashboard({ params }: { params: Promise<{ gameId: string }> }) {
+    const { gameId } = use(params);
     const [gameData, setGameData] = useState<Game>();
     const [teams, setTeamsData] = useState<Team[]>();
 
@@ -58,7 +57,6 @@ export default function GameDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                     <h2 className="text-lg font-semibold">Current Team</h2>
-                    {/* <p>{gameData.currentTeam}</p> */ }
                     <p>{teams && teams[0]?.college}</p>
                 </div>
                 <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">

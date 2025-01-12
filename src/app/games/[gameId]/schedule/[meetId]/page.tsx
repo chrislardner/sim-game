@@ -1,17 +1,16 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { loadMeets, loadRaces, loadTeams } from '@/data/storage';
 import { Meet, Race } from '@/types/schedule';
 import { Team } from '@/types/team';
 
 export default function MeetPage() {
+    const router = useRouter();
     const { gameId, meetId } = useParams();
     const [meet, setMeet] = useState<Meet>();
-    const [teams, setTeams] = useState<Team[]>([]);
-    const [races, setRaces] = useState<Race[]>([]);
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
     const [teamPoints, setTeamPoints] = useState<{ [key: number]: number }>({});
     const [racesMap, setRacesMap] = useState<{ [key: number]: Race }>({});
@@ -25,8 +24,6 @@ export default function MeetPage() {
 
             const teamsData = await loadTeams(Number(gameId));
             const racesData = await loadRaces(Number(gameId));
-            setTeams(teamsData);
-            setRaces(racesData);
 
             // Create a mapping of teamId to team college
             const teamsMapping: { [key: number]: Team } = {};
@@ -34,18 +31,18 @@ export default function MeetPage() {
             setTeamsMap(teamsMapping);
 
             // Calculate team points
-            const pointsMapping = meet?.teams.reduce((accumulated: { [key: number]: number }, team) => {
+            const pointsMapping = selectedMeet.teams.reduce((accumulated: { [key: number]: number }, team) => {
                 if (team.points > 0) {
                     accumulated[team.teamId] = team.points;
                 }
                 return accumulated;
-            }, {}) || {};
+            }, {});
             setTeamPoints(pointsMapping);
 
             // Calculate team points for each race, excluding teams with 0 points
             const racePointsMapping: { [key: number]: { [key: number]: number } } = {};
-            meet?.races.forEach(raceId => {
-                racePointsMapping[raceId] = races.reduce((accumulated: { [key: number]: number }, race) => {
+            selectedMeet.races.forEach(raceId => {
+                racePointsMapping[raceId] = racesData.reduce((accumulated: { [key: number]: number }, race) => {
                     race.teams.forEach(team => {
                         if (team.points > 0) {
                             accumulated[team.teamId] = team.points;
@@ -56,11 +53,11 @@ export default function MeetPage() {
             });
 
             const racesMapping: { [key: number]: Race } = {};
-            races.forEach(r => { racesMapping[r.raceId] = r; });
+            racesData.forEach(r => { racesMapping[r.raceId] = r; });
             setRacesMap(racesMapping);
         }
         fetchData();
-    }, [gameId, meetId, meet?.races, meet?.season, meet?.teams, teams, races, teamPoints]);
+    }, [gameId, meetId]);
 
     if (!meet) return <div>Loading...</div>;
 
@@ -108,11 +105,12 @@ export default function MeetPage() {
                                         <li key={teamId} className="text-gray-700 dark:text-gray-300">{teamsMap[Number(teamId)]?.college}: {points} points</li>
                                     ))}
                             </ul>
-                            <Link href={`/games/${gameId}/races/${raceId}`}>
-                                <button className="px-4 py-2 bg-accent bg-accent-dark text-white rounded-lg transition hover:bg-accent-light mt-4">
-                                    View Race Details
-                                </button>
-                            </Link>
+                            <button
+                                className="px-4 py-2 bg-accent bg-accent-dark text-white rounded-lg transition hover:bg-accent-light mt-4"
+                                onClick={() => router.push(`/games/${gameId}/races/${raceId}`)}
+                            >
+                                View Race Details
+                            </button>
                         </div>
                     );
                 })}
@@ -120,5 +118,3 @@ export default function MeetPage() {
         </div>
     );
 }
-
-
