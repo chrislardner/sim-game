@@ -110,7 +110,5 @@ export function generateTeamSchedules(meets: Meet[], teams: Team[], year: number
             .map((meet: Meet) => meet.meetId)
     }));
 
-    console.log(teamSchedule);
-
     return teamSchedule;
 }

@@ -28,7 +28,6 @@ export default function GameSidebar({ params }: { params: Promise<{ gameId: stri
                 <li><button onClick={() => handleNavigation(`/games/${gameId}/players`)} className="hover:text-accent">Players</button></li>
                 <li><button onClick={() => handleNavigation(`/games/${gameId}/schedule`)} className="hover:text-accent">Schedule</button></li>
                 <li><button onClick={() => handleNavigation(`/games/${gameId}/races`)} className="hover:text-accent">Races</button></li>
-                <li><button onClick={() => handleNavigation(`/games/${gameId}/playoffs`)} className="hover:text-accent">Playoffs</button></li>
             </ul>
         </aside>
     );

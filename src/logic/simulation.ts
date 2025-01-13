@@ -25,12 +25,11 @@ export async function simulateWeek(gameId: number) {
             loadRaces(gameId)
         ]);
     } catch (error) {
-        console.log("Error loading game data", error);
+        console.error("Error loading game data", error);
         return;
     }
 
     const phase: SeasonGamePhase = mapWeekToGamePhase(game.currentWeek).type;
-    console.log(game.currentWeek, phase);
     game.gamePhase = phase;
 
     let success = false;
@@ -45,7 +44,7 @@ export async function simulateWeek(gameId: number) {
     }
 
     if (!success) {
-        console.log("Simulation failed");
+        console.error("Simulation failed");
         return;
     }
 
@@ -56,7 +55,7 @@ export async function simulateWeek(gameId: number) {
     }
 
     if (!success) {
-        console.log("Increment week failed");
+        console.error("Increment week failed");
         return;
     }
 
@@ -93,11 +92,11 @@ export async function simulatePlayoffs(game: Game, teams: Team[], players: Playe
             return Promise.resolve(true);
         }
         else {
-            console.log(p1, p2, p5, "p1 p2 p5");
+            console.error(p1, p2, p5, "p1 p2 p5");
             return Promise.reject(false);
         }
     } catch (error) {
-        console.log("Error simulating playoffs", error);
+        console.error("Error simulating playoffs", error);
         return Promise.reject(false);
     }
 }
@@ -111,12 +110,12 @@ async function prepareForNextRound(game: Game, teams: Team[], players: Player[],
             const remainTeams = await determineWinnersByPoints(meetsForWeek, racesForWeek, players);
             game.remainingTeams = remainTeams;
         } catch (error) {
-            console.log("Error determining winners by points", error);
+            console.error("Error determining winners by points", error);
             return Promise.reject(false);
         }
 
         if(!game.remainingTeams || game.remainingTeams.length === 0 || game.remainingTeams[0] === -1) {
-            console.log("No remaining teams found");
+            console.error("No remaining teams found");
             return Promise.reject(false);
         }
 
@@ -125,11 +124,11 @@ async function prepareForNextRound(game: Game, teams: Team[], players: Player[],
             return Promise.resolve(true);
         }
 
-        console.log("error", game.remainingTeams);
+        console.error("error", game.remainingTeams);
         return Promise.reject(false);
     }
     catch (error) {
-        console.log("Error preparing for next round", error);
+        console.error("Error preparing for next round", error);
         return Promise.reject(false);
     }
 }
@@ -147,21 +146,18 @@ async function enterNextWeek(game: Game, teams: Team[], players: Player[], meets
 
         // Check if the playoffs are over
         if (game.currentWeek == 11 || game.currentWeek == 26 || game.currentWeek == 41) {
-            console.log(`Champion determined: Team ${game.remainingTeams[0]}`);
             return Promise.resolve(true);
         }
         return Promise.resolve(true);
     }
     catch (error) {
-        console.log("Error entering next week", error);
+        console.error("Error entering next week", error);
         return Promise.reject(false);
     }
 }
 
 export async function determineWinnersByPoints(matches: Meet[], races: Race[], players: Player[]): Promise<number[]> {
     let winners: number[] = [];
-
-    console.log(matches, "matches");
 
     try {
         for (const meet of matches) {
@@ -172,7 +168,7 @@ export async function determineWinnersByPoints(matches: Meet[], races: Race[], p
                 meet.races.forEach(race => {
                     races.filter(r => r.raceId === race).forEach(r => {
                         if (!r.teams) {
-                            console.log("No team in race");
+                            console.error("No team in race");
                             return Promise.reject([-1]);
                         }
                         r.teams.forEach(team => {
@@ -190,9 +186,7 @@ export async function determineWinnersByPoints(matches: Meet[], races: Race[], p
                 if (meet.week === 11 || meet.week === 26 || meet.week === 41) {
                 }
                 const teamstoPushIds: number[] = teamsToPush.map(([teamId]) => Number(teamId));
-                console.log(sortedTeams, "sorted teams", teamScores, "team scores");
 
-                console.log(teamsToPush, "teams to push");
                 winners = teamstoPushIds;
 
             } else if (meet && meet.season === 'track_field') {
@@ -216,7 +210,7 @@ export async function determineWinnersByPoints(matches: Meet[], races: Race[], p
             }
         }
     } catch (error) {
-        console.log("Error determining winners by points", error);
+        console.error("Error determining winners by points", error);
         return Promise.reject(error);
     }
 
@@ -240,13 +234,13 @@ export async function determineWinnersByPoints(matches: Meet[], races: Race[], p
             }
             winners = Array.from(topTwoTeams);
         } catch (error) {
-            console.log("Error determining top two teams by runner times", error);
+            console.error("Error determining top two teams by runner times", error);
             return Promise.reject(error);
         }
     }
 
     if(!winners || winners.length === 0) {
-        console.log("No winners found");
+        console.error("No winners found");
         return Promise.reject([-1]);
     }
 
@@ -260,20 +254,17 @@ async function incrementWeek(game: Game): Promise<Array<boolean>> {
         if (game.currentWeek > 52) {
             game.currentYear += 1;
             game.currentWeek = 1;
-            console.log("New Year!");
             return [true, true]
         }
         return [true, false];
     } catch (error) {
-        console.log("Error incrementing week", error);
+        console.error("Error incrementing week", error);
         return [false, false];
     }
 }
 
 async function handleOffseason(game: Game): Promise<boolean> {
-    if (game.currentWeek === 12 || game.currentWeek === 27 || game.currentWeek === 42) {
-        console.log(`Champion determined: Team ${game.remainingTeams[0]}`);
-    }
+
     game.remainingTeams = game.teams; // Reset for the next season
     return Promise.resolve(true);
 }
@@ -292,7 +283,7 @@ async function simulateMeetsForWeek(game: Game, meets: Meet[], races: Race[]): P
                 if (participantIndex !== -1) {
                     race.participants[participantIndex].playerTime = raceTime;
                 } else {
-                    console.log(`Participant with ID ${participant.playerId} not found in race`);
+                    console.error(`Participant with ID ${participant.playerId} not found in race`);
                     return Promise.reject(false);
                 }
             }
@@ -305,20 +296,19 @@ async function simulateMeetsForWeek(game: Game, meets: Meet[], races: Race[]): P
 async function updateChampionshipWeek(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
     const shedObj = mapWeekToGamePhase(game.currentWeek);
     const foundMeet = meets.find(meet => meet.week === game.currentWeek + 1 && meet.year === game.currentYear);
-    console.log(game.remainingTeams, "game.remainingTeams");
 
     if(!game.remainingTeams) {
-        console.log("No game remaining teams found");
+        console.error("No game remaining teams found");
         return Promise.reject(false);
     }
 
     if(!teams) {
-        console.log("No teams found");
+        console.error("No teams found");
         return Promise.reject(false);
     }
 
     if (!foundMeet) {
-        console.log("Could not find meet for championship week");
+        console.error("Could not find meet for championship week");
         return Promise.reject(false);
     }
     const foundRaces = races.filter(race => race.meetId === foundMeet.meetId);
@@ -334,13 +324,11 @@ async function updateChampionshipWeek(game: Game, teams: Team[], players: Player
 
     const newRaces = await createRacesForMeet(teams, players, game.gameId, shedObj.season, foundMeet.meetId, game.currentYear);
 
-    console.log(newRaces, "newRaces created");
 
     const meetTeams = teams.filter(team => game.remainingTeams.includes(team.teamId)).map(team => ({ teamId: team.teamId, points: 0, has_five_racers: false }));
-    console.log(meetTeams, "meetTeams");
 
     if(!meetTeams) {
-        console.log("No meet teams found");
+        console.error("No meet teams found");
         return Promise.reject(false);
     }
 
@@ -361,11 +349,11 @@ async function updateChampionshipWeek(game: Game, teams: Team[], players: Player
     await saveRaces(game.gameId, races);
 
     if (!newRaces.length) {
-        console.log("No new races created");
+        console.error("No new races created");
         return Promise.reject(false);
     }
     if (!newMeet.teams.length) {
-        console.log("No teams in new meet");
+        console.error("No teams in new meet");
         return Promise.reject(false);
     }
     return Promise.resolve(true);

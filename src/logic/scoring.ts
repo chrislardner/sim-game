@@ -41,7 +41,7 @@ export async function updateTeamAndPlayerPoints(game: Game, teams: Team[], playe
         });
         return Promise.resolve(true);
     } catch (error) {
-        console.log("Error updating team and player points", error);
+        console.error("Error updating team and player points", error);
         return Promise.reject(false);
     }
 }

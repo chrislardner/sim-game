@@ -1,6 +1,5 @@
 import { Conference, School } from "@/types/regionals";
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 type CollegeEntry = School;
 
 type ConferenceEntry = Conference;
@@ -88,8 +87,8 @@ export async function generateRandomTeam(): Promise<CollegeEntry | null> {
     }
 }
 
-// Generate multiple random colleges
-export async function generateCollegesbyConferenceId(conferenceId: number): Promise<CollegeEntry[]> {
+// Generate colleges based on conference Id
+export async function getCollegesbyConferenceId(conferenceId: number): Promise<CollegeEntry[]> {
     try {
         if (!isDataLoaded) {
             await preloadMatchedData();

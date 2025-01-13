@@ -10,10 +10,12 @@ import { Player } from '@/types/player';
 import { Meet, Race } from '@/types/schedule';
 
 
-export async function initializeNewGame(conferenceIds: number[], numPlayersPerTeam: number): Promise<Game> {
+export async function initializeNewGame(conferenceIds: number[], numPlayersPerTeam: number, selectedSchoolId: number ): Promise<Game> {
     const teams: Team[] = [];
     const players: Player[] = [];
     const currentYear = 2024;
+
+    console.log(selectedSchoolId);
 
     initializeGameCounter();
     const gameId = await getNextGameId();
@@ -54,13 +56,19 @@ export async function initializeNewGame(conferenceIds: number[], numPlayersPerTe
         remainingTeams: teams.map(team => team.teamId),
     };
 
-    const promiseGame = await saveGame(game);
-    const promiseTeams = await saveTeams(gameId, teams);
-    const promiseMeets = await saveMeets(gameId, scheduleObject.meets);
-    const promisePlayers = await savePlayers(gameId, players);
-    const promiseRaces = await saveRaces(gameId, scheduleObject.races);
+    try {
+        await Promise.all([
+            saveGame(game),
+            saveTeams(gameId, teams),
+            saveMeets(gameId, scheduleObject.meets),
+            savePlayers(gameId, players),
+            saveRaces(gameId, scheduleObject.races)
+        ]);
+    } catch (error) {
+        console.error('Error saving game data:', error);
+        throw new Error('Failed to save game data');
+    }
 
-    console.log(await promiseGame, await promiseTeams, await promiseMeets, await promisePlayers, await promiseRaces);
     return game;
 }
 
