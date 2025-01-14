@@ -15,8 +15,6 @@ export async function initializeNewGame(conferenceIds: number[], numPlayersPerTe
     const players: Player[] = [];
     const currentYear = 2024;
 
-    console.log(selectedSchoolId);
-
     initializeGameCounter();
     const gameId = await getNextGameId();
     initializeIDTracker(gameId);
@@ -54,6 +52,7 @@ export async function initializeNewGame(conferenceIds: number[], numPlayersPerTe
         gamePhase: 'regular',
         leagueSchedule,
         remainingTeams: teams.map(team => team.teamId),
+        selectedCollegeId: selectedSchoolId,
     };
 
     try {
