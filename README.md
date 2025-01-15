@@ -12,7 +12,6 @@ Sim Game is a sports simulation web application inspired by games like *Basketba
   - [Playoffs Simulation](#playoffs-simulation)
 - [Customizations](#customizations)
 - [Future Plans](#future-plans)
-- [Acknowledgments](#acknowledgments)
 
 ---
 
@@ -108,42 +107,6 @@ The game operates on a **yearly cycle**, broken into the following phases:
 
 6. **Final Offseason (Weeks 42–52)**:
    - End-of-season awards and team management.
-
----
-
-### Scoring Systems
-
-#### Cross Country
-
-- **Individual Scoring**:
-  - Top 5 participants for each team are marked as `team_top_five`.
-  - The position determines the points directly (eg: first place gets 1 point, second place gets 2 points, etc.).
-
-- **Team Scoring**:
-  - Sum of `team_top_five` scores determines team points.
-  - The team with the least points wins.
-
-#### Track & Field
-
-- **Individual Scoring**:
-  - Points awarded for top 6 places: 1st = 10, 2nd = 8, ..., 6th = 1.
-
-- **Team Scoring**:
-  - Total team points are the sum of individual scores.
-  - The team with the most points wins.
-
----
-
-## Customizations
-
-- **Player Faces**:
-  - Uses [faces.js](https://github.com/zengm-games/facesjs) to generate random cartoon faces for each player.
-
-- **Dark Mode**:
-  - Persistent across sessions, with styles by TailwindCSS.
-
-- **Dynamic Routing**:
-  - Each game, team, and player has its own detailed page.
 
 ---
 
