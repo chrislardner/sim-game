@@ -26,6 +26,8 @@ export async function handleNewRecruits(teams: Team[], players: Player[], gameId
                 player.teamId = -1;
             });
 
+            const teamGraduatedplayersSubArchetype = teamGraduatedplayers.map((player: Player) => player.playerSubArchetype);
+
             players = players.filter((player: Player) => !teamGraduatedplayers.includes(player)); // Remove graduated players from players list
 
             // Promote remaining players
@@ -37,7 +39,7 @@ export async function handleNewRecruits(teams: Team[], players: Player[], gameId
 
             // Add recruits as new freshmen
             for (let i = 0; i < graduatingSeniors.length; i++) {
-                const player = await createPlayer(gameId, team.teamId, 1);
+                const player = await createPlayer(gameId, team.teamId, 1, teamGraduatedplayersSubArchetype[i]);
                 team.players.push(player.playerId);
                 players.push(player);
             }

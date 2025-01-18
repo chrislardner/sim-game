@@ -3,9 +3,13 @@ import { Player } from "@/types/player";
 import { generate } from "facesjs";
 import { generateRandomFullName } from "../data/parseNames";
 import { getNextPlayerId, savePlayer } from "@/data/storage";
+import { generatePlayerRatings } from "./generatePlayerRatings";
+import { subArchetype } from "@/constants/subArchetypes";
 
-export async function createPlayer(gameId: number, teamId: number, year: number = Math.random() < 0.5 ? 1 : (Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 3 : 4))): Promise<Player> {
-
+export async function createPlayer(gameId: number, teamId: number, year: number, playerSubArchetype: subArchetype): Promise<Player> {
+    if (year === -1) {
+        year = Math.random() < 0.5 ? 1 : (Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 3 : 4))
+    }
     const newPlayerId = await getNextPlayerId(gameId);
 
     const jersey = ["jersey", "jersey2", "jersey3", "jersey4", "jersey5"];
@@ -22,6 +26,8 @@ export async function createPlayer(gameId: number, teamId: number, year: number 
     const name = await generateRandomFullName();
     const seasons = generateSeasonTypes();
 
+    const playerRatings = generatePlayerRatings(newPlayerId, playerSubArchetype, year);
+
     const player: Player = {
         playerId: newPlayerId,
         teamId,
@@ -32,6 +38,8 @@ export async function createPlayer(gameId: number, teamId: number, year: number 
         eventTypes: generateEventTypes(seasons),
         face,
         gameId,
+        playerRatings,
+        playerSubArchetype,
     };
 
     await savePlayer(gameId, player); // Save player to IndexedDB
