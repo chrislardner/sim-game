@@ -10,6 +10,7 @@ import { Player } from '@/types/player';
 import { Meet, Race } from '@/types/schedule';
 import { subArchetype } from '@/constants/subArchetypes';
 import { calculateSubArchetype } from './calculateSubArchetype';
+import { calculateTeamOvrs } from './calculateTeamOvr';
 
 
 export async function initializeNewGame(conferenceIds: number[], numPlayersPerTeam: number, selectedSchoolId: number ): Promise<Game> {
@@ -31,6 +32,7 @@ export async function initializeNewGame(conferenceIds: number[], numPlayersPerTe
                 players.push(player);
                 team.players.push(player.playerId);
             }
+            calculateTeamOvrs(team, players);
         }
         teams.push(...conferenceTeams);
     }
@@ -46,6 +48,13 @@ export async function initializeNewGame(conferenceIds: number[], numPlayersPerTe
 
     assignTeamSchedules(teams, teamSchedules);
     
+    const conferences = await getAllConferences();
+    const conferenceIdMap = Object.fromEntries(
+        conferences.map(conference => [conference.conferenceId, conference.conferenceName])
+    );
+
+    console.log(conferenceIdMap);
+
     const game: Game = {
         gameId,
         teams: teams.map(team => team.teamId),
@@ -56,6 +65,7 @@ export async function initializeNewGame(conferenceIds: number[], numPlayersPerTe
         leagueSchedule,
         remainingTeams: teams.map(team => team.teamId),
         selectedCollegeId: selectedSchoolId,
+        conferenceIdMap,
     };
 
     try {

@@ -48,7 +48,7 @@ export async function getAllConferences(): Promise<ConferenceEntry[]> {
 }
 
 // Get a conference by its ID
-function getConferenceById(conferenceId: number): ConferenceEntry | null {
+export function getConferenceById(conferenceId: number): ConferenceEntry | null {
     return conferences.find((conf) => conf.conferenceId === conferenceId) || null;
 }
 

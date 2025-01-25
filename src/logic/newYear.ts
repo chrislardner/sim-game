@@ -6,6 +6,7 @@ import { Player } from '@/types/player';
 import { Meet, Race } from '@/types/schedule';
 import { assignTeamSchedules } from './gameSetup';
 import { savePlayers, saveTeams } from '@/data/storage';
+import { calculateTeamOvrs } from './calculateTeamOvr';
 
 
 // Transition to next season: graduating seniors and adding new recruits
@@ -43,6 +44,8 @@ export async function handleNewRecruits(teams: Team[], players: Player[], gameId
                 team.players.push(player.playerId);
                 players.push(player);
             }
+
+            calculateTeamOvrs(team, players);
         });
         await savePlayers(gameId, players);
         await saveTeams(gameId, teams);

@@ -12,6 +12,7 @@ export interface Game {
     leagueSchedule: YearlyLeagueSchedule;    // Full season schedule
     remainingTeams: number[]; // TeamIds still in the playoffs
     selectedCollegeId: number
+    conferenceIdMap: { [key: number]: string };   // id to name
 }
 
 export interface GameSetup {
