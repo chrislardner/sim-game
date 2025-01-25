@@ -6,20 +6,21 @@ export interface PlayerRatings {
     playerId: number;
     overall: number;
     potential: number;
-    strength: number;
     injuryResistance: number;
     consistency: number;
-    athleticism: number;
     endurance: number;
+    typeRatings: TypeRatings
     // Important for Long Distance Runner
-    longDistance: number;
     pacing: number;
+    stamina: number;
+    mentalToughness: number;
     // Important for Middle Distance Runner
-    middleDistance: number;
     // Important for Sprinter
-    sprinting: number;
     acceleration: number;
     explosiveness: number;
+    topSpeed: number;
+    athleticism: number;
+    strength: number;
     // // Important for Hurdler --  will implement later
     // hurdling: number;
     // flexibility: number;
@@ -31,6 +32,12 @@ export interface PlayerRatings {
     // power: number;
 }
 
+export interface TypeRatings {
+    longDistanceOvr: number;
+    middleDistanceOvr: number;
+    shortDistanceOvr: number;
+}
+
 export interface PlayerPersonality {
     playerId: number;
     discipline: number;
@@ -39,10 +46,15 @@ export interface PlayerPersonality {
     leadership: number;
     teamwork: number;
     experience: number;
-    mentalToughness: number;
     academics: number;
     prestige: number;
     locationPreference: number;
+}
+
+export interface PlayerArch {
+    isSprinter: boolean;
+    isMiddleDistance: boolean;
+    isLongDistance: boolean;
 }
 
 export interface Player {
@@ -51,6 +63,7 @@ export interface Player {
     teamId: number;
     firstName: string;
     lastName: string;
+    playerArch: PlayerArch;
     eventTypes: { cross_country: string[]; track_field: string[] };
     seasons: ('track_field' | 'cross_country')[]; 
     year: number;

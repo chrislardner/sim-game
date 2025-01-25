@@ -11,6 +11,10 @@ export interface Team {
     schoolId: number;
     state: string;
     city: string;
+    ovr: number;
+    sprint_ovr: number;
+    middle_ovr: number;
+    long_ovr: number;
 }
 
 // Schedule for individual teams

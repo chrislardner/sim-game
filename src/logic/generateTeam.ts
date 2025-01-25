@@ -33,7 +33,11 @@ export async function createTeam(gameId: number, year: number, school: School): 
         conferenceId: school.conferenceId,
         schoolId: school.collegeId,
         state: school.state,
-        city: school.city
+        city: school.city,
+        ovr: 0,
+        sprint_ovr: 0,
+        middle_ovr: 0,
+        long_ovr: 0,
     };
   
     return teamData;
