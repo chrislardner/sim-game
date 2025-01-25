@@ -77,14 +77,14 @@ export async function simulateWeek(gameId: number) {
 }
 
 async function simulateRegularSeason(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
-    await simulateMeetsForWeek(game, meets, races);
+    await simulateMeetsForWeek(game, meets, races, players);
     await updateTeamAndPlayerPoints(game, teams, players, meets, races);
     return Promise.resolve(true);
 }
 
 export async function simulatePlayoffs(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
     try {
-        const p1 = await simulateMeetsForWeek(game, meets, races);
+        const p1 = await simulateMeetsForWeek(game, meets, races, players);
         const p2 = await updateTeamAndPlayerPoints(game, teams, players, meets, races);
 
         const p5 = await prepareForNextRound(game, teams, players, meets, races);
@@ -269,7 +269,7 @@ async function handleOffseason(game: Game): Promise<boolean> {
     return Promise.resolve(true);
 }
 
-async function simulateMeetsForWeek(game: Game, meets: Meet[], races: Race[]): Promise<boolean> {
+async function simulateMeetsForWeek(game: Game, meets: Meet[], races: Race[], players: Player[]): Promise<boolean> {
     // Simulate all meets for the current week
     const week = game.currentWeek;
     const year = game.currentYear
@@ -278,7 +278,12 @@ async function simulateMeetsForWeek(game: Game, meets: Meet[], races: Race[]): P
         const meetRaces = races.filter(race => meet.races.includes(race.raceId));
         for (const race of meetRaces) {
             for (const participant of race.participants) {
-                const raceTime = generateRaceTime(participant.playerId, race.eventType);
+                const player: Player | undefined = players.find(p => p.playerId === participant.playerId);
+                if (player === undefined) {
+                    console.error("No player found");
+                    return Promise.reject(false);
+                }
+                const raceTime = generateRaceTime(race.eventType, player);
                 const participantIndex = race.participants.findIndex(p => p.playerId === participant.playerId);
                 if (participantIndex !== -1) {
                     race.participants[participantIndex].playerTime = raceTime;
