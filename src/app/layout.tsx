@@ -5,6 +5,7 @@ import GameSidebar from '@/components/GameSidebar';
 import '@/styles/globals.css';
 import { ThemeProvider } from '@/context/ThemeContext';
 import MainNav from '@/components/MainNav';
+import { Analytics } from "@vercel/analytics/react"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         </main>
                     </div>
                 </ThemeProvider>
+                <Analytics />
             </body>
         </html>
     );
