@@ -1,14 +1,18 @@
 "use client";
 
-import { useRouter } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
 import { loadTeams, loadMeets, loadRaces, loadGameData } from '@/data/storage';
 import { Meet, Race } from '@/types/schedule';
 import { Team } from '@/types/team';
 import { Game } from '@/types/game';
+import Table from '@/components/Table'; // Adjust the import path as necessary
+
+type TransformedMeet = Omit<Meet, 'teams' | 'races'> & {
+    teams: string;
+    races: string;
+};
 
 export default function LeagueSchedulePage({ params }: { params: Promise<{ gameId: string }> }) {
-    const router = useRouter();
     const { gameId } = use(params);
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
     const [meets, setMeets] = useState<Meet[]>([]);
@@ -39,29 +43,27 @@ export default function LeagueSchedulePage({ params }: { params: Promise<{ gameI
 
     if (!meets) return <div>Loading...</div>;
 
+    const columns: { key: keyof TransformedMeet; label: string }[] = [
+        { key: 'week', label: 'Week' },
+        { key: 'type', label: 'Type' },
+        { key: 'season', label: 'Season' },
+        { key: 'year', label: 'Year' },
+        { key: 'teams', label: 'Teams' },
+        { key: 'races', label: 'Races' },
+    ];
+
+    const data: TransformedMeet[] = meets.map(meet => ({
+        ...meet,
+        teams: meet.teams.map(team => teamsMap[team.teamId]?.college).join(', '),
+        races: meet.races.map(raceId => racesMap[raceId]?.eventType).join(', '),
+    }));
+
+    const getRowLink = (meet: TransformedMeet) => `/games/${gameId}/schedule/${meet.meetId}`;
+
     return (
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">League Schedule</h1>
-            {meets?.sort((a, b) => a.week - b.week)
-                .map((meet, index) => (
-                    <div
-                        key={index}
-                        className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors mb-4"
-                        onClick={() => router.push(`/games/${gameId}/schedule/${meet.meetId}`)}
-                    >
-                        <h2 className="text-xl font-semibold text-accent">Week {meet.week} - {meet.type}</h2>
-                        <p className="text-gray-700 dark:text-gray-300">Meet Type: <span className="font-semibold">{meet.season} - {meet.year}</span></p>
-                        <p className="text-gray-700 dark:text-gray-300">Teams: {meet.teams.map(team => teamsMap[team.teamId]?.college).join(', ')}</p>
-                        <div className="mt-2">
-                            <h3 className="text-lg font-semibold">Races:</h3>
-                            <ul>
-                                {meet.races.map((raceId, i) => (
-                                    <li key={i} className="text-gray-700 dark:text-gray-300">Event: {racesMap[raceId]?.eventType}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-                ))}
+            <Table data={data} columns={columns} getRowLink={getRowLink} linkColumns={['week']} />
         </div>
     );
 }

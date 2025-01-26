@@ -5,12 +5,13 @@ import { use, useEffect, useState } from 'react';
 import { loadPlayers, loadTeams } from '@/data/storage';
 import { Team } from '@/types/team';
 import { Player } from '@/types/player';
+import Table from '@/components/Table'; // Adjust the import path as necessary
 
 export default function TeamPage({ params }: { params: Promise<{ gameId: string, teamId: string }> }) {
     const router = useRouter();
     const { gameId, teamId } = use(params);
     const [team, setTeam] = useState<Team>();
-    const [players, setTeamPlayers] = useState<Player[]>();
+    const [players, setTeamPlayers] = useState<Player[]>([]);
 
     useEffect(() => {
         async function fetchData() {
@@ -26,13 +27,29 @@ export default function TeamPage({ params }: { params: Promise<{ gameId: string,
 
     if (!team) return <div>Loading...</div>;
 
-    const handlePlayerClick = (playerId: number) => {
-        router.push(`/games/${gameId}/players/${playerId}`);
-    };
-
     const handleScheduleClick = () => {
         router.push(`/games/${gameId}/teams/${teamId}/schedule`);
     };
+
+    const columns: { key: "fullName" | "year" | "seasons" | "overall" | "potential" | "shortDistanceOvr" | "middleDistanceOvr" | "longDistanceOvr", label: string }[] = [
+        { key: 'fullName', label: 'Full Name' },
+        { key: 'year', label: 'Year' },
+        { key: 'seasons', label: 'Seasons' },
+        { key: 'overall', label: 'Overall' },
+        { key: 'potential', label: 'Potential' },
+        { key: 'shortDistanceOvr', label: 'Short Distance Ovr' },
+        { key: 'middleDistanceOvr', label: 'Middle Distance Ovr' },
+        { key: 'longDistanceOvr', label: 'Long Distance Ovr' },
+    ];
+
+    const data = players.map(player => ({
+        ...player,
+        fullName: `${player.firstName} ${player.lastName}`,
+        ...player.playerRatings,
+        ...player.playerRatings.typeRatings,
+    }));
+
+    const getRowLink = (player: Player) => `/games/${gameId}/players/${player.playerId}`;
 
     return (
         <div className="p-4">
@@ -46,19 +63,7 @@ export default function TeamPage({ params }: { params: Promise<{ gameId: string,
             </button>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Players</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {players && players.map((player: Player) => (
-                    <div
-                        key={player.playerId}
-                        className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors cursor-pointer hover:shadow-xl"
-                        onClick={() => handlePlayerClick(player.playerId)}
-                    >
-                        <h3 className="text-xl font-semibold text-accent">{player.firstName} {player.lastName}</h3>
-                        <p className="text-gray-700 dark:text-gray-300">Year: <span className="font-semibold">{player.year}</span></p>
-                        <p className="text-gray-700 dark:text-gray-300">Season(s): <span className="font-semibold">{player.seasons.join(', ')}</span></p>
-                    </div>
-                ))}
-            </div>
+            <Table data={data} columns={columns} getRowLink={getRowLink} linkColumns={['fullName']} />
         </div>
     );
 }
