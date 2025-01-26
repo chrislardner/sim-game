@@ -3,13 +3,11 @@
 import { loadGameData, loadTeams, loadMeets } from '@/data/storage';
 import { Game } from '@/types/game';
 import { Team } from '@/types/team';
-import { YearlyLeagueSchedule, Meet } from '@/types/schedule';
-import { useRouter } from 'next/navigation';
+import { Meet } from '@/types/schedule';
 import { useEffect, useState } from 'react';
 import Table from '@/components/Table';
 
 export default function StandingsPage({ params }: { params: { gameId: string } }) {
-    const router = useRouter();
     const { gameId } = params;
     const [game, setGame] = useState<Game | null>(null);
     const [teams, setTeams] = useState<Team[]>([]);
@@ -54,7 +52,7 @@ export default function StandingsPage({ params }: { params: { gameId: string } }
         }))
     );
 
-    const getRowLink = (item: any) => `/games/${gameId}/meets/${item.meetId}`;
+    const getRowLink = (item: Meet) => `/games/${gameId}/meets/${item.meetId}`;
 
     return (
         <div className="p-8">
