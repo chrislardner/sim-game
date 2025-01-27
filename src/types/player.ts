@@ -10,20 +10,22 @@ export interface PlayerRatings {
     consistency: number;
     endurance: number;
     typeRatings: TypeRatings
+    athleticism: number;
+
     // Important for Long Distance Runner
     pacing: number;
     stamina: number;
     mentalToughness: number;
     // Important for Middle Distance Runner
+    speedStamina: number;
     // Important for Sprinter
     acceleration: number;
     explosiveness: number;
     topSpeed: number;
-    athleticism: number;
     strength: number;
-    // // Important for Hurdler --  will implement later
-    // hurdling: number;
+    // Important for Hurdler
     // flexibility: number;
+    // coordination: number;
     // // Important for Jumper
     // jumping: number;
     // balance: number;
@@ -36,6 +38,7 @@ export interface TypeRatings {
     longDistanceOvr: number;
     middleDistanceOvr: number;
     shortDistanceOvr: number;
+    // hurdlingOvr: number;
 }
 
 export interface PlayerPersonality {

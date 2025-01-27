@@ -6,6 +6,7 @@ import { loadPlayers } from '@/data/storage';
 import { Player } from '@/types/player';
 import { display } from 'facesjs';
 import PlayerResults from '@/components/PlayerResults';
+import PlayerRatingsTable from '@/components/PlayerRatingsTable';
 
 export default function PlayerPage({ params }: { params: Promise<{ gameId: string, playerId: string }> }) {
     const { gameId, playerId } = use(params);
@@ -51,27 +52,9 @@ export default function PlayerPage({ params }: { params: Promise<{ gameId: strin
             </div>
             <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg mt-4 transition-colors">
                 <h2 className="text-xl font-semibold text-accent mb-2">Player Stats</h2>
-                <ul className="text-gray-700 dark:text-gray-300">
-                    <li>Overall: {player.playerRatings?.overall}</li>
-                    <li>Potential: {player.playerRatings?.potential}</li>
-                    <li>Stength: {player.playerRatings?.strength}</li>
-                    <li>Injury Resistance: {player.playerRatings?.injuryResistance}</li>
-                    <li>Endurance: {player.playerRatings?.endurance}</li>
-                    <li>Consistency: {player.playerRatings?.consistency}</li>
-                    <li>Athleticism: {player.playerRatings?.athleticism}</li>
-                    <li>Long Distance: {player.playerRatings?.typeRatings.longDistanceOvr}</li>
-                    <li>Pacing: {player.playerRatings?.pacing}</li>
-                    <li>Stamina: {player.playerRatings?.stamina}</li>
-                    <li>Mental Toughness: {player.playerRatings?.mentalToughness}</li>
-                    <li>Top Speed: {player.playerRatings?.topSpeed}</li>
-                    <li>Middle Distance: {player.playerRatings?.typeRatings.middleDistanceOvr}</li>
-                    <li>Short Distance: {player.playerRatings?.typeRatings.shortDistanceOvr}</li>
-                    <li>Acceleration: {player.playerRatings?.acceleration}</li>
-                    <li>Explosiveness: {player.playerRatings?.explosiveness}</li>
-                </ul>
+                {player.playerRatings && <PlayerRatingsTable playerRatings={player.playerRatings} />}
             </div>
             <PlayerResults gameId={Number(gameId)} playerId={Number(playerId)} />
         </div>
     );
 }
-

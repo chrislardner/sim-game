@@ -61,12 +61,12 @@ function generateEventTypes(playerSubArchetype: subArchetype): { cross_country: 
         track_field: [] as string[]
     };
 
-    if (playerSubArchetype.races.some(race => raceTypes.cross_country.includes(race))) {
-        events.cross_country.push(...playerSubArchetype.races.filter(race => raceTypes.cross_country.includes(race)));
+    if (playerSubArchetype.events.some(event => raceTypes.cross_country.includes(event))) {
+        events.cross_country.push(...playerSubArchetype.events.filter(event => raceTypes.cross_country.includes(event)));
     }
 
-    if (playerSubArchetype.races.some(race => raceTypes.track_field.includes(race))) {
-        events.track_field.push(...playerSubArchetype.races.filter(race => raceTypes.track_field.includes(race)));
+    if (playerSubArchetype.events.some(event => raceTypes.track_field.includes(event))) {
+        events.track_field.push(...playerSubArchetype.events.filter(event => raceTypes.track_field.includes(event)));
     }
 
     return events;
