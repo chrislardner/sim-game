@@ -26,18 +26,13 @@ export default function TeamsPage({ params }: { params: Promise<{ gameId: string
         }
     }, [gameId]);
 
-    const columns: { key: keyof Team | 'conference' | 'ovr_rank' | 'longDistance_rank' | 'middleDistance_rank' | 'shortDistance_rank' | 'xc_rank'; label: string }[] = [
+    const columns: { key: keyof Team | 'ovr_rank' | 'longDistance_rank' | 'middleDistance_rank' | 'shortDistance_rank' | 'xc_rank'; label: string }[] = [
         { key: 'college', label: 'College' },
-        { key: 'teamName', label: 'Team Name' },
-        { key: 'conference', label: 'Conference' },
         { key: 'ovr', label: 'Overall' },
-        { key: 'points', label: 'Points' },
-        { key: 'state', label: 'State' },
-        { key: 'city', label: 'City' },
+        { key: 'ovr_rank', label: 'Overall Rank' },
         { key: 'sprint_ovr', label: 'Sprint Overall' },
         { key: 'middle_ovr', label: 'Middle Overall' },
         { key: 'long_ovr', label: 'Long Overall' },
-        { key: 'ovr_rank', label: 'Overall Rank' },
         { key: 'shortDistance_rank', label: 'Short Distance Rank' },
         { key: 'middleDistance_rank', label: 'Middle Distance Rank' },
         { key: 'longDistance_rank', label: 'Long Distance Rank' },
@@ -63,7 +58,6 @@ export default function TeamsPage({ params }: { params: Promise<{ gameId: string
 
     const data = teams.map(team => ({
         ...team,
-        conference: game?.conferenceIdMap[team.conferenceId] || '',
         ovr_rank: ovrRanks[team.teamId],
         shortDistance_rank: shortDistanceRanks[team.teamId],
         middleDistance_rank: middleDistanceRanks[team.teamId],
