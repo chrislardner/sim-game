@@ -48,7 +48,7 @@ export async function createPlayer(gameId: number, teamId: number, year: number,
 }
 
 function generateSeasonTypes(playerSubArchetype: subArchetype): ('track_field' | 'cross_country')[] {
-    if (playerSubArchetype.num <= 4) {
+    if (playerSubArchetype.num <= 6) {
         return ['track_field'];
     } else {
         return ['cross_country', 'track_field'];
