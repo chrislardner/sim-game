@@ -26,7 +26,7 @@ export default function TeamsPage({ params }: { params: Promise<{ gameId: string
         }
     }, [gameId]);
 
-    const columns: { key: keyof Team | 'conference'; label: string }[] = [
+    const columns: { key: keyof Team | 'conference' | 'ovr_rank' | 'longDistance_rank' | 'middleDistance_rank' | 'shortDistance_rank' | 'xc_rank'; label: string }[] = [
         { key: 'college', label: 'College' },
         { key: 'teamName', label: 'Team Name' },
         { key: 'conference', label: 'Conference' },
@@ -37,11 +37,39 @@ export default function TeamsPage({ params }: { params: Promise<{ gameId: string
         { key: 'sprint_ovr', label: 'Sprint Overall' },
         { key: 'middle_ovr', label: 'Middle Overall' },
         { key: 'long_ovr', label: 'Long Overall' },
+        { key: 'ovr_rank', label: 'Overall Rank' },
+        { key: 'shortDistance_rank', label: 'Short Distance Rank' },
+        { key: 'middleDistance_rank', label: 'Middle Distance Rank' },
+        { key: 'longDistance_rank', label: 'Long Distance Rank' },
+        { key: 'xc_ovr', label: 'XC Overall' },
+        { key: 'xc_rank', label: 'XC Rank' },
     ];
+
+    const rankTeams = (teams: Team[], key: keyof Team) => {
+        return teams
+            .slice()
+            .sort((a, b) => Number(b[key]) - Number(a[key]))
+            .reduce((acc, team, index) => {
+                acc[team.teamId] = index + 1;
+                return acc;
+            }, {} as Record<number, number>);
+    };
+
+    const ovrRanks = rankTeams(teams, 'ovr');
+    const shortDistanceRanks = rankTeams(teams, 'sprint_ovr');
+    const middleDistanceRanks = rankTeams(teams, 'middle_ovr');
+    const longDistanceRanks = rankTeams(teams, 'long_ovr');
+    const xcRanks = rankTeams(teams, 'xc_ovr');
 
     const data = teams.map(team => ({
         ...team,
-        conference: game?.conferenceIdMap[team.conferenceId] || ''
+        conference: game?.conferenceIdMap[team.conferenceId] || '',
+        ovr_rank: ovrRanks[team.teamId],
+        shortDistance_rank: shortDistanceRanks[team.teamId],
+        middleDistance_rank: middleDistanceRanks[team.teamId],
+        longDistance_rank: longDistanceRanks[team.teamId],
+        xc_ovr: team.xc_ovr,
+        xc_rank: xcRanks[team.teamId],
     }));
 
     const getRowLink = (team: Team) => `/games/${gameId}/teams/${team.teamId}`;

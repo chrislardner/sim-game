@@ -61,18 +61,12 @@ export async function simulateWeek(gameId: number) {
 
     await saveGame(game);
     await savePlayers(gameId, players);
-    if (game.currentWeek === 11 || game.currentWeek === 26 || game.currentWeek === 41) {
-        await saveTeams(gameId, teams);
-    }
-    else if (incrementSuccess[1]) {
-        await saveMeets(gameId, meets);
-        await saveRaces(gameId, races);
-    }
-    else {
-        await saveMeets(gameId, meets);
-        await saveRaces(gameId, races);
-        await saveTeams(gameId, teams);
-    }
+    await saveTeams(gameId, teams);
+    await saveMeets(gameId, meets);
+    await saveRaces(gameId, races)
+
+    teams = await loadTeams(gameId);
+    console.log(teams);
 
 }
 

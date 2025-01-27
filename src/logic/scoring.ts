@@ -16,7 +16,7 @@ export async function updateTeamAndPlayerPoints(game: Game, teams: Team[], playe
                     try {
                         const race = races.find(r => r.raceId === raceId);
                         if (race) {
-                            handleCrossCountryScoring(race, game, players, meet);
+                            handleCrossCountryScoring(race, teams, players, meet);
                         } else {
                             console.error(`Race not found for raceId ${raceId} in meet ${meet.meetId}`);
                         }
@@ -46,7 +46,7 @@ export async function updateTeamAndPlayerPoints(game: Game, teams: Team[], playe
     }
 }
 
-export function handleCrossCountryScoring(race: Race, game: Game, players: Player[], meet: Meet): void {
+export function handleCrossCountryScoring(race: Race, teams: Team[], players: Player[], meet: Meet): void {
     try {
         const teamParticipants: { [teamId: number]: RaceParticipant[] } = {};
 
@@ -132,6 +132,13 @@ export function handleCrossCountryScoring(race: Race, game: Game, players: Playe
             }
         }
 
+        teams.forEach(team => {
+            const meetTeam = meet.teams.find(t => t.teamId === team.teamId);
+            if (meetTeam) {
+                team.points += meetTeam.points;
+            }
+        });
+
     } catch (error) {
         console.error("Error handling cross country scoring", error);
     }
@@ -156,6 +163,14 @@ export function handleTrackFieldScoring(race: Race, teams: Team[], meet: Meet): 
                 meetTeam.points += points;
                 raceTeam.points += points;
             }
+        }
+    });
+
+    // Update team points
+    teams.forEach(team => {
+        const meetTeam = meet.teams.find(t => t.teamId === team.teamId);
+        if (meetTeam) {
+            team.points += meetTeam.points;
         }
     });
 }

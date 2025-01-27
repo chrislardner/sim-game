@@ -23,5 +23,16 @@ export function calculateTeamOvrs(team: Team, players: Player[]) {
     team.sprint_ovr = calculateTeamSprintOvr(players);
     team.middle_ovr = calculateTeamMiddleOvr(players);
     team.long_ovr = calculateTeamLongOvr(players);
+    team.xc_ovr = calculateTeamCrossCountryOvr(players);
     team.ovr = calculateTeamOvr(team);
 }
+
+export function calculateTeamCrossCountryOvr(players: Player[]) {
+    const crossCountryRunners = players.filter(player => player.seasons.includes('cross_country'));
+    if (crossCountryRunners.length < 5) {
+        return 0;
+    }
+    const totalCrossCountryOvr = crossCountryRunners.reduce((sum, player) => sum + player.playerRatings.typeRatings.longDistanceOvr, 0);
+    return Math.round(totalCrossCountryOvr / crossCountryRunners.length);
+}
+

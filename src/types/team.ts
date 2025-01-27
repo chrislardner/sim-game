@@ -15,6 +15,7 @@ export interface Team {
     sprint_ovr: number;
     middle_ovr: number;
     long_ovr: number;
+    xc_ovr: number;
 }
 
 // Schedule for individual teams

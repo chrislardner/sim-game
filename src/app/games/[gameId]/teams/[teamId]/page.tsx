@@ -2,17 +2,19 @@
 
 import { useRouter } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
-import { loadPlayers, loadTeams } from '@/data/storage';
+import { loadGameData, loadPlayers, loadTeams } from '@/data/storage';
 import { Team } from '@/types/team';
 import { Player } from '@/types/player';
 import Table from '@/components/Table'; // Adjust the import path as necessary
+import { Game } from '@/types/game';
 
 export default function TeamPage({ params }: { params: Promise<{ gameId: string, teamId: string }> }) {
     const router = useRouter();
     const { gameId, teamId } = use(params);
     const [team, setTeam] = useState<Team>();
     const [players, setTeamPlayers] = useState<Player[]>([]);
-
+    const [game, setGame] = useState<Game | null>(null);
+    
     useEffect(() => {
         async function fetchData() {
             const teamData = await loadTeams(Number(gameId));
@@ -21,6 +23,8 @@ export default function TeamPage({ params }: { params: Promise<{ gameId: string,
             const playerData = await loadPlayers(Number(gameId));
             const teamPlayers = playerData?.filter((p: Player) => p.teamId === Number(teamId));
             setTeamPlayers(teamPlayers);
+            const gameData = await loadGameData(Number(gameId));
+            setGame(gameData);
         }
         fetchData();
     }, [gameId, teamId]);
@@ -29,6 +33,10 @@ export default function TeamPage({ params }: { params: Promise<{ gameId: string,
 
     const handleScheduleClick = () => {
         router.push(`/games/${gameId}/teams/${teamId}/schedule`);
+    };
+
+    const handlePrintTeamInfo = () => {
+        console.log(team);
     };
 
     const columns: { key: "fullName" | "year" | "seasons" | "overall" | "potential" | "shortDistanceOvr" | "middleDistanceOvr" | "longDistanceOvr", label: string }[] = [
@@ -55,11 +63,13 @@ export default function TeamPage({ params }: { params: Promise<{ gameId: string,
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">{team.college}</h1>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">College: <span className="font-semibold">{team.teamName}</span></p>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Conference: <span className="font-semibold">{team.conferenceId}</span></p>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Conference: <span className="font-semibold">{game?.conferenceIdMap[team.conferenceId]}</span></p>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Location: <span className="font-semibold">{team.city}, {team.state}</span></p>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">TeamId: <span className="font-semibold">{team.teamId}</span></p>
             <button onClick={handleScheduleClick} className="px-4 py-2 bg-accent-dark text-white rounded-lg transition hover:bg-accent-light mb-6">
                 View Team Schedule
+            </button>
+            <button onClick={handlePrintTeamInfo} className="px-4 py-2 bg-accent-dark text-white rounded-lg transition hover:bg-accent-light mb-6 ml-4">
+                Print Team Info
             </button>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Players</h2>
