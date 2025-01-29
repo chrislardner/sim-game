@@ -17,6 +17,9 @@ export default function LeagueSchedulePage({ params }: { params: Promise<{ gameI
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
     const [meets, setMeets] = useState<Meet[]>([]);
     const [racesMap, setRacesMap] = useState<{ [key: number]: Race }>({});
+    const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
+    const [selectedYear, setSelectedYear] = useState<number | 'all'>(currentYear);
+    const [availableYears, setAvailableYears] = useState<number[]>([]);
 
     useEffect(() => {
         async function fetchData() {
@@ -24,8 +27,11 @@ export default function LeagueSchedulePage({ params }: { params: Promise<{ gameI
             const teamsData: Team[] = await loadTeams(Number(gameId));
             const meetsData: Meet[] = await loadMeets(Number(gameId));
             const racesData: Race[] = await loadRaces(Number(gameId));
-            const meetsThisYear = meetsData.filter(meet => meet.year === gameData.currentYear);
-            setMeets(meetsThisYear);
+            const years = Array.from(new Set(meetsData.map(meet => meet.year)));
+            setAvailableYears(years);
+            setCurrentYear(gameData.currentYear);
+            setSelectedYear(gameData.currentYear); // Set the selected year to the current game year
+            setMeets(meetsData);
             // Create a mapping of teamId to team college
             const teamsMapping = teamsData.reduce((accumlated: { [key: number]: Team }, team: Team) => {
                 accumlated[team.teamId] = team;
@@ -43,16 +49,17 @@ export default function LeagueSchedulePage({ params }: { params: Promise<{ gameI
 
     if (!meets) return <div>Loading...</div>;
 
+    const filteredMeets = selectedYear === 'all' ? meets : meets.filter(meet => meet.year === selectedYear);
+
     const columns: { key: keyof TransformedMeet; label: string }[] = [
         { key: 'week', label: 'Week' },
         { key: 'type', label: 'Type' },
         { key: 'season', label: 'Season' },
-        { key: 'year', label: 'Year' },
         { key: 'teams', label: 'Teams' },
         { key: 'races', label: 'Races' },
     ];
 
-    const data: TransformedMeet[] = meets.map(meet => ({
+    const data: TransformedMeet[] = filteredMeets.map(meet => ({
         ...meet,
         teams: meet.teams.map(team => teamsMap[team.teamId]?.college).join(', '),
         races: meet.races.map(raceId => racesMap[raceId]?.eventType).join(', '),
@@ -63,6 +70,19 @@ export default function LeagueSchedulePage({ params }: { params: Promise<{ gameI
     return (
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">League Schedule</h1>
+            <div className="mb-4">
+                <label htmlFor="year-select" className="mr-2">Select Year:</label>
+                <select
+                    id="year-select"
+                    value={selectedYear}
+                    onChange={(e) => setSelectedYear(e.target.value === 'all' ? 'all' : Number(e.target.value))}
+                >
+                    <option value="all">All</option>
+                    {availableYears.map(year => (
+                        <option key={year} value={year}>{year}</option>
+                    ))}
+                </select>
+            </div>
             <Table data={data} columns={columns} getRowLink={getRowLink} linkColumns={['week']} />
         </div>
     );

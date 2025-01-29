@@ -39,11 +39,16 @@ export default function NewGamePage() {
     }, [selectedConferences, selectedSchool]);
 
     const handleCreateGame = async () => {
-        if (conferenceIds.length === 0 || !selectedSchool) {
+
+        if(!selectedConferences || !selectedSchool) {
             alert("Please select at least one conference and a school to start the game.");
             return;
         }
-        const newGame = await initializeNewGame(conferenceIds, numPlayers, selectedSchool);
+        if (selectedConferences.length === 0 || !selectedSchool) {
+            alert("Please select at least one conference and a school to start the game.");
+            return;
+        }
+        const newGame = await initializeNewGame(selectedConferences, numPlayers, selectedSchool);
         // Redirect to the newly created game's page
         router.push(`/games/${newGame.gameId}`);
     };

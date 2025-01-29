@@ -22,7 +22,7 @@ const PlayerResults = ({ gameId, playerId }: { gameId: number, playerId: number 
             const results = raceData
                 .flatMap(race => {
                     const meet = meetData.find(meet => meet.meetId === race.meetId);
-                    if (!meet || meet.week > gameData.currentWeek) return [];
+                    if (!meet || (meet.week > gameData.currentWeek) && meet.year === gameData.year) return [];
 
                     return race.participants
                         .filter(participant => participant.playerId === playerId && participant.playerTime > 0)

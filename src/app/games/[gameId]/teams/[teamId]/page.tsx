@@ -6,14 +6,14 @@ import { loadGameData, loadPlayers, loadTeams } from '@/data/storage';
 import { Team } from '@/types/team';
 import { Player } from '@/types/player';
 import Table from '@/components/Table'; // Adjust the import path as necessary
-import { Game } from '@/types/game';
+import { Conference } from '@/types/regionals';
 
 export default function TeamPage({ params }: { params: Promise<{ gameId: string, teamId: string }> }) {
     const router = useRouter();
     const { gameId, teamId } = use(params);
     const [team, setTeam] = useState<Team>();
     const [players, setTeamPlayers] = useState<Player[]>([]);
-    const [game, setGame] = useState<Game | null>(null);
+    const [conference, setConference] = useState<Conference>();
     
     useEffect(() => {
         async function fetchData() {
@@ -24,7 +24,8 @@ export default function TeamPage({ params }: { params: Promise<{ gameId: string,
             const teamPlayers = playerData?.filter((p: Player) => p.teamId === Number(teamId));
             setTeamPlayers(teamPlayers);
             const gameData = await loadGameData(Number(gameId));
-            setGame(gameData);
+            const conferenceData = gameData?.conferences.find((conf: Conference) => conf.conferenceId === selectedTeam?.conferenceId);
+            setConference(conferenceData);
         }
         fetchData();
     }, [gameId, teamId]);
@@ -63,7 +64,7 @@ export default function TeamPage({ params }: { params: Promise<{ gameId: string,
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">{team.college}</h1>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">College: <span className="font-semibold">{team.teamName}</span></p>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Conference: <span className="font-semibold">{game?.conferenceIdMap[team.conferenceId]}</span></p>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Conference: <span className="font-semibold">{conference?.conferenceName + ' ' + (conference?.conferenceAbbr)}</span></p>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Location: <span className="font-semibold">{team.city}, {team.state}</span></p>
             <button onClick={handleScheduleClick} className="px-4 py-2 bg-accent-dark text-white rounded-lg transition hover:bg-accent-light mb-6">
                 View Team Schedule

@@ -17,10 +17,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="en">
             <body className="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors">
                 <ThemeProvider>
-                    <div className="flex">
+                    <div className="flex min-h-screen">
                         {/* Sidebar for game-specific navigation */}
-                        {isInGameRoute && <GameSidebar params={Promise.resolve({ gameId })} />}
-                        <main className={`${isInGameRoute ? 'ml-64' : ''} flex-1`}>
+                        {isInGameRoute && (
+                            <div className="w-48 fixed">
+                                <GameSidebar params={Promise.resolve({ gameId })} />
+                            </div>
+                        )}
+                        <main className={`${isInGameRoute ? 'ml-48' : ''} flex-1`}>
                             <MainNav />
                             {children}
                         </main>

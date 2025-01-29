@@ -8,6 +8,7 @@ export interface Conference {
     conferenceId: number;
     conferenceName: string;
     teamIds: number[];
+    conferenceAbbr: string;
 }
 
 export interface School {
@@ -17,5 +18,6 @@ export interface School {
     state: string;
     nickname: string;
     city: string;
+    collegeAbbr: string;
     // regionId: number;
 }

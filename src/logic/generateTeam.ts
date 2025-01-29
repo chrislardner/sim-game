@@ -1,10 +1,10 @@
 import { getCollegesbyConferenceId } from "@/data/parseSchools";
 import { getNextTeamId } from "@/data/storage";
-import { School } from "@/types/regionals";
+import { Conference, School } from "@/types/regionals";
 import { Team } from "@/types/team";
 
-export async function createTeamsForConference(gameId: number, year: number, conferenceId: number): Promise<Team[]> {
-    const schools: School[] = await getCollegesbyConferenceId(conferenceId);
+export async function createTeamsForConference(gameId: number, year: number, conference: Conference): Promise<Team[]> {
+    const schools: School[] = await getCollegesbyConferenceId(conference.conferenceId);
     const teams: Team[] = [];
     for (let i = 0; i < schools.length; i++) {
         const team: Team = await createTeam(gameId, year, schools[i]);

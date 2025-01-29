@@ -44,7 +44,7 @@ export default function GameDashboard({ params }: { params: Promise<{ gameId: st
 
     return (
         <div className="p-4 transition-colors">
-            <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">Game Dashboard</h1>
+            <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">Dashboard</h1>
             
             <button 
                 onClick={handleSimulateWeek} 

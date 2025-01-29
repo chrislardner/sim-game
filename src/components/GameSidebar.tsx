@@ -20,8 +20,8 @@ export default function GameSidebar({ params }: { params: Promise<{ gameId: stri
     };
 
     return (
-        <aside className="w-64 h-full bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark fixed p-4 transition-colors">
-            <h2 className="text-lg font-bold mb-4">Game Menu</h2>
+        <aside className="w-48 h-full bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark fixed p-4 transition-colors">
+            <h2 className="text-lg font-bold mb-4">Menu</h2>
             <ul className="space-y-2">
                 <li><button onClick={() => handleNavigation(`/games/${gameId}`)} className="hover:text-accent">Dashboard</button></li>
                 <li><button onClick={() => handleNavigation(`/games/${gameId}/teams`)} className="hover:text-accent">Teams</button></li>

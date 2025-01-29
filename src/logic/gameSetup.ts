@@ -13,7 +13,7 @@ import { calculateSubArchetype } from './calculateSubArchetype';
 import { calculateTeamOvrs } from './calculateTeamOvr';
 
 
-export async function initializeNewGame(conferenceIds: number[], numPlayersPerTeam: number, selectedSchoolId: number ): Promise<Game> {
+export async function initializeNewGame(conferences: Conference[], numPlayersPerTeam: number, selectedSchoolId: number ): Promise<Game> {
     const teams: Team[] = [];
     const players: Player[] = [];
     const currentYear = 2024;
@@ -22,8 +22,8 @@ export async function initializeNewGame(conferenceIds: number[], numPlayersPerTe
     const gameId = await getNextGameId();
     initializeIDTracker(gameId);
     
-    for (let i = 0; i < conferenceIds.length; i++) {
-        const conferenceTeams = await createTeamsForConference(gameId, currentYear, conferenceIds[i]);
+    for (let i = 0; i < conferences.length; i++) {
+        const conferenceTeams = await createTeamsForConference(gameId, currentYear, conferences[i]);
         for (const team of conferenceTeams) {
             for (let j = 0; j < numPlayersPerTeam; j++) {
                 const playerSubArchetypes: subArchetype = calculateSubArchetype();
@@ -48,13 +48,6 @@ export async function initializeNewGame(conferenceIds: number[], numPlayersPerTe
 
     assignTeamSchedules(teams, teamSchedules);
     
-    const conferences = await getAllConferences();
-    const conferenceIdMap = Object.fromEntries(
-        conferences.map(conference => [conference.conferenceId, conference.conferenceName])
-    );
-
-    console.log(conferenceIdMap);
-
     const game: Game = {
         gameId,
         teams: teams.map(team => team.teamId),
@@ -65,7 +58,7 @@ export async function initializeNewGame(conferenceIds: number[], numPlayersPerTe
         leagueSchedule,
         remainingTeams: teams.map(team => team.teamId),
         selectedCollegeId: selectedSchoolId,
-        conferenceIdMap,
+        conferences,
     };
 
     try {

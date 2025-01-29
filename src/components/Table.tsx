@@ -49,7 +49,7 @@ const Table = <T,>({ data, columns, getRowLink, linkColumns = [] }: TableProps<T
     };
 
     return (
-        <div className="p-4">
+        <div className="p-2">
             <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead className="bg-gray-50 dark:bg-gray-700">
@@ -58,7 +58,7 @@ const Table = <T,>({ data, columns, getRowLink, linkColumns = [] }: TableProps<T
                                 <th
                                     key={String(column.key)}
                                     onClick={() => requestSort(column.key)}
-                                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                    className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                                 >
                                     <div className="flex items-center">
                                         {column.label}
@@ -72,7 +72,7 @@ const Table = <T,>({ data, columns, getRowLink, linkColumns = [] }: TableProps<T
                         {sortedData.map((item, index) => (
                             <tr key={index} className="hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                                 {columns.map((column) => (
-                                    <td key={String(column.key)} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                    <td key={String(column.key)} className="px-4 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                         {linkColumns.includes(column.key) && getRowLink ? (
                                             <span
                                                 className="text-blue-500 hover:underline cursor-pointer"
