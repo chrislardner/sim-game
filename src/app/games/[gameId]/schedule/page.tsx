@@ -6,6 +6,7 @@ import { Meet, Race } from '@/types/schedule';
 import { Team } from '@/types/team';
 import { Game } from '@/types/game';
 import Table from '@/components/Table'; // Adjust the import path as necessary
+import YearFilter from '@/components/YearFilterer'; // Import the reusable component
 
 type TransformedMeet = Omit<Meet, 'teams' | 'races'> & {
     teams: string;
@@ -70,19 +71,15 @@ export default function LeagueSchedulePage({ params }: { params: Promise<{ gameI
     return (
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">League Schedule</h1>
-            <div className="mb-4">
-                <label htmlFor="year-select" className="mr-2">Select Year:</label>
-                <select
-                    id="year-select"
-                    value={selectedYear}
-                    onChange={(e) => setSelectedYear(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-                >
-                    <option value="all">All</option>
-                    {availableYears.map(year => (
-                        <option key={year} value={year}>{year}</option>
-                    ))}
-                </select>
-            </div>
+
+            {/* YearFilter Component */}
+            <YearFilter
+                availableYears={availableYears}
+                currentYear={currentYear}
+                selectedYear={selectedYear}
+                onYearChange={setSelectedYear}
+            />
+
             <Table data={data} columns={columns} getRowLink={getRowLink} linkColumns={['week']} />
         </div>
     );

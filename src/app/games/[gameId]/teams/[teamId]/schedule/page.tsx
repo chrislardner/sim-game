@@ -1,22 +1,26 @@
 "use client";
 
-import { use, useEffect, useState } from 'react';
-import { loadMeets, loadRaces, loadTeams } from '@/data/storage';
-import { Meet, Race } from '@/types/schedule';
-import { Team } from '@/types/team';
-import Table from '@/components/Table'; // Adjust the import path as necessary
+import { use, useEffect, useState } from "react";
+import { loadMeets, loadRaces, loadTeams } from "@/data/storage";
+import { Meet, Race } from "@/types/schedule";
+import { Team } from "@/types/team";
+import Table from "@/components/Table";
+import YearFilter from "@/components/YearFilterer"; // Import the reusable component
 
-type TransformedMeet = Omit<Meet, 'teams' | 'races'> & {
+type TransformedMeet = Omit<Meet, "teams" | "races"> & {
     teams: string;
     races: string;
 };
 
-export default function TeamSchedulePage({ params }: { params: Promise<{ gameId: string, teamId: string }> }) {
+export default function TeamSchedulePage({ params }: { params: Promise<{ gameId: string; teamId: string }> }) {
     const { gameId, teamId } = use(params);
     const [team, setTeam] = useState<Team>();
     const [meets, setTeamMeets] = useState<Meet[]>([]);
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
     const [raceMap, setRaceMap] = useState<{ [key: number]: Race }>({});
+    const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
+    const [selectedYear, setSelectedYear] = useState<number | "all">(currentYear);
+    const [availableYears, setAvailableYears] = useState<number[]>([]);
 
     useEffect(() => {
         async function fetchData() {
@@ -36,30 +40,37 @@ export default function TeamSchedulePage({ params }: { params: Promise<{ gameId:
                 return accumlated;
             }, {});
             setTeamsMap(teamsMapping);
-         
+
             // Create a mapping of raceId to race
             const racesMapping: { [key: number]: Race } = {};
-            raceData.forEach(r => racesMapping[r.raceId] = r);
+            raceData.forEach(r => (racesMapping[r.raceId] = r));
             setRaceMap(racesMapping);
+
+            const years = Array.from(new Set(teamMeets.map(meet => meet.year)));
+            setAvailableYears(years);
+            setCurrentYear(new Date().getFullYear());
+            setSelectedYear(new Date().getFullYear());
         }
         fetchData().catch(console.error);
     }, [gameId, teamId]);
 
     if (!meets) return <div>Loading...</div>;
 
+    const filteredMeets = selectedYear === "all" ? meets : meets.filter(meet => meet.year === selectedYear);
+
     const columns: { key: keyof TransformedMeet; label: string }[] = [
-        { key: 'week', label: 'Week' },
-        { key: 'type', label: 'Type' },
-        { key: 'season', label: 'Season' },
-        { key: 'year', label: 'Year' },
-        { key: 'teams', label: 'Teams' },
-        { key: 'races', label: 'Races' },
+        { key: "week", label: "Week" },
+        { key: "type", label: "Type" },
+        { key: "season", label: "Season" },
+        { key: "year", label: "Year" },
+        { key: "teams", label: "Teams" },
+        { key: "races", label: "Races" },
     ];
 
-    const data: TransformedMeet[] = meets.map(meet => ({
+    const data: TransformedMeet[] = filteredMeets.map(meet => ({
         ...meet,
-        teams: meet.teams.map(team => teamsMap[team.teamId]?.college).join(', '),
-        races: meet.races.map(raceId => raceMap[raceId]?.eventType).join(', '),
+        teams: meet.teams.map(team => teamsMap[team.teamId]?.college).join(", "),
+        races: meet.races.map(raceId => raceMap[raceId]?.eventType).join(", "),
     }));
 
     const getRowLink = (meet: TransformedMeet) => `/games/${gameId}/schedule/${meet.meetId}`;
@@ -68,7 +79,16 @@ export default function TeamSchedulePage({ params }: { params: Promise<{ gameId:
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">Team Schedule</h1>
             <h2 className="text-2xl font-semibold mb-4 text-primary-light dark:text-primary-dark">{team?.college}</h2>
-            <Table data={data} columns={columns} getRowLink={getRowLink} linkColumns={['week']} />
+
+            {/* YearFilter Component */}
+            <YearFilter
+                availableYears={availableYears}
+                currentYear={currentYear}
+                selectedYear={selectedYear}
+                onYearChange={setSelectedYear}
+            />
+
+            <Table data={data} columns={columns} getRowLink={getRowLink} linkColumns={["week"]} />
         </div>
     );
 }

@@ -7,6 +7,7 @@ import { Meet, Race } from '@/types/schedule';
 import { Player } from '@/types/player';
 import { Team } from '@/types/team';
 import Table from '@/components/Table'; // Adjust the import path as necessary
+import YearFilter from '@/components/YearFilterer'; // Import the reusable component
 
 type TransformedRace = {
     raceId: number;
@@ -125,7 +126,7 @@ export default function RacesOverviewPage({ params }: { params: Promise<{ gameId
         { key: 'eventType', label: 'Event Type' },
         { key: 'meetId', label: 'Meet ID' },
         { key: 'date', label: 'Date' },
-        { key: 'topWinner', label: 'Top Winner' },
+        { key: 'topWinner', label: 'Event Winner' },
         { key: 'topTeam', label: 'Top Team' },
     ];
 
@@ -134,19 +135,15 @@ export default function RacesOverviewPage({ params }: { params: Promise<{ gameId
     return (
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">Races Overview</h1>
-            <div className="mb-4">
-                <label htmlFor="year-select" className="mr-2">Select Year:</label>
-                <select
-                    id="year-select"
-                    value={selectedYear}
-                    onChange={(e) => setSelectedYear(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-                >
-                    <option value="all">All</option>
-                    {availableYears.map(year => (
-                        <option key={year} value={year}>{year}</option>
-                    ))}
-                </select>
-            </div>
+
+            {/* YearFilter Component */}
+            <YearFilter
+                availableYears={availableYears}
+                currentYear={gameData.currentYear}
+                selectedYear={selectedYear}
+                onYearChange={setSelectedYear}
+            />
+
             {filteredMeets.map(meet => (
                 <div key={meet.meetId} className="mb-6">
                     <h2 className="text-2xl font-semibold mb-2">{`Meet ${meet.meetId} - ${meet.date}`}</h2>
