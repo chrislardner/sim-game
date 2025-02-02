@@ -1,9 +1,15 @@
 import Table from '@/components/Table';
+import YearFilter from '@/components/YearFilterer';
 import { useEffect, useState } from 'react';
 import { loadRaces, loadGameData, loadMeets } from '@/data/storage';
+import { Meet, Race } from '@/types/schedule';
+import { Game } from '@/types/game';
 
 const PlayerResults = ({ gameId, playerId }: { gameId: number, playerId: number }) => {
-    const [playerResults, setPlayerResults] = useState<{ meetId: number, raceId: number, eventType: string, playerTime: string, points: number, teamTopFive: boolean, teamTopSeven: boolean }[]>([]);
+    const [playerResults, setPlayerResults] = useState<{ meetWeek: number, meetYear: number, meetType: string, eventType: string, playerTime: string, points: number }[]>([]);
+    const [currentYear, setCurrentYear] = useState<number>(2024);
+    const [selectedYear, setSelectedYear] = useState<number | "all">(currentYear);
+    const [availableYears, setAvailableYears] = useState<number[]>([]);
 
     const formatTime = (time: number) => {
         const minutes = Math.floor(time / 60);
@@ -14,37 +20,45 @@ const PlayerResults = ({ gameId, playerId }: { gameId: number, playerId: number 
 
     useEffect(() => {
         async function fetchData() {
-            const gameData = await loadGameData(gameId);
+            const gameData: Game = await loadGameData(gameId);
 
-            const raceData = await loadRaces(gameId);
-            const meetData = await loadMeets(gameId);
+            const raceData: Race[] = await loadRaces(gameId);
+            const meetData: Meet[] = await loadMeets(gameId);
 
+            const years = new Set<number>();
             const results = raceData
                 .flatMap(race => {
                     const meet = meetData.find(meet => meet.meetId === race.meetId);
-                    if (!meet || (meet.week > gameData.currentWeek) && meet.year === gameData.year) return [];
+                    if (!meet || (meet.week > gameData.currentWeek && meet.year === gameData.currentYear)) return [];
+
+                    years.add(meet.year);
 
                     return race.participants
                         .filter(participant => participant.playerId === playerId && participant.playerTime > 0)
                         .map(participant => ({
-                            meetId: race.meetId,
-                            raceId: race.raceId,
+                            meetWeek: meet.week,
+                            meetYear: meet.year,
+                            meetType: meet.type,
                             eventType: race.eventType,
                             playerTime: formatTime(participant.playerTime),
                             points: participant.scoring.points,
-                            teamTopFive: participant.scoring.team_top_five,
-                            teamTopSeven: participant.scoring.team_top_seven,
                         }));
                 });
 
+            setAvailableYears(Array.from(years));
+            setCurrentYear(gameData.currentYear);
+            setSelectedYear(gameData.currentYear);
             setPlayerResults(results);
         }
         fetchData();
     }, [gameId, playerId]);
 
-    const columns: { key: "meetId" | "raceId" | "eventType" | "playerTime" | "points"; label: string }[] = [
-        { key: 'meetId', label: 'Meet ID' },
-        { key: 'raceId', label: 'Race ID' },
+    const filteredResults = selectedYear === "all" ? playerResults : playerResults.filter(result => result.meetYear === selectedYear);
+
+    const columns: { key: "meetWeek" | "meetYear"| "meetType" | "eventType" | "playerTime" | "points"; label: string }[] = [
+        { key: 'meetWeek', label: 'Meet Week' },
+        { key: 'meetYear', label: 'Meet Year' },
+        { key: 'meetType', label: 'Meet Type' },
         { key: 'eventType', label: 'Event Type' },
         { key: 'playerTime', label: 'Time' },
         { key: 'points', label: 'Points' },
@@ -53,7 +67,13 @@ const PlayerResults = ({ gameId, playerId }: { gameId: number, playerId: number 
     return (
         <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg mt-4 transition-colors">
             <h2 className="text-xl font-semibold text-accent mb-2">Player Results</h2>
-            <Table data={playerResults} columns={columns} />
+            <YearFilter
+                availableYears={availableYears}
+                currentYear={currentYear}
+                selectedYear={selectedYear}
+                onYearChange={setSelectedYear}
+            />
+            <Table data={filteredResults} columns={columns} />
         </div>
     );
 };

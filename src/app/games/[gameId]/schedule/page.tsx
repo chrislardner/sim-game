@@ -18,7 +18,7 @@ export default function LeagueSchedulePage({ params }: { params: Promise<{ gameI
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
     const [meets, setMeets] = useState<Meet[]>([]);
     const [racesMap, setRacesMap] = useState<{ [key: number]: Race }>({});
-    const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
+    const [currentYear, setCurrentYear] = useState<number>(2024);
     const [selectedYear, setSelectedYear] = useState<number | 'all'>(currentYear);
     const [availableYears, setAvailableYears] = useState<number[]>([]);
 
@@ -44,6 +44,7 @@ export default function LeagueSchedulePage({ params }: { params: Promise<{ gameI
                 return accumlated;
             }, {});
             setRacesMap(racesMapping);
+
         }
         fetchData().catch(console.error);
     }, [gameId]);
@@ -71,8 +72,6 @@ export default function LeagueSchedulePage({ params }: { params: Promise<{ gameI
     return (
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">League Schedule</h1>
-
-            {/* YearFilter Component */}
             <YearFilter
                 availableYears={availableYears}
                 currentYear={currentYear}

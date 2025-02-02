@@ -18,6 +18,8 @@ const Table = <T,>({ data, columns, getRowLink, linkColumns = [] }: TableProps<T
     const [sortConfig, setSortConfig] = useState<SortConfig<T>>(null);
     const router = useRouter();
 
+    if(!data) throw new Error("data is null");
+
     const sortedData = [...data].sort((a, b) => {
         if (sortConfig !== null) {
             if (a[sortConfig.key] < b[sortConfig.key]) {

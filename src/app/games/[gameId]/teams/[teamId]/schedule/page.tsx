@@ -1,11 +1,12 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import { loadMeets, loadRaces, loadTeams } from "@/data/storage";
+import { loadGameData, loadMeets, loadRaces, loadTeams } from "@/data/storage";
 import { Meet, Race } from "@/types/schedule";
 import { Team } from "@/types/team";
 import Table from "@/components/Table";
 import YearFilter from "@/components/YearFilterer"; // Import the reusable component
+import { Game } from "@/types/game";
 
 type TransformedMeet = Omit<Meet, "teams" | "races"> & {
     teams: string;
@@ -18,7 +19,7 @@ export default function TeamSchedulePage({ params }: { params: Promise<{ gameId:
     const [meets, setTeamMeets] = useState<Meet[]>([]);
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
     const [raceMap, setRaceMap] = useState<{ [key: number]: Race }>({});
-    const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
+    const [currentYear, setCurrentYear] = useState<number>(2024);
     const [selectedYear, setSelectedYear] = useState<number | "all">(currentYear);
     const [availableYears, setAvailableYears] = useState<number[]>([]);
 
@@ -28,8 +29,10 @@ export default function TeamSchedulePage({ params }: { params: Promise<{ gameId:
             const selectedTeam = teamData.find(t => t.teamId === Number(teamId));
             setTeam(selectedTeam);
 
-            const meetData = await loadMeets(Number(gameId));
-            const teamMeets = meetData.filter((m: Meet) => m.teams.some(team => team.teamId === Number(teamId)));
+            const gameData: Game = await loadGameData(Number(gameId));
+
+            const meetData: Meet[] = await loadMeets(Number(gameId));
+            const teamMeets: Meet[] = meetData.filter((m: Meet) => m.teams.some(team => team.teamId === Number(teamId)));
             setTeamMeets(teamMeets);
 
             const raceData: Race[] = await loadRaces(Number(gameId));
@@ -48,8 +51,8 @@ export default function TeamSchedulePage({ params }: { params: Promise<{ gameId:
 
             const years = Array.from(new Set(teamMeets.map(meet => meet.year)));
             setAvailableYears(years);
-            setCurrentYear(new Date().getFullYear());
-            setSelectedYear(new Date().getFullYear());
+            setCurrentYear(gameData.currentYear);
+            setSelectedYear(gameData.currentYear); 
         }
         fetchData().catch(console.error);
     }, [gameId, teamId]);

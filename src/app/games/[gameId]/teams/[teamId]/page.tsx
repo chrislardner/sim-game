@@ -36,10 +36,6 @@ export default function TeamPage({ params }: { params: Promise<{ gameId: string,
         router.push(`/games/${gameId}/teams/${teamId}/schedule`);
     };
 
-    const handlePrintTeamInfo = () => {
-        console.log(team);
-    };
-
     const columns: { key: "fullName" | "year" | "seasons" | "overall" | "potential" | "shortDistanceOvr" | "middleDistanceOvr" | "longDistanceOvr", label: string }[] = [
         { key: 'fullName', label: 'Full Name' },
         { key: 'year', label: 'Year' },
@@ -68,9 +64,6 @@ export default function TeamPage({ params }: { params: Promise<{ gameId: string,
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Location: <span className="font-semibold">{team.city}, {team.state}</span></p>
             <button onClick={handleScheduleClick} className="px-4 py-2 bg-accent-dark text-white rounded-lg transition hover:bg-accent-light mb-6">
                 View Team Schedule
-            </button>
-            <button onClick={handlePrintTeamInfo} className="px-4 py-2 bg-accent-dark text-white rounded-lg transition hover:bg-accent-light mb-6 ml-4">
-                Print Team Info
             </button>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Players</h2>

@@ -2,18 +2,19 @@
 
 import { use, useEffect, useState } from 'react';
 import { loadGameData, loadMeets, loadPlayers, loadRaces, loadTeams } from '@/data/storage';
-import { Game } from '@/types/game';
 import { Meet, Race } from '@/types/schedule';
 import { Player } from '@/types/player';
 import { Team } from '@/types/team';
 import Table from '@/components/Table'; // Adjust the import path as necessary
 import YearFilter from '@/components/YearFilterer'; // Import the reusable component
+import { Game } from '@/types/game';
 
 type TransformedRace = {
     raceId: number;
     eventType: string;
-    meetId: number;
     date: string;
+    meetId: number;
+    meetWeek: number;
     topWinner: string;
     topTeam: string;
     points: string; // Changed to string to display team points
@@ -22,27 +23,29 @@ type TransformedRace = {
 
 export default function RacesOverviewPage({ params }: { params: Promise<{ gameId: string }> }) {
     const { gameId } = use(params);
-    const [gameData, setGameData] = useState<Game>();
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
     const [playersMap, setPlayersMap] = useState<{ [key: number]: Player }>({});
     const [racesMap, setRacesMap] = useState<{ [key: number]: Race }>({});
     const [meets, setMeets] = useState<Meet[]>([]);
-    const [selectedYear, setSelectedYear] = useState<number | 'all'>(new Date().getFullYear());
+    const [currentYear, setCurrentYear] = useState<number>(2024);
+    const [selectedYear, setSelectedYear] = useState<number | 'all'>(currentYear);
     const [availableYears, setAvailableYears] = useState<number[]>([]);
+
 
     useEffect(() => {
         if (!gameId) return;
 
         async function fetchData() {
-            const gameData = await loadGameData(Number(gameId));
-            setGameData(gameData);
-            const teamData = await loadTeams(Number(gameId));
-            const playersData = await loadPlayers(Number(gameId));
-            const meetsData = await loadMeets(Number(gameId));
-            const raceData = await loadRaces(Number(gameId));
+            const gameData: Game = await loadGameData(Number(gameId));
+            
+            const teamData: Team[] = await loadTeams(Number(gameId));
+            const playersData: Player[] = await loadPlayers(Number(gameId));
+            const meetsData: Meet[] = await loadMeets(Number(gameId));
+            const raceData: Race[] = await loadRaces(Number(gameId));
 
             const years = Array.from(new Set(meetsData.map(meet => meet.year)));
             setAvailableYears(years);
+            setCurrentYear(gameData.currentYear);
             setSelectedYear(gameData.currentYear);
 
             setMeets(meetsData);
@@ -66,7 +69,7 @@ export default function RacesOverviewPage({ params }: { params: Promise<{ gameId
         fetchData();
     }, [gameId]);
 
-    if (!gameData) return <div>Loading...</div>;
+    if (!racesMap) return <div>Loading...</div>;
 
     const filteredMeets = selectedYear === 'all' ? meets : meets.filter(meet => meet.year === selectedYear);
 
@@ -110,9 +113,10 @@ export default function RacesOverviewPage({ params }: { params: Promise<{ gameId
             const teams = race?.teams.map(team => teamsMap[team.teamId]?.college).join(', ') || '';
             return {
                 raceId,
-                eventType: race?.eventType || '',
-                meetId: meet.meetId,
                 date: meet.date,
+                meetId: meet.meetId,
+                eventType: race?.eventType || '',
+                meetWeek: meet.week,
                 topWinner: topWinner || '',
                 topTeam: topTeam || '',
                 points: teamsPoints,
@@ -122,9 +126,8 @@ export default function RacesOverviewPage({ params }: { params: Promise<{ gameId
     );
 
     const columns: { key: keyof TransformedRace; label: string }[] = [
-        { key: 'raceId', label: 'Race ID' },
         { key: 'eventType', label: 'Event Type' },
-        { key: 'meetId', label: 'Meet ID' },
+        { key: 'meetWeek', label: 'Week' },
         { key: 'date', label: 'Date' },
         { key: 'topWinner', label: 'Event Winner' },
         { key: 'topTeam', label: 'Top Team' },
@@ -139,7 +142,7 @@ export default function RacesOverviewPage({ params }: { params: Promise<{ gameId
             {/* YearFilter Component */}
             <YearFilter
                 availableYears={availableYears}
-                currentYear={gameData.currentYear}
+                currentYear={currentYear}
                 selectedYear={selectedYear}
                 onYearChange={setSelectedYear}
             />
@@ -147,7 +150,7 @@ export default function RacesOverviewPage({ params }: { params: Promise<{ gameId
             {filteredMeets.map(meet => (
                 <div key={meet.meetId} className="mb-6">
                     <h2 className="text-2xl font-semibold mb-2">{`Meet ${meet.meetId} - ${meet.date}`}</h2>
-                    <Table data={data.filter(race => race.meetId === meet.meetId)} columns={columns} getRowLink={getRowLink} linkColumns={['raceId']} />
+                    <Table data={data.filter(race => race.meetId === meet.meetId)} columns={columns} getRowLink={getRowLink} linkColumns={['eventType']} />
                 </div>
             ))}
         </div>
