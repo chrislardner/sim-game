@@ -23,7 +23,7 @@ export async function initializeNewGame(conferences: Conference[], numPlayersPer
     initializeIDTracker(gameId);
     
     for (let i = 0; i < conferences.length; i++) {
-        const conferenceTeams = await createTeamsForConference(gameId, currentYear, conferences[i]);
+        const conferenceTeams = await createTeamsForConference(gameId, currentYear, conferences[i], selectedSchoolId);
         for (const team of conferenceTeams) {
             for (let j = 0; j < numPlayersPerTeam; j++) {
                 const playerSubArchetypes: subArchetype = calculateSubArchetype();

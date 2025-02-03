@@ -16,6 +16,8 @@ export interface Team {
     middle_ovr: number;
     long_ovr: number;
     xc_ovr: number;
+    abbr: string;
+    player_control: boolean
 }
 
 // Schedule for individual teams

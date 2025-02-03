@@ -3,18 +3,22 @@ import { getNextTeamId } from "@/data/storage";
 import { Conference, School } from "@/types/regionals";
 import { Team } from "@/types/team";
 
-export async function createTeamsForConference(gameId: number, year: number, conference: Conference): Promise<Team[]> {
+export async function createTeamsForConference(gameId: number, year: number, conference: Conference, selectedCollegeId: number): Promise<Team[]> {
     const schools: School[] = await getCollegesbyConferenceId(conference.conferenceId);
     const teams: Team[] = [];
     for (let i = 0; i < schools.length; i++) {
-        const team: Team = await createTeam(gameId, year, schools[i]);
+        let player_control = false;
+        if(schools[i].collegeId === selectedCollegeId) { 
+            player_control = true;
+        }
+        const team: Team = await createTeam(gameId, year, schools[i], player_control);
         teams.push(team);
     }
 
     return teams;
 }
 
-export async function createTeam(gameId: number, year: number, school: School): Promise<Team> {
+export async function createTeam(gameId: number, year: number, school: School, player_control: boolean): Promise<Team> {
     const newTeamId: number = await getNextTeamId(gameId);
 
 
@@ -39,6 +43,8 @@ export async function createTeam(gameId: number, year: number, school: School): 
         middle_ovr: 0,
         long_ovr: 0,
         xc_ovr: 0,
+        abbr: school.collegeAbbr,
+        player_control,
     };
   
     return teamData;

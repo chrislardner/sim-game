@@ -86,7 +86,7 @@ export default function MeetPage() {
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Team Points</h2>
             <Table
                 data={sortedTeamPoints.map(([teamId, points]) => ({
-                    team: teamsMap[Number(teamId)]?.college,
+                    team: teamsMap[Number(teamId)]?.college + " (" + teamsMap[Number(teamId)]?.abbr + ")",
                     points
                 }))}
                 columns={[
@@ -134,7 +134,7 @@ export default function MeetPage() {
                                 <Table
                                     data={race.participants.sort((a, b) => a.playerTime - b.playerTime).map((participant: RaceParticipant) => ({
                                         player: `${playersMap[participant.playerId]?.firstName} ${playersMap[participant.playerId]?.lastName}`,
-                                        team: teamsMap[playersMap[participant.playerId]?.teamId]?.college,
+                                        team: teamsMap[playersMap[participant.playerId]?.teamId]?.abbr,
                                         points: participant.scoring.points,
                                         time: formatTime(participant.playerTime)
                                     }))}

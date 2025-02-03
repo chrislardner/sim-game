@@ -34,7 +34,7 @@ export default function TeamsPage({ params }: { params: Promise<{ gameId: string
         { key: 'middle_ovr', label: 'Middle Overall' },
         { key: 'long_ovr', label: 'Long Overall' },
         { key: 'shortDistance_rank', label: 'Short Distance Rank' },
-        { key: 'middleDistance_rank', label: 'Middle Distance Rank' },
+        { key: 'middleDistance_rank', label: 'Mid Distance Rank' },
         { key: 'longDistance_rank', label: 'Long Distance Rank' },
         { key: 'xc_ovr', label: 'XC Overall' },
         { key: 'xc_rank', label: 'XC Rank' },
