@@ -92,7 +92,8 @@ export default function RacesOverviewPage({ params }: { params: Promise<{ gameId
     const getTopTeam = (race: Race) => {
         const topTeam = race?.teams.reduce((prev, current) => (prev.points > current.points) ? prev : current);
         if (topTeam) {
-            return `${teamsMap[topTeam.teamId]?.college} - ${topTeam.points} points`;
+            const team = teamsMap[topTeam.teamId];
+            return `${team?.college + ' (' + team?.abbr + ')' } - ${topTeam.points} points`;
         }
         return '';
     };
@@ -125,12 +126,12 @@ export default function RacesOverviewPage({ params }: { params: Promise<{ gameId
         })
     );
 
-    const columns: { key: keyof TransformedRace; label: string }[] = [
-        { key: 'eventType', label: 'Event Type' },
-        { key: 'meetWeek', label: 'Week' },
-        { key: 'date', label: 'Date' },
-        { key: 'topWinner', label: 'Event Winner' },
-        { key: 'topTeam', label: 'Top Team' },
+    const columns: { key: keyof TransformedRace; label: string; className: string }[] = [
+        { key: 'eventType', label: 'Event Type', className: 'table-column-eventType' },
+        { key: 'meetWeek', label: 'Week', className: 'table-column-meetWeek' },
+        { key: 'date', label: 'Date', className: 'table-column-date' },
+        { key: 'topWinner', label: 'Event Winner', className: 'table-column-topWinner' },
+        { key: 'topTeam', label: 'Top Team', className: 'table-column-topTeam' },
     ];
 
     const getRowLink = (race: TransformedRace) => `/games/${gameId}/races/${race.raceId}`;

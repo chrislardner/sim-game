@@ -1,0 +1,19 @@
+.table-column-eventType {
+    width: 20%;
+}
+
+.table-column-meetWeek {
+    width: 10%;
+}
+
+.table-column-date {
+    width: 20%;
+}
+
+.table-column-topWinner {
+    width: 25%;
+}
+
+.table-column-topTeam {
+    width: 25%;
+}

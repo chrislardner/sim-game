@@ -1,23 +1,22 @@
 "use client";
 
 import { use, useEffect, useState } from 'react';
-import { loadTeams, loadMeets, loadRaces, loadGameData } from '@/data/storage';
-import { Meet, Race } from '@/types/schedule';
+import { loadTeams, loadMeets, loadGameData } from '@/data/storage';
+import { Meet } from '@/types/schedule';
 import { Team } from '@/types/team';
 import { Game } from '@/types/game';
 import Table from '@/components/Table'; // Adjust the import path as necessary
 import YearFilter from '@/components/YearFilterer'; // Import the reusable component
 
-type TransformedMeet = Omit<Meet, 'teams' | 'races'> & {
+type TransformedMeet = Omit<Meet, 'teams' | 'season'> & {
     teams: string;
-    races: string;
+    season: 'TF' | 'XC';
 };
 
 export default function LeagueSchedulePage({ params }: { params: Promise<{ gameId: string }> }) {
     const { gameId } = use(params);
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
     const [meets, setMeets] = useState<Meet[]>([]);
-    const [racesMap, setRacesMap] = useState<{ [key: number]: Race }>({});
     const [currentYear, setCurrentYear] = useState<number>(2024);
     const [selectedYear, setSelectedYear] = useState<number | 'all'>(currentYear);
     const [availableYears, setAvailableYears] = useState<number[]>([]);
@@ -27,7 +26,6 @@ export default function LeagueSchedulePage({ params }: { params: Promise<{ gameI
             const gameData: Game = await loadGameData(Number(gameId));
             const teamsData: Team[] = await loadTeams(Number(gameId));
             const meetsData: Meet[] = await loadMeets(Number(gameId));
-            const racesData: Race[] = await loadRaces(Number(gameId));
             const years = Array.from(new Set(meetsData.map(meet => meet.year)));
             setAvailableYears(years);
             setCurrentYear(gameData.currentYear);
@@ -39,11 +37,6 @@ export default function LeagueSchedulePage({ params }: { params: Promise<{ gameI
                 return accumlated;
             }, {});
             setTeamsMap(teamsMapping);
-            const racesMapping = racesData.reduce((accumlated: { [key: number]: Race }, race: Race) => {
-                accumlated[race.raceId] = race;
-                return accumlated;
-            }, {});
-            setRacesMap(racesMapping);
 
         }
         fetchData().catch(console.error);
@@ -58,13 +51,12 @@ export default function LeagueSchedulePage({ params }: { params: Promise<{ gameI
         { key: 'type', label: 'Type' },
         { key: 'season', label: 'Season' },
         { key: 'teams', label: 'Teams' },
-        { key: 'races', label: 'Races' },
     ];
 
     const data: TransformedMeet[] = filteredMeets.map(meet => ({
         ...meet,
-        teams: meet.teams.map(team => teamsMap[team.teamId]?.college).join(', '),
-        races: meet.races.map(raceId => racesMap[raceId]?.eventType).join(', '),
+        teams: meet.teams.map(team => teamsMap[team.teamId]?.abbr).join(', '),
+        season: meet.season === 'track_field' ? 'TF' : 'XC',
     }));
 
     const getRowLink = (meet: TransformedMeet) => `/games/${gameId}/schedule/${meet.meetId}`;

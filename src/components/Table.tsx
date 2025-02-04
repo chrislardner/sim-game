@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
+import '@/styles/raceTables.css';
 
 type SortConfig<T> = {
     key: keyof T;
@@ -9,16 +10,16 @@ type SortConfig<T> = {
 
 type TableProps<T> = {
     data: T[];
-    columns: { key: keyof T; label: string }[];
+    columns: { key: keyof T; label: string; className?: string }[];
     getRowLink?: (item: T) => string;
-    linkColumns?: (keyof T)[]; 
+    linkColumns?: (keyof T)[];
 };
 
 const Table = <T,>({ data, columns, getRowLink, linkColumns = [] }: TableProps<T>) => {
     const [sortConfig, setSortConfig] = useState<SortConfig<T>>(null);
     const router = useRouter();
 
-    if(!data) throw new Error("data is null");
+    if (!data) throw new Error("data is null");
 
     const sortedData = [...data].sort((a, b) => {
         if (sortConfig !== null) {
@@ -60,7 +61,7 @@ const Table = <T,>({ data, columns, getRowLink, linkColumns = [] }: TableProps<T
                                 <th
                                     key={String(column.key)}
                                     onClick={() => requestSort(column.key)}
-                                    className="px-2 py-2 text-left text-xs font-small text-gray-500 uppercase tracking-wider"
+                                    className={`px-2 py-2 text-left text-xs font-small text-gray-500 uppercase tracking-wider ${column.className}`}
                                 >
                                     <div className="flex items-center">
                                         {column.label}
@@ -74,7 +75,7 @@ const Table = <T,>({ data, columns, getRowLink, linkColumns = [] }: TableProps<T
                         {sortedData.map((item, index) => (
                             <tr key={index} className="hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                                 {columns.map((column) => (
-                                    <td key={String(column.key)} className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                    <td key={String(column.key)} className={`px-2 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 ${column.className}`}>
                                         {linkColumns.includes(column.key) && getRowLink ? (
                                             <span
                                                 className="text-blue-500 hover:underline cursor-pointer"

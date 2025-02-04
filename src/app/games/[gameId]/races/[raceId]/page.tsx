@@ -41,7 +41,6 @@ export default function RaceResultsPage({ params }: { params: Promise<{ gameId: 
                 teams.forEach(t => { teamsMapping[t.teamId] = t; });
                 setTeamsMap(teamsMapping);
 
-                // Create a mapping of playerId to player first name and player team college
                 const playersMapping = teams.reduce((accumlated: { [key: number]: { player: Player, team: Team } }, team) => {
                     team.players.forEach(playerId => {
                         const player = selectPlayers.find(p => p.playerId === playerId);
@@ -100,7 +99,7 @@ export default function RaceResultsPage({ params }: { params: Promise<{ gameId: 
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 cursor-pointer" onClick={() => router.push(`/games/${unwrappedParams?.gameId}/schedule/${meet?.meetId}`)}>
                 Meet: <span className="font-semibold">{meet?.week} - {meet?.season}</span>
             </p>
-            <p className="text-gray-700 dark:text-gray-300">Teams: {meet?.teams.map(team => teamsMap[team.teamId].college).join(', ')}</p>
+            <p className="text-gray-700 dark:text-gray-300">Teams: {meet?.teams.map(team => teamsMap[team.teamId].abbr).join(', ')}</p>
             <p className="text-gray-700 dark:text-gray-300">Event: <span className="font-semibold">{race?.eventType}</span></p>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Results</h2>
@@ -122,7 +121,7 @@ export default function RaceResultsPage({ params }: { params: Promise<{ gameId: 
                                 {playersMap[Number(playerId)]?.player.firstName + ' ' + playersMap[Number(playerId)]?.player.lastName}
                             </td>
                             <td className="py-2 px-4 border-b text-center">
-                                {playersMap[Number(playerId)]?.team.college}
+                                {playersMap[Number(playerId)]?.team.college + ' (' + playersMap[Number(playerId)]?.team.abbr + ')'}
                             </td>
                             <td className="py-2 px-4 border-b text-center">{formatTime(playerTime)}</td>
                             <td className="py-2 px-4 border-b text-center">{points}</td>
@@ -142,7 +141,7 @@ export default function RaceResultsPage({ params }: { params: Promise<{ gameId: 
                 <tbody className="min-w-full">
                     {sortedTeamPoints.map(([teamId, points]) => (
                         <tr key={teamId}>
-                            <td className="py-2 px-4 border-b text-center">{teamsMap[Number(teamId)].college}</td>
+                            <td className="py-2 px-4 border-b text-center">{teamsMap[Number(teamId)].college + ' (' + teamsMap[Number(teamId)]?.abbr + ')'}</td>
                             <td className="py-2 px-4 border-b text-center">{points}</td>
                         </tr>
                     ))}

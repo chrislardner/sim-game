@@ -59,15 +59,20 @@ export async function simulateWeek(gameId: number) {
         return;
     }
 
-    await saveGame(game);
-    await savePlayers(gameId, players);
-    await saveTeams(gameId, teams);
-    await saveMeets(gameId, meets);
-    await saveRaces(gameId, races)
+    if (game.currentWeek == 11 || game.currentWeek == 26 || game.currentWeek == 41) {
+        await saveGame(game);
+        await savePlayers(gameId, players);
+        await saveTeams(gameId, teams);
+    }
+    else {
+        await saveMeets(gameId, meets);
+        await saveRaces(gameId, races);
+        await saveGame(game);
+        await savePlayers(gameId, players);
+        await saveTeams(gameId, teams);
+    }
 
     teams = await loadTeams(gameId);
-    console.log(teams);
-
 }
 
 async function simulateRegularSeason(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
@@ -134,7 +139,6 @@ async function enterNextWeek(game: Game, teams: Team[], players: Player[], meets
             const championshipTeams = teams.filter(team => game.remainingTeams.includes(team.teamId));
 
             await updateChampionshipWeek(game, championshipTeams, players, meets, races);
-            meets = await loadMeets(game.gameId);
             return Promise.resolve(true);
         }
 
@@ -293,6 +297,7 @@ async function simulateMeetsForWeek(game: Game, meets: Meet[], races: Race[], pl
 }
 
 async function updateChampionshipWeek(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
+        
     const shedObj = mapWeekToGamePhase(game.currentWeek);
     const foundMeet = meets.find(meet => meet.week === game.currentWeek + 1 && meet.year === game.currentYear);
 
@@ -321,10 +326,20 @@ async function updateChampionshipWeek(game: Game, teams: Team[], players: Player
     races = races.filter(r => r.meetId !== foundMeet.meetId);
     meets = meets.filter(m => m.meetId !== foundMeet.meetId);
 
-    const newRaces = await createRacesForMeet(teams, players, game.gameId, shedObj.season, foundMeet.meetId, game.currentYear);
-
-
     const meetTeams = teams.filter(team => game.remainingTeams.includes(team.teamId)).map(team => ({ teamId: team.teamId, points: 0, has_five_racers: false }));
+    
+    const raceTeams: Team[] = 
+        meetTeams.map(mt => {
+            const team = teams.find(t => t.teamId === mt.teamId);
+            if (team) {
+                return team;
+            } else {
+                console.error(`Team with ID ${mt.teamId} not found`);
+                return null;
+            }
+        }).filter(team => team !== null) as Team[]
+    
+    const newRaces = await createRacesForMeet(raceTeams, players, game.gameId, shedObj.season, foundMeet.meetId, game.currentYear);
 
     if(!meetTeams) {
         console.error("No meet teams found");
@@ -334,7 +349,7 @@ async function updateChampionshipWeek(game: Game, teams: Team[], players: Player
     const newMeet: Meet = {
         week: game.currentWeek + 1,
         meetId: foundMeet.meetId,
-        date: 'Playoff Round',
+        date: 'Championship Playoff Round',
         year: game.currentYear,
         teams: meetTeams,
         races: newRaces.map(r => r.raceId),
@@ -342,8 +357,10 @@ async function updateChampionshipWeek(game: Game, teams: Team[], players: Player
         type: shedObj.type,
         gameId: game.gameId
     };
+
     races.push(...newRaces);
     meets.push(newMeet);
+
     await saveMeets(game.gameId, meets);
     await saveRaces(game.gameId, races);
 

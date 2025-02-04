@@ -30,7 +30,7 @@ export default function YearFilter({ availableYears, currentYear, selectedYear, 
                 <option value="all">All</option>
                 {years.map(year => (
                     <option key={year} value={year}>
-                        {year === currentYear ? `${year} (Current)` : year}
+                        {year === currentYear ? `${year}` : year}
                     </option>
                 ))}
             </select>

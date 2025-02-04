@@ -80,7 +80,7 @@ export default function MeetPage() {
     return (
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">Meet on {meet.date}</h1>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Season: <span className="font-semibold">{meet.season}</span></p>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Season: <span className="font-semibold">{meet.season === 'track_field' ? 'Track & Field (TF)' : 'Cross Country (XC)'}</span></p>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Type: <span className="font-semibold">{meet.type}</span></p>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Team Points</h2>
@@ -122,7 +122,7 @@ export default function MeetPage() {
                                         }
                                         return 0;
                                     }).map(team => ({
-                                        team: teamsMap[team.teamId]?.college,
+                                        team: teamsMap[team.teamId]?.abbr,
                                         points: team.points
                                     }))}
                                     columns={[

@@ -1593,7 +1593,7 @@
         {
             "collegeId": 99,
             "collegeName": "Eastern Connecticut State University",
-            "collegeAbbr": "ECS",
+            "collegeAbbr": "ECSU",
             "conferenceId": 32,
             "city": "Willimantic",
             "state": "CT",
@@ -3879,6 +3879,7 @@
         {
             "collegeId": 352,
             "collegeName": "Spalding University",
+            "collegeAbbr": "SPU",
             "conferenceId": 20,
             "city": "Louisville",
             "state": "KY",
@@ -3887,6 +3888,7 @@
         {
             "collegeId": 353,
             "collegeName": "Springfield College",
+            "collegeAbbr": "SPR",
             "conferenceId": 15,
             "city": "Springfield",
             "state": "MA",
@@ -3895,6 +3897,7 @@
         {
             "collegeId": 354,
             "collegeName": "Stevens Institute of Technology",
+            "collegeAbbr": "SIT",
             "conferenceId": 11,
             "city": "Hoboken",
             "state": "NJ",
@@ -3903,6 +3906,7 @@
         {
             "collegeId": 355,
             "collegeName": "Stevenson University",
+            "collegeAbbr": "STV",
             "conferenceId": 4,
             "city": "Stevenson",
             "state": "MD",
@@ -3911,6 +3915,7 @@
         {
             "collegeId": 356,
             "collegeName": "Stockton University",
+            "collegeAbbr": "STK",
             "conferenceId": 36,
             "city": "Pomona",
             "state": "NJ",
@@ -3919,6 +3924,7 @@
         {
             "collegeId": 357,
             "collegeName": "Suffolk University",
+            "collegeAbbr": "SUF",
             "conferenceId": 31,
             "city": "Boston",
             "state": "MA",
@@ -3927,6 +3933,7 @@
         {
             "collegeId": 358,
             "collegeName": "Susquehanna University",
+            "collegeAbbr": "SUS",
             "conferenceId": 28,
             "city": "Selinsgrove",
             "state": "PA",
@@ -3935,6 +3942,7 @@
         {
             "collegeId": 359,
             "collegeName": "Swarthmore College",
+            "collegeAbbr": "SWA",
             "conferenceId": 24,
             "city": "Swarthmore",
             "state": "PA",
@@ -3943,6 +3951,7 @@
         {
             "collegeId": 360,
             "collegeName": "Sweet Briar College",
+            "collegeAbbr": "SBC",
             "conferenceId": 14,
             "city": "Sweet Briar",
             "state": "VA",
@@ -3951,6 +3960,7 @@
         {
             "collegeId": 361,
             "collegeName": "University of Texas at Dallas",
+            "collegeAbbr": "UTD",
             "conferenceId": 2,
             "city": "Dallas",
             "state": "TX",
@@ -3959,6 +3969,7 @@
         {
             "collegeId": 362,
             "collegeName": "Texas Lutheran University",
+            "collegeAbbr": "TLU",
             "conferenceId": 2,
             "city": "Seguin",
             "state": "TX",
@@ -3967,6 +3978,7 @@
         {
             "collegeId": 363,
             "collegeName": "Thiel College",
+            "collegeAbbr": "THI",
             "conferenceId": 7,
             "city": "Greenville",
             "state": "PA",
@@ -3975,6 +3987,7 @@
         {
             "collegeId": 364,
             "collegeName": "Thomas College",
+            "collegeAbbr": "THO",
             "conferenceId": 35,
             "city": "Waterville",
             "state": "ME",
@@ -3983,6 +3996,7 @@
         {
             "collegeId": 365,
             "collegeName": "Transylvania University",
+            "collegeAbbr": "TRN",
             "conferenceId": 10,
             "city": "Lexington",
             "state": "KY",
@@ -3991,6 +4005,7 @@
         {
             "collegeId": 366,
             "collegeName": "Trine University",
+            "collegeAbbr": "TNE",
             "conferenceId": 1,
             "city": "Angola",
             "state": "IN",
@@ -3999,6 +4014,7 @@
         {
             "collegeId": 367,
             "collegeName": "Trinity College",
+            "collegeAbbr": "TYC",
             "conferenceId": 9,
             "city": "Hartford",
             "state": "CT",
@@ -4007,6 +4023,7 @@
         {
             "collegeId": 368,
             "collegeName": "Trinity University",
+            "collegeAbbr": "TRU",
             "conferenceId": 2,
             "city": "San Antonio",
             "state": "TX",
@@ -4015,6 +4032,7 @@
         {
             "collegeId": 369,
             "collegeName": "Trinity Washington University",
+            "collegeAbbr": "TWU",
             "conferenceId": 37,
             "city": "Washington",
             "state": "DC",
@@ -4023,6 +4041,7 @@
         {
             "collegeId": 370,
             "collegeName": "Tufts University",
+            "collegeAbbr": "TUF",
             "conferenceId": 9,
             "city": "Medford",
             "state": "MA",
@@ -4031,6 +4050,7 @@
         {
             "collegeId": 371,
             "collegeName": "University of California, Santa Cruz",
+            "collegeAbbr": "UCSC",
             "conferenceId": 30,
             "city": "Santa Cruz",
             "state": "CA",
@@ -4039,6 +4059,7 @@
         {
             "collegeId": 372,
             "collegeName": "Union College",
+            "collegeAbbr": "UNC",
             "conferenceId": 16,
             "city": "Schenectady",
             "state": "NY",
@@ -4048,6 +4069,7 @@
             "collegeId": 373,
             "collegeName": "University of the South",
             "conferenceId": 2,
+            "collegeAbbr": "UTS",
             "city": "Sewanee",
             "state": "TN",
             "nickname": "Tigers"

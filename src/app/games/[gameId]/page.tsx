@@ -23,19 +23,23 @@ export default function GameDashboard({ params }: { params: Promise<{ gameId: st
 
     const [isSimulating, setIsSimulating] = useState(false);
 
-    const handleSimulateWeek: () => Promise<void> = async () => {
+    const handleSimulateWeek = async () => {
         if (gameData && !isSimulating) {
             setIsSimulating(true);
             try {
                 await simulateWeek(gameData.gameId);
-                const updatedGame = await loadGameData(gameData.gameId); // Reload to get updated state
-                setGameData(updatedGame);
-                setIsSimulating(false);
-                return Promise.resolve();
+                
+                // Fetch updated data after the simulation
+                const updatedGame = await loadGameData(gameData.gameId);
+                const updatedTeams = await loadTeams(gameData.gameId);
+    
+                setGameData({ ...updatedGame });  
+                setTeamsData([...updatedTeams]);  
+    
             } catch (error) {
-                console.log("Error simulating week", error);
+                console.error("Error simulating week", error);
+            } finally {
                 setIsSimulating(false);
-                return Promise.reject(error);
             }
         }
     };

@@ -1,20 +1,26 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { loadPlayers } from '@/data/storage';
+import { loadPlayers, loadTeams } from '@/data/storage';
 import { Player } from '@/types/player';
 import Table from '@/components/Table'; // Adjust the import path as necessary
 import { use } from 'react';
+import { Team } from '@/types/team';
 
 export default function PlayersPage({ params }: { params: Promise<{ gameId: string }> }) {
     const { gameId } = use(params);
     const [players, setPlayers] = useState<Player[]>([]);
+    const [teams, setTeams] = useState<Team[]>([]);
 
     useEffect(() => {
         if (gameId) {
             async function fetchData() {
-                const playersData = await loadPlayers(Number(gameId));
+                const [playersData, teamsData] = await Promise.all([
+                    loadPlayers(Number(gameId)),
+                    loadTeams(Number(gameId))
+                ]);
                 setPlayers(playersData);
+                setTeams(teamsData);
             }
             fetchData().catch(console.error);
         } else {
@@ -22,21 +28,28 @@ export default function PlayersPage({ params }: { params: Promise<{ gameId: stri
         }
     }, [gameId]);
 
-    const columns: { key: "fullName" | "year" | "seasons" | "overall" | "potential" | "shortDistanceOvr" | "middleDistanceOvr" | "longDistanceOvr", label: string }[] = [
+    const columns: { key: "fullName" | 'team' | "year" | "seasons" | "overall" | "potential" | "shortDistanceOvr" | "middleDistanceOvr" | "longDistanceOvr", label: string }[] = [
         { key: 'fullName', label: 'Full Name' },
+        { key: 'team', label: 'College' },
         { key: 'year', label: 'Year' },
         { key: 'seasons', label: 'Seasons' },
         { key: 'overall', label: 'Overall' },
         { key: 'potential', label: 'Potential' },
         { key: 'shortDistanceOvr', label: 'Short Distance Ovr' },
-        { key: 'middleDistanceOvr', label: 'Middle Distance Ovr' },
+        { key: 'middleDistanceOvr', label: 'Mid Distance Ovr' },
         { key: 'longDistanceOvr', label: 'Long Distance Ovr' },
     ];
 
+    const teamMap = teams.reduce((map, team) => {
+        map[team.teamId] = team.abbr;
+        return map;
+    }, {} as Record<number, string>);
+
     const data = players.map(player => ({
         ...player,
+        team: teamMap[player.teamId] || 'Unknown',
         fullName: `${player.firstName} ${player.lastName}`,
-        seasons: player.seasons.map(season => season === 'track_field' ? 'Track and Field' : 'Cross Country').join(', ') as unknown as ("track_field" | "cross_country")[],
+        seasons: player.seasons.map(season => season === 'track_field' ? 'TF' : 'XC').join(', ') as unknown as ("track_field" | "cross_country")[],
         ...player.playerRatings,
         ...player.playerRatings.typeRatings,
     }));

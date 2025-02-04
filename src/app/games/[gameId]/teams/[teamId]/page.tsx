@@ -43,12 +43,13 @@ export default function TeamPage({ params }: { params: Promise<{ gameId: string,
         { key: 'overall', label: 'Overall' },
         { key: 'potential', label: 'Potential' },
         { key: 'shortDistanceOvr', label: 'Short Distance Ovr' },
-        { key: 'middleDistanceOvr', label: 'Middle Distance Ovr' },
+        { key: 'middleDistanceOvr', label: 'Mid Distance Ovr' },
         { key: 'longDistanceOvr', label: 'Long Distance Ovr' },
     ];
 
     const data = players.map(player => ({
         ...player,
+        seasons: player.seasons.map(season => season === 'track_field' ? 'TF' : 'XC').join(', ') as unknown as ("track_field" | "cross_country")[],
         fullName: `${player.firstName} ${player.lastName}`,
         ...player.playerRatings,
         ...player.playerRatings.typeRatings,
@@ -58,9 +59,9 @@ export default function TeamPage({ params }: { params: Promise<{ gameId: string,
 
     return (
         <div className="p-4">
-            <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">{team.college}</h1>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">College: <span className="font-semibold">{team.teamName}</span></p>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Conference: <span className="font-semibold">{conference?.conferenceName + ' ' + (conference?.conferenceAbbr)}</span></p>
+            <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">{team.college + ' (' + team.abbr + ')'}</h1>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Team Name: <span className="font-semibold">{team.teamName}</span></p>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Conference: <span className="font-semibold">{conference?.conferenceName + ' (' + (conference?.conferenceAbbr) + ')'}</span></p>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Location: <span className="font-semibold">{team.city}, {team.state}</span></p>
             <button onClick={handleScheduleClick} className="px-4 py-2 bg-accent-dark text-white rounded-lg transition hover:bg-accent-light mb-6">
                 View Team Schedule
