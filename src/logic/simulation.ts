@@ -51,7 +51,9 @@ export async function simulateWeek(gameId: number) {
     const incrementSuccess = await incrementWeek(game);
     if (incrementSuccess[1]) {
         success = await handleNewRecruits(teams, players, gameId);
-        success = await handleNewYearSchedule(game, teams, players, meets, races);
+        const newTeams = await loadTeams(gameId);
+        const newPlayers = await loadPlayers(gameId);
+        success = await handleNewYearSchedule(game, newTeams, newPlayers, meets, races);
     }
 
     if (!success) {

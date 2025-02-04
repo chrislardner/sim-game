@@ -12,7 +12,7 @@ import { calculateTeamOvrs } from './calculateTeamOvr';
 // Transition to next season: graduating seniors and adding new recruits
 export async function handleNewRecruits(teams: Team[], players: Player[], gameId: number): Promise<boolean> {
     try {
-        teams.forEach(async (team: Team) => {
+        for (const team of teams) {
             // Count graduating seniors
             const teamPlayers: Player[] = players.filter((player: Player) => team.players.includes(player.playerId));
             const graduatingSeniors: Player[] = teamPlayers.filter((player: Player) => player.year === 4);
@@ -46,7 +46,7 @@ export async function handleNewRecruits(teams: Team[], players: Player[], gameId
             }
 
             calculateTeamOvrs(team, players);
-        });
+        };
         await savePlayers(gameId, players);
         await saveTeams(gameId, teams);
 
