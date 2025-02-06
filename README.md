@@ -43,44 +43,6 @@ Sim Game is a sports simulation web application inspired by games like *Basketba
 
 ---
 
-## Technologies Used
-
-- **Frontend**: Next.JS
-- **Database**: IndexedDB via [idb](https://github.com/jakearchibald/idb) for persistent storage.
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/).
-- **Testing**: Jest for unit and integration testing.
-
----
-
-## Project Structure
-
-The project follows a modular structure with the `src` directory containing all source files. Here’s an overview, it's not up to date.:
-
-```
-src/
-├── app/
-│   ├── layout.tsx          # Main layout with navigation and dark mode toggle
-│   ├── page.tsx            # Home page with options to start/load a game
-│   ├── game/               # Dynamic routes for game pages
-│   │   ├── [gameId]/
-│   │       ├── teams/          # Pages for team views
-│   │       ├── players/        # Pages for player views
-├── components/             # Reusable UI components (e.g., Sidebar, Buttons)
-├── constants/              # Static data and enums (e.g., race types, phases)
-├── data/                   # Database and ID tracking logic, along with some data parsing for names/teams
-│   ├── storage.ts          # IndexedDB-based storage
-├── logic/                  # Core game logic
-│   ├── scheduleGenerator.ts # Schedule creation for league and teams
-│   ├── simulation.ts       # Week-by-week simulation logic
-│   ├── scoring.ts          # Scoring systems for events
-│   ├── playoffs.ts         # Playoff simulation logic
-├── styles/                 # Tailwind CSS setup and global styles
-├── types/                  # TypeScript interfaces for Game, Team, Player, etc.
-```
-
----
-
-
 ## Game Mechanics
 
 ### Seasons and Phases
@@ -88,7 +50,7 @@ src/
 The game operates on a **yearly cycle**, broken into the following phases:
 
 1. **Cross Country Season (Weeks 1–9)**:
-   - Weekly meets where top 5 participants contribute to team scores.
+   - Weekly meets where top 5 participants contribute to team scores. (top 7 participants are counted as "pushers")
    - Scoring favors lower times (1st place = 1 point).
 
 2. **Playoffs (Weeks 10–11)**:
@@ -113,15 +75,16 @@ The game operates on a **yearly cycle**, broken into the following phases:
 ## Future Plans
 (Not in particularly any order)
 
-- Allow players to customize the UI theme.
-- Add player ratings to influence race outcomes
+- Improve player rating distribution
+- Add more player intereaction (players to manage who they send to meets, how many racers on their team, budgeting, etc.)
 - Add player personality to influence player growth/decline
 - Incorporate player stats, loyalty, and other factors into recruiting.
 - Visualize races and track events week by week.
 - Track training progress and implement skill growth.
+- Improve meet scheduling (host teams, meet names, season awards)
 
 ---
 
 ---
 
-Enjoy managing your championship-winning teams! Let me know if you have ideas to imrpove the game! Contact me at lardnece@rose-hulman.edu
+Let me know if you have ideas to imrpove the game! Contact me at lardnece@rose-hulman.edu
