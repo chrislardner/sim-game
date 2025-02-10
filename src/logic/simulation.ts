@@ -1,6 +1,6 @@
 import { Game } from '@/types/game';
 import { saveGame, loadGameData, loadMeets, loadPlayers, loadRaces, loadTeams, saveTeams, saveMeets, savePlayers, saveRaces, deleteMeet, deleteRace } from '@/data/storage';
-import { handleNewRecruits, handleNewYearSchedule } from './newYear';
+import { handleNewRecruits } from './newYear';
 import { createRacesForMeet, mapWeekToGamePhase } from '@/logic/meetGenerator';
 import { Meet, Race } from '@/types/schedule';
 import { Team } from '@/types/team';
@@ -9,7 +9,7 @@ import { generateRaceTime, } from './generateRaceTimes';
 import { Player } from '@/types/player';
 import { updateTeamAndPlayerPoints } from './scoring';
 
-export async function simulateWeek(gameId: number) {
+export async function simulateWeek(gameId: number): Promise<boolean> {
     let game: Game;
     let teams: Team[];
     let players: Player[];
@@ -26,7 +26,7 @@ export async function simulateWeek(gameId: number) {
         ]);
     } catch (error) {
         console.error("Error loading game data", error);
-        return;
+        return Promise.reject(false);
     }
 
     const phase: SeasonGamePhase = mapWeekToGamePhase(game.currentWeek).type;
@@ -45,26 +45,28 @@ export async function simulateWeek(gameId: number) {
 
     if (!success) {
         console.error("Simulation failed");
-        return;
+        return Promise.reject(false);
     }
 
     const incrementSuccess = await incrementWeek(game);
     if (incrementSuccess[1]) {
-        success = await handleNewRecruits(teams, players, gameId);
-        const newTeams = await loadTeams(gameId);
-        const newPlayers = await loadPlayers(gameId);
-        success = await handleNewYearSchedule(game, newTeams, newPlayers, meets, races);
+        await handleNewRecruits(game, teams, players, meets, races);
+        console.log("made it here");
+        return Promise.resolve(true);
     }
 
     if (!success) {
         console.error("Increment week failed");
-        return;
+        return Promise.reject(false);
     }
 
     if (game.currentWeek == 11 || game.currentWeek == 26 || game.currentWeek == 41) {
         await saveGame(game);
         await savePlayers(gameId, players);
         await saveTeams(gameId, teams);
+        console.log("its a weird week");
+        return Promise.resolve(true);
+
     }
     else {
         await saveMeets(gameId, meets);
@@ -72,9 +74,9 @@ export async function simulateWeek(gameId: number) {
         await saveGame(game);
         await savePlayers(gameId, players);
         await saveTeams(gameId, teams);
+        console.log("its a normal week");
+        return Promise.resolve(true);
     }
-
-    teams = await loadTeams(gameId);
 }
 
 async function simulateRegularSeason(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {

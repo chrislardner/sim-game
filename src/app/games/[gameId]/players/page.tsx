@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { loadPlayers, loadTeams } from '@/data/storage';
+import { loadActivePlayers, loadTeams } from '@/data/storage';
 import { Player } from '@/types/player';
 import Table from '@/components/Table'; // Adjust the import path as necessary
 import { use } from 'react';
@@ -16,7 +16,7 @@ export default function PlayersPage({ params }: { params: Promise<{ gameId: stri
         if (gameId) {
             async function fetchData() {
                 const [playersData, teamsData] = await Promise.all([
-                    loadPlayers(Number(gameId)),
+                    loadActivePlayers(Number(gameId)),
                     loadTeams(Number(gameId))
                 ]);
                 setPlayers(playersData);

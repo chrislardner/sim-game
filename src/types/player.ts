@@ -73,4 +73,7 @@ export interface Player {
     face: ReturnType<typeof generate>; 
     playerRatings: PlayerRatings;
     playerSubArchetype: subArchetype;
+    retiredYear: number;
+    startYear: number;
 }
+    

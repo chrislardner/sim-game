@@ -2,7 +2,7 @@ import { raceTypes } from "@/constants/raceTypes";
 import { Player } from "@/types/player";
 import { generate } from "facesjs";
 import { generateRandomFullName } from "../data/parseNames";
-import { getNextPlayerId, savePlayer } from "@/data/storage";
+import { getNextPlayerId } from "@/data/storage";
 import { generatePlayerRatings } from "./generatePlayerRatings";
 import { subArchetype } from "@/constants/subArchetypes";
 
@@ -41,10 +41,11 @@ export async function createPlayer(gameId: number, teamId: number, year: number,
         gameId,
         playerRatings: playerInfo.pr,
         playerSubArchetype,
+        retiredYear: 0,
+        startYear: year,
     };
 
-    await savePlayer(gameId, player); // Save player to IndexedDB
-    return player;
+   return player;
 }
 
 function generateSeasonTypes(playerSubArchetype: subArchetype): ('track_field' | 'cross_country')[] {

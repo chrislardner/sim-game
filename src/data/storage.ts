@@ -6,7 +6,7 @@ import { Meet, Race } from '@/types/schedule';
 
 // Database constants
 const DATABASE_NAME = 'sportsSimDB';
-const DATABASE_VERSION = 10;
+const DATABASE_VERSION = 13;
 
 export interface IDTracker {
     gameId: number;
@@ -35,6 +35,7 @@ export async function initializeDB() {
                 if (!db.objectStoreNames.contains('players')) {
                     const playerStore = db.createObjectStore('players', { keyPath: ['gameId', 'playerId'] });
                     playerStore.createIndex('by_team', ['gameId', 'teamId']);
+                    playerStore.createIndex('by_retired', ['gameId', 'retiredYear']);
                     playerStore.createIndex('by_game', 'gameId');
                 }
                 if (!db.objectStoreNames.contains('meets')) {
@@ -148,6 +149,10 @@ export async function loadPlayers(gameId: number): Promise<Player[]> {
     return await getAllFromIndex('players', 'by_game', gameId) as Player[];
 }
 
+export async function loadActivePlayers(gameId: number): Promise<Player[]> {
+    return await getAllFromIndex('players', 'by_retired', [gameId, 0]) as Player[];
+}
+
 export async function loadMeets(gameId: number): Promise<Meet[]> {
     return await getAllFromIndex('meets', 'by_game', gameId) as Meet[];
 }
@@ -165,8 +170,6 @@ export async function deleteGameData(gameId: number) {
             console.warn(`Game with ID ${gameId} does not exist.`);
             return;
         }
-
-        console.log(`Deleting game ${gameId} and all related data...`);
 
         const deleteTx = db.transaction(['games', 'teams', 'players', 'meets', 'races', 'id_trackers'], 'readwrite');
         const promises = [
@@ -286,8 +289,6 @@ export async function deleteAllGames() {
     try {
         const db = await initializeDB();
 
-        console.log("Deleting all games and related data...");
-
         const tx = db.transaction(['games', 'teams', 'players', 'meets', 'races', 'id_trackers'], 'readwrite');
 
         await Promise.all([
@@ -351,48 +352,35 @@ export async function saveMeets(gameId: number, meets: Meet[]): Promise<boolean>
     return await saveMultiple('meets', gameId, meets);
 }
 
-export async function deleteMeet(gameId: number, meetId: number) {
+async function deleteItem(storeName: string, key: unknown) {
     try {
-        console.log(`Attempting to delete meet with gameId: ${gameId}, meetId: ${meetId}`);
         const db = await initializeDB();
         if (!db) {
-            console.error('Database is not initialized. Failed to delete meet.');
+            console.error(`Database is not initialized. Failed to delete item from ${storeName}.`);
             return;
         }
-        const tx = db.transaction('meets', 'readwrite');
-        const store = tx.objectStore('meets');
-        const meet = await store.get([gameId, meetId]);
-        if (!meet) {
-            console.error(`Meet with gameId: ${gameId}, meetId: ${meetId} does not exist.`);
+        const tx = db.transaction(storeName, 'readwrite');
+        const store = tx.objectStore(storeName);
+        const item = await store.get(key as IDBValidKey);
+        if (!item) {
+            console.error(`Item with key ${JSON.stringify(key as IDBValidKey)} does not exist in ${storeName}.`);
             return;
         }
-        await store.delete([gameId, meetId]);
+        await store.delete(key as IDBValidKey);
         await tx.done;
-        console.log(`Successfully deleted meet with gameId: ${gameId}, meetId: ${meetId}`);
     } catch (error) {
-        console.error(`Failed to delete meet ${meetId}:`, error);
+        console.error(`Failed to delete item from ${storeName} with key ${JSON.stringify(key)}:`, error);
     }
 }
 
+export async function deleteMeet(gameId: number, meetId: number) {
+    await deleteItem('meets', [gameId, meetId]);
+}
+
 export async function deleteRace(gameId: number, raceId: number) {
-    try {
-        console.log(`Attempting to delete race with gameId: ${gameId}, raceId: ${raceId}`);
-        const db = await initializeDB();
-        if (!db) {
-            console.error('Database is not initialized. Failed to delete race.');
-            return;
-        }
-        const tx = db.transaction('races', 'readwrite');
-        const store = tx.objectStore('races');
-        const race = await store.get([gameId, raceId]);
-        if (!race) {
-            console.error(`Race with gameId: ${gameId}, raceId: ${raceId} does not exist.`);
-            return;
-        }
-        await store.delete([gameId, raceId]);
-        await tx.done;
-        console.log(`Successfully deleted race with gameId: ${gameId}, raceId: ${raceId}`);
-    } catch (error) {
-        console.error(`Failed to delete race ${raceId}:`, error);
-    }
+    await deleteItem('races', [gameId, raceId]);
+}
+
+export async function deletePlayer(gameId: number, playerId: number) {
+    await deleteItem('players', [gameId, playerId]);
 }

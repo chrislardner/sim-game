@@ -27,8 +27,8 @@ export default function GameDashboard({ params }: { params: Promise<{ gameId: st
         if (gameData && !isSimulating) {
             setIsSimulating(true);
             try {
-                await simulateWeek(gameData.gameId);
-                
+                const success = await simulateWeek(gameData.gameId);
+                if(!success) console.error("SIMULATE FAILURE")
                 // Fetch updated data after the simulation
                 const updatedGame = await loadGameData(gameData.gameId);
                 const updatedTeams = await loadTeams(gameData.gameId);
