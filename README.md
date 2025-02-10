@@ -4,12 +4,8 @@ Sim Game is a sports simulation web application inspired by games like *Basketba
 
 ## Table of Contents
 - [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Project Structure](#project-structure)
 - [Game Mechanics](#game-mechanics)
   - [Seasons and Phases](#seasons-and-phases)
-  - [Playoffs Simulation](#playoffs-simulation)
-- [Customizations](#customizations)
 - [Future Plans](#future-plans)
 
 ---
