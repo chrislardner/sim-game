@@ -84,7 +84,7 @@ export default function RacesOverviewPage({ params }: { params: Promise<{ gameId
         if (topWinner) {
             const player = playersMap?.[topWinner.playerId];
             const team = teamsMap?.[Object.values(teamsMap).find((team: Team) => team.players.some((pId: number) => pId === topWinner.playerId))?.teamId ?? -1];
-            return `${player?.firstName} ${player?.lastName} (${team?.college}) - ${formatTime(topWinner.playerTime)}`;
+            return `${player?.firstName} ${player?.lastName} (${team?.abbr}) - ${formatTime(topWinner.playerTime)}`;
         }
         return '';
     };

@@ -75,5 +75,16 @@ export interface Player {
     playerSubArchetype: subArchetype;
     retiredYear: number;
     startYear: number;
+    interactions: PlayerInteractions;
 }
     
+
+export interface PlayerInteractions {
+    moodWithTeam: { [key: number]: number };
+    interactionsWithTeam: { [key: number]: Interaction };
+}
+
+export interface Interaction {
+    type: string;
+    effect: number;
+}

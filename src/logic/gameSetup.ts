@@ -28,7 +28,7 @@ export async function initializeNewGame(conferences: Conference[], numPlayersPer
             for (let j = 0; j < numPlayersPerTeam; j++) {
                 const playerSubArchetypes: subArchetype = calculateSubArchetype();
 
-                const player = await createPlayer(gameId, team.teamId, -1, playerSubArchetypes);
+                const player = await createPlayer(gameId, team.teamId, -1, playerSubArchetypes, currentYear, currentYear);
                 players.push(player);
                 team.players.push(player.playerId);
             }
@@ -36,6 +36,8 @@ export async function initializeNewGame(conferences: Conference[], numPlayersPer
         }
         teams.push(...conferenceTeams);
     }
+    const selectedTeamId = teams.find(team => team.schoolId === selectedSchoolId)?.teamId;
+    if (!selectedTeamId) throw new Error('Selected team not found');
 
     const scheduleObject: {meets: Meet[], races: Race[]} = await generateYearlyLeagueSchedule(gameId, teams, players, currentYear);
 
@@ -57,7 +59,7 @@ export async function initializeNewGame(conferences: Conference[], numPlayersPer
         gamePhase: 'regular',
         leagueSchedule,
         remainingTeams: teams.map(team => team.teamId),
-        selectedCollegeId: selectedSchoolId,
+        selectedTeamId: selectedTeamId,
         conferences,
     };
 

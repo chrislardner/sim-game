@@ -11,7 +11,7 @@ export interface Game {
     currentWeek: number;     
     leagueSchedule: YearlyLeagueSchedule;    // Full season schedule
     remainingTeams: number[]; // TeamIds still in the playoffs
-    selectedCollegeId: number
+    selectedTeamId: number
     conferences: Conference[];  
 }
 

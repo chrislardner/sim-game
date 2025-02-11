@@ -1,6 +1,6 @@
 import { Game } from '@/types/game';
 import { saveGame, loadGameData, loadMeets, loadPlayers, loadRaces, loadTeams, saveTeams, saveMeets, savePlayers, saveRaces, deleteMeet, deleteRace } from '@/data/storage';
-import { handleNewRecruits } from './newYear';
+import { handleNewYear } from './newYear';
 import { createRacesForMeet, mapWeekToGamePhase } from '@/logic/meetGenerator';
 import { Meet, Race } from '@/types/schedule';
 import { Team } from '@/types/team';
@@ -50,8 +50,7 @@ export async function simulateWeek(gameId: number): Promise<boolean> {
 
     const incrementSuccess = await incrementWeek(game);
     if (incrementSuccess[1]) {
-        await handleNewRecruits(game, teams, players, meets, races);
-        console.log("made it here");
+        await handleNewYear(game, teams, players, meets, races);
         return Promise.resolve(true);
     }
 
@@ -64,7 +63,6 @@ export async function simulateWeek(gameId: number): Promise<boolean> {
         await saveGame(game);
         await savePlayers(gameId, players);
         await saveTeams(gameId, teams);
-        console.log("its a weird week");
         return Promise.resolve(true);
 
     }
@@ -74,7 +72,6 @@ export async function simulateWeek(gameId: number): Promise<boolean> {
         await saveGame(game);
         await savePlayers(gameId, players);
         await saveTeams(gameId, teams);
-        console.log("its a normal week");
         return Promise.resolve(true);
     }
 }

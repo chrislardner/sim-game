@@ -17,14 +17,14 @@ module.exports = {
         },
         background: {
           light: '#F3F4F6',
-          dark: '#1F2937',
+          dark: '#212529',
         },
         surface: {
           light: '#FFFFFF',
-          dark: '#111827',
+          dark: '#343a40',
         },
         text: {
-          light: '#111827',
+          light: '#343a40',
           dark: '#F9FAFB',
         },
         accent: {

@@ -5,7 +5,7 @@ import { use, useEffect, useState } from 'react';
 import { loadGameData, loadPlayers, loadTeams } from '@/data/storage';
 import { Team } from '@/types/team';
 import { Player } from '@/types/player';
-import Table from '@/components/Table'; // Adjust the import path as necessary
+import Table from '@/components/Table';
 import { Conference } from '@/types/regionals';
 
 export default function TeamPage({ params }: { params: Promise<{ gameId: string, teamId: string }> }) {
@@ -66,7 +66,6 @@ export default function TeamPage({ params }: { params: Promise<{ gameId: string,
             <button onClick={handleScheduleClick} className="px-4 py-2 bg-accent-dark text-white rounded-lg transition hover:bg-accent-light mb-6">
                 View Team Schedule
             </button>
-
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Players</h2>
             <Table data={data} columns={columns} getRowLink={getRowLink} linkColumns={['fullName']} />
         </div>

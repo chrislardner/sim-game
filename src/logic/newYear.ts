@@ -10,7 +10,7 @@ import { calculateTeamOvrs } from './calculateTeamOvr';
 
 
 // Transition to next season: graduating seniors and adding new recruits
-export async function handleNewRecruits(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
+export async function handleNewYear(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
     try {
         for (const team of teams) {
             // Count graduating seniors
@@ -27,9 +27,7 @@ export async function handleNewRecruits(game: Game, teams: Team[], players: Play
             });
 
             const teamGraduatedplayersSubArchetype = teamGraduatedplayers.map((player: Player) => player.playerSubArchetype);
-            console.log(team.players, "before removing graduating seniors");
             team.players = team.players.filter((playerId: number) => teamNonGraduatingSeniorsIds.includes(playerId));
-            console.log(team.players, "after removing graduating seniors");
 
             // Promote remaining players
             teamNonGraduatingSeniors.forEach(player => {
@@ -40,7 +38,7 @@ export async function handleNewRecruits(game: Game, teams: Team[], players: Play
 
             // Add recruits as new freshmen
             for (let i = 0; i < graduatingSeniors.length; i++) {
-                const player = await createPlayer(game.gameId, team.teamId, 1, teamGraduatedplayersSubArchetype[i]);
+                const player = await createPlayer(game.gameId, team.teamId, 1, teamGraduatedplayersSubArchetype[i], game.currentYear + 1, game.currentYear);
                 team.players.push(player.playerId);
                 players.push(player);
             }
@@ -70,9 +68,6 @@ export async function handleNewRecruits(game: Game, teams: Team[], players: Play
             await saveRaces(game.gameId, races);
             await savePlayers(game.gameId, players);
             await saveTeams(game.gameId, teams);
-
-            console.log(players, "players at the end");
-            console.log(teams, "teams at index 0 at the end");
     
         } catch (error) {
             console.error('Error handling new year schedule:', error);
