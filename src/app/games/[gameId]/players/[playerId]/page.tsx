@@ -1,4 +1,3 @@
-// src/app/games/[gameId]/players/[playerId]/page.tsx
 "use client";
 
 import { use, useEffect, useRef, useState } from 'react';

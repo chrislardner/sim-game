@@ -22,7 +22,6 @@
     "react-icons": "^5.4.0"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.14",
     "@types/next": "^9.0.0",
     "@types/node": "^20",
     "@types/papaparse": "^5.3.15",

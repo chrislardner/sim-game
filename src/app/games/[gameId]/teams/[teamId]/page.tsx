@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
-import { loadGameData, loadPlayers, loadTeams } from '@/data/storage';
+import { loadActivePlayers, loadGameData, loadTeams } from '@/data/storage';
 import { Team } from '@/types/team';
 import { Player } from '@/types/player';
 import Table from '@/components/Table';
@@ -20,7 +20,7 @@ export default function TeamPage({ params }: { params: Promise<{ gameId: string,
             const teamData = await loadTeams(Number(gameId));
             const selectedTeam = teamData?.find(t => t.teamId === Number(teamId));
             setTeam(selectedTeam);
-            const playerData = await loadPlayers(Number(gameId));
+            const playerData = await loadActivePlayers(Number(gameId));
             const teamPlayers = playerData?.filter((p: Player) => p.teamId === Number(teamId));
             setTeamPlayers(teamPlayers);
             const gameData = await loadGameData(Number(gameId));

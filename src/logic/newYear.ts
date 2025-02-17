@@ -18,16 +18,15 @@ export async function handleNewYear(game: Game, teams: Team[], players: Player[]
             const graduatingSeniors: Player[] = teamPlayers.filter((player: Player) => player.year >= 4);
             // Remove graduating seniors
             const teamNonGraduatingSeniors: Player[] = teamPlayers.filter((player: Player) => player.year !== 4);
-            const teamNonGraduatingSeniorsIds: number[] = teamNonGraduatingSeniors.map((player: Player) => player.playerId);
+            // const teamNonGraduatingSeniorsIds: number[] = teamNonGraduatingSeniors.map((player: Player) => player.playerId);
 
             const teamGraduatedplayers = teamPlayers.filter((player: Player) => player.year === 4);
             teamGraduatedplayers.forEach(async player => {
                 player.retiredYear = game.currentYear;
-                player.teamId = -1;
             });
 
             const teamGraduatedplayersSubArchetype = teamGraduatedplayers.map((player: Player) => player.playerSubArchetype);
-            team.players = team.players.filter((playerId: number) => teamNonGraduatingSeniorsIds.includes(playerId));
+            // team.players = team.players.filter((playerId: number) => teamNonGraduatingSeniorsIds.includes(playerId));
 
             // Promote remaining players
             teamNonGraduatingSeniors.forEach(player => {
