@@ -18,7 +18,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <body className="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors">
                 <ThemeProvider>
                     <div className="flex min-h-screen">
-                        {/* Sidebar for game-specific navigation */}
                         {isInGameRoute && (
                             <div className="w-48 fixed">
                                 <GameSidebar params={Promise.resolve({ gameId })} />

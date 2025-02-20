@@ -5,7 +5,7 @@ import { loadGameData, loadMeets, loadTeams } from "@/data/storage";
 import { Meet } from "@/types/schedule";
 import { Team } from "@/types/team";
 import Table from "@/components/Table";
-import YearFilter from "@/components/YearFilterer"; // Import the reusable component
+import YearFilter from "@/components/YearFilterer"; 
 import { Game } from "@/types/game";
 
 type TransformedMeet = Omit<Meet, "teams" | "season"> & {

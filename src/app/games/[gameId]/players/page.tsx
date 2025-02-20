@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { loadActivePlayers, loadTeams } from '@/data/storage';
 import { Player } from '@/types/player';
-import Table from '@/components/Table'; // Adjust the import path as necessary
+import Table from '@/components/Table';
 import { use } from 'react';
 import { Team } from '@/types/team';
 

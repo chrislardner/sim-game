@@ -18,7 +18,6 @@ export async function handleNewYear(game: Game, teams: Team[], players: Player[]
             const graduatingSeniors: Player[] = teamPlayers.filter((player: Player) => player.year >= 4);
             // Remove graduating seniors
             const teamNonGraduatingSeniors: Player[] = teamPlayers.filter((player: Player) => player.year !== 4);
-            // const teamNonGraduatingSeniorsIds: number[] = teamNonGraduatingSeniors.map((player: Player) => player.playerId);
 
             const teamGraduatedplayers = teamPlayers.filter((player: Player) => player.year === 4);
             teamGraduatedplayers.forEach(async player => {
@@ -26,7 +25,6 @@ export async function handleNewYear(game: Game, teams: Team[], players: Player[]
             });
 
             const teamGraduatedplayersSubArchetype = teamGraduatedplayers.map((player: Player) => player.playerSubArchetype);
-            // team.players = team.players.filter((playerId: number) => teamNonGraduatingSeniorsIds.includes(playerId));
 
             // Promote remaining players
             teamNonGraduatingSeniors.forEach(player => {
@@ -46,7 +44,8 @@ export async function handleNewYear(game: Game, teams: Team[], players: Player[]
         };
 
         try {
-            const scheduleObject: { meets: Meet[], races: Race[] } = await generateYearlyLeagueSchedule(game.gameId, teams, players, game.currentYear);
+            const filteredPlayers = players.filter(player => player.retiredYear === 0);
+            const scheduleObject: { meets: Meet[], races: Race[] } = await generateYearlyLeagueSchedule(game.gameId, teams, filteredPlayers, game.currentYear);
     
             const leagueSchedule = {
                 year: game.currentYear,

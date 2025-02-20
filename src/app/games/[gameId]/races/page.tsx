@@ -5,8 +5,8 @@ import { loadGameData, loadMeets, loadPlayers, loadRaces, loadTeams } from '@/da
 import { Meet, Race } from '@/types/schedule';
 import { Player } from '@/types/player';
 import { Team } from '@/types/team';
-import Table from '@/components/Table'; // Adjust the import path as necessary
-import YearFilter from '@/components/YearFilterer'; // Import the reusable component
+import Table from '@/components/Table'; 
+import YearFilter from '@/components/YearFilterer'; 
 import { Game } from '@/types/game';
 
 type TransformedRace = {
@@ -17,7 +17,7 @@ type TransformedRace = {
     meetWeek: number;
     topWinner: string;
     topTeam: string;
-    points: string; // Changed to string to display team points
+    points: string; 
     teams: string;
 };
 
@@ -90,12 +90,20 @@ export default function RacesOverviewPage({ params }: { params: Promise<{ gameId
     };
 
     const getTopTeam = (race: Race) => {
-        const topTeam = race?.teams.reduce((prev, current) => (prev.points > current.points) ? prev : current);
+        const validTeams = race?.teams.filter(team => team.points > 0) || [];
+        const sortedTeams = validTeams.sort((a, b) => {
+            if (race?.eventType === '8000m') {
+                return a.points - b.points; // Less points first for cross country
+            } else {
+                return b.points - a.points; // More points first for track
+            }
+        });
+        const topTeam = sortedTeams[0];
         if (topTeam) {
             const team = teamsMap[topTeam.teamId];
             return `${team?.college + ' (' + team?.abbr + ')' } - ${topTeam.points} points`;
         }
-        return '';
+        return 'N/A';
     };
 
     const formatTime = (time: number) => {
@@ -116,10 +124,10 @@ export default function RacesOverviewPage({ params }: { params: Promise<{ gameId
                 raceId,
                 date: meet.date,
                 meetId: meet.meetId,
-                eventType: race?.eventType || '',
+                eventType: race?.eventType || 'N/A',
                 meetWeek: meet.week,
-                topWinner: topWinner || '',
-                topTeam: topTeam || '',
+                topWinner: topWinner || 'N/A',
+                topTeam: topTeam || 'N/A',
                 points: teamsPoints,
                 teams
             };
@@ -140,7 +148,6 @@ export default function RacesOverviewPage({ params }: { params: Promise<{ gameId
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">Races Overview</h1>
 
-            {/* YearFilter Component */}
             <YearFilter
                 availableYears={availableYears}
                 currentYear={currentYear}

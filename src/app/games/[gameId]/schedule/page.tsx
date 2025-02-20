@@ -5,8 +5,8 @@ import { loadTeams, loadMeets, loadGameData } from '@/data/storage';
 import { Meet } from '@/types/schedule';
 import { Team } from '@/types/team';
 import { Game } from '@/types/game';
-import Table from '@/components/Table'; // Adjust the import path as necessary
-import YearFilter from '@/components/YearFilterer'; // Import the reusable component
+import Table from '@/components/Table'; 
+import YearFilter from '@/components/YearFilterer'; 
 
 type TransformedMeet = Omit<Meet, 'teams' | 'season'> & {
     teams: string;
