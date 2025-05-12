@@ -1,0 +1,485 @@
+Index: src/data/parseSchools.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Conference, School } from \"@/types/regionals\";\r\n\r\ntype CollegeEntry = School;\r\n\r\ntype ConferenceEntry = Conference;\r\n\r\nlet colleges: CollegeEntry[] = [];\r\nlet conferences: ConferenceEntry[] = [];\r\nlet isDataLoaded = false;\r\n\r\n// Preload the matched.json file\r\nasync function preloadMatchedData(): Promise<void> {\r\n    try {\r\n        const response = await fetch(\"divisions/DIII/d3_matched.json\");\r\n        const data = await response.json();\r\n\r\n        if (!data || !Array.isArray(data.colleges) || !Array.isArray(data.conferences)) {\r\n            throw new Error(\"Invalid matched data structure. Ensure the JSON file is correct.\");\r\n        }\r\n\r\n        colleges = data.colleges;\r\n        conferences = data.conferences;\r\n\r\n        if (colleges.length === 0 || conferences.length === 0) {\r\n            throw new Error(\"No colleges or conferences found in matched data.\");\r\n        }\r\n\r\n        isDataLoaded = true;\r\n    } catch (error) {\r\n        console.error(\"Error during preloadMatchedData:\", error);\r\n    }\r\n}\r\n\r\nexport async function getAllColleges(): Promise<CollegeEntry[]> { \r\n    if (!isDataLoaded) {\r\n        await preloadMatchedData();\r\n    }\r\n\r\n    return colleges;\r\n}\r\n\r\nexport async function getAllConferences(): Promise<ConferenceEntry[]> {\r\n    if (!isDataLoaded) {\r\n        await preloadMatchedData();\r\n    }\r\n\r\n    return conferences;\r\n}\r\n\r\n// Get a conference by its ID\r\nexport function getConferenceById(conferenceId: number): ConferenceEntry | null {\r\n    return conferences.find((conf) => conf.conferenceId === conferenceId) || null;\r\n}\r\n\r\n// Get a college by its ID\r\nfunction getCollegeById(collegeId: number): CollegeEntry | null {\r\n    return colleges.find((college) => college.collegeId === collegeId) || null;\r\n}\r\n\r\n// Fetch a random college from the matched data\r\nfunction getRandomCollege(): CollegeEntry | null {\r\n    if (colleges.length === 0) {\r\n        console.error(\"No colleges available. Ensure data is preloaded.\");\r\n        return null;\r\n    }\r\n\r\n    const randomIndex = Math.floor(Math.random() * colleges.length);\r\n    return colleges[randomIndex];\r\n}\r\n\r\n// Generate a team with a random college\r\nexport async function generateRandomTeam(): Promise<CollegeEntry | null> {\r\n    try {\r\n        if (!isDataLoaded) {\r\n            await preloadMatchedData();\r\n        }\r\n\r\n        const randomCollege = getRandomCollege();\r\n        if (!randomCollege) {\r\n            throw new Error(\"Failed to generate random college.\");\r\n        }\r\n\r\n        return randomCollege;\r\n    } catch (error) {\r\n        console.error(\"Error generating random team:\", error);\r\n        throw error;\r\n    }\r\n}\r\n\r\nexport async function getCollegesbyConferenceId(conferenceId: number): Promise<CollegeEntry[]> {\r\n    try {\r\n        if (!isDataLoaded) {\r\n            await preloadMatchedData();\r\n        }\r\n\r\n        const generatedColleges: CollegeEntry[] = [];\r\n        const conference = getConferenceById(conferenceId);\r\n        if (!conference || !conference.teamIds) {\r\n            throw new Error(\"Conference or teamIds not found.\");\r\n        }\r\n        for (let i = 0; i < conference.teamIds.length; i++) {\r\n            const generatedCollege = getCollegeById(conference.teamIds[i]);\r\n            if (generatedCollege) {\r\n                generatedColleges.push(generatedCollege);\r\n            }\r\n        }\r\n\r\n        return generatedColleges;\r\n    } catch (error) {\r\n        console.error(\"Error generating colleges from conference Id:\", error);\r\n        throw error;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/data/parseSchools.ts b/src/data/parseSchools.ts
+--- a/src/data/parseSchools.ts	(revision 6060a4f66919a46201d6c4fe1c0849a002e95e19)
++++ b/src/data/parseSchools.ts	(date 1747016429560)
+@@ -68,25 +68,6 @@
+     return colleges[randomIndex];
+ }
+ 
+-// Generate a team with a random college
+-export async function generateRandomTeam(): Promise<CollegeEntry | null> {
+-    try {
+-        if (!isDataLoaded) {
+-            await preloadMatchedData();
+-        }
+-
+-        const randomCollege = getRandomCollege();
+-        if (!randomCollege) {
+-            throw new Error("Failed to generate random college.");
+-        }
+-
+-        return randomCollege;
+-    } catch (error) {
+-        console.error("Error generating random team:", error);
+-        throw error;
+-    }
+-}
+-
+ export async function getCollegesbyConferenceId(conferenceId: number): Promise<CollegeEntry[]> {
+     try {
+         if (!isDataLoaded) {
+Index: src/data/parseNames.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/* eslint-disable @typescript-eslint/no-explicit-any */\r\n/* eslint-disable @typescript-eslint/no-unused-vars */\r\nimport Papa from \"papaparse\";\r\n\r\ntype NameEntry = {\r\n    firstName: string;\r\n    lastName: string;\r\n    firstNameRate: number;\r\n    lastNameRate: number;\r\n};\r\n\r\nlet firstNameWeights: { cumulativeWeight: number; name: string }[] = [];\r\nlet lastNameWeights: { cumulativeWeight: number; name: string }[] = [];\r\nlet isDataLoaded = false;\r\n\r\n// Helper function to capitalize only the first letter\r\nfunction capitalizeFirstLetter(name: string): string {\r\n    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();\r\n}\r\n\r\n// Preload the CSV and compute cumulative weights\r\nasync function preloadCSV(): Promise<void> {\r\n    try {\r\n        const response = await fetch(\"/names/names.csv\");\r\n        const csvData = await response.text();\r\n\r\n        const parsedData: NameEntry[] = await new Promise((resolve, reject) => {\r\n            Papa.parse(csvData, {\r\n                header: true,\r\n                skipEmptyLines: true,\r\n                complete: (results) => {\r\n                    const cleanedData = results.data\r\n                        .filter((entry: any) => {\r\n                            const isValid = entry[\"first_name\"] && \r\n                                            entry[\"last_name\"] && \r\n                                            entry[\"first_percent_thousand\"] && \r\n                                            entry[\"last_percent_thousand\"];\r\n                            if (!isValid) {\r\n                                console.log(\"Invalid Entry (Missing Fields):\", entry);\r\n                            }\r\n                            return isValid;\r\n                        })\r\n                        .map((entry: any) => {\r\n                            try {\r\n                                const cleanedEntry = {\r\n                                    firstName: entry[\"first_name\"].trim(),\r\n                                    lastName: capitalizeFirstLetter(entry[\"last_name\"].trim()),\r\n                                    firstNameRate: parseFloat(entry[\"first_percent_thousand\"].replace(\"%\", \"\")) || 0,\r\n                                    lastNameRate: parseFloat(entry[\"last_percent_thousand\"].replace(\"%\", \"\")) || 0,\r\n                                };\r\n                                if (cleanedEntry.firstNameRate === 0 || cleanedEntry.lastNameRate === 0) {\r\n                                    console.log(\"Invalid Rate in Entry:\", cleanedEntry);\r\n                                }\r\n                                return cleanedEntry;\r\n                            } catch (error) {\r\n                                console.error(\"Error Cleaning Entry:\", entry, error);\r\n                                return null;\r\n                            }\r\n                        })\r\n                        .filter((entry: any) => entry !== null && entry.firstNameRate > 0 && entry.lastNameRate > 0);\r\n\r\n                    resolve(cleanedData as NameEntry[]);\r\n                },\r\n                error: (error: any) => {\r\n                    console.error(\"Error parsing CSV data:\", error);\r\n                    reject(error);\r\n                },\r\n            });\r\n        });\r\n\r\n        let firstCumulative = 0;\r\n        let lastCumulative = 0;\r\n\r\n        // Build cumulative weights for efficient random selection\r\n        firstNameWeights = parsedData.map((entry) => {\r\n            firstCumulative += entry.firstNameRate;\r\n            return { cumulativeWeight: firstCumulative, name: entry.firstName };\r\n        });\r\n\r\n        lastNameWeights = parsedData.map((entry) => {\r\n            lastCumulative += entry.lastNameRate;\r\n            return { cumulativeWeight: lastCumulative, name: entry.lastName };\r\n        });\r\n\r\n        if (firstNameWeights.length === 0 || lastNameWeights.length === 0) {\r\n            throw new Error(\"Weights are empty. Check CSV parsing and data validity.\");\r\n        }\r\n\r\n        isDataLoaded = true;\r\n    } catch (error) {\r\n        console.error(\"Error during preloadCSV:\", error);\r\n    }\r\n}\r\n\r\n// Efficient weighted random selection\r\nfunction getRandomNameFromWeights(\r\n    weights: { cumulativeWeight: number; name: string }[]\r\n): string {\r\n    const totalWeight = weights[weights.length - 1].cumulativeWeight;\r\n    const randomWeight = Math.random() * totalWeight;\r\n\r\n    // Binary search for efficiency\r\n    let low = 0;\r\n    let high = weights.length - 1;\r\n\r\n    while (low < high) {\r\n        const mid = Math.floor((low + high) / 2);\r\n        if (weights[mid].cumulativeWeight < randomWeight) {\r\n            low = mid + 1;\r\n        } else {\r\n            high = mid;\r\n        }\r\n    }\r\n\r\n    return weights[low].name;\r\n}\r\n\r\n// Generate a single random full name\r\nexport async function generateRandomFullName(): Promise<{ firstName: string; lastName: string }> {\r\n    try {\r\n        if (!isDataLoaded) {\r\n            await preloadCSV();\r\n        }\r\n\r\n        if (firstNameWeights.length === 0 || lastNameWeights.length === 0) {\r\n            throw new Error(\"Weights are empty. Ensure CSV data is valid and preloaded correctly.\");\r\n        }\r\n\r\n        const firstName = getRandomNameFromWeights(firstNameWeights);\r\n        const lastName = getRandomNameFromWeights(lastNameWeights);\r\n\r\n        return { firstName, lastName };\r\n    } catch (error) {\r\n        console.error(\"Error generating random full name:\", error);\r\n        throw error;\r\n    }\r\n}\r\n\r\n// Generate thousands of names in a batch\r\nexport async function generateRandomNamesBatch(count: number): Promise<{ firstName: string; lastName: string }[]> {\r\n    try {\r\n        await preloadCSV();\r\n\r\n        const names: { firstName: string; lastName: string }[] = [];\r\n        for (let i = 0; i < count; i++) {\r\n            const firstName = getRandomNameFromWeights(firstNameWeights);\r\n            const lastName = getRandomNameFromWeights(lastNameWeights);\r\n            names.push({ firstName, lastName });\r\n        }\r\n\r\n        return names;\r\n    } catch (error) {\r\n        console.error(\"Error generating random names batch:\", error);\r\n        throw error;\r\n    }\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/data/parseNames.ts b/src/data/parseNames.ts
+--- a/src/data/parseNames.ts	(revision 6060a4f66919a46201d6c4fe1c0849a002e95e19)
++++ b/src/data/parseNames.ts	(date 1747016429483)
+@@ -135,23 +135,3 @@
+         throw error;
+     }
+ }
+-
+-// Generate thousands of names in a batch
+-export async function generateRandomNamesBatch(count: number): Promise<{ firstName: string; lastName: string }[]> {
+-    try {
+-        await preloadCSV();
+-
+-        const names: { firstName: string; lastName: string }[] = [];
+-        for (let i = 0; i < count; i++) {
+-            const firstName = getRandomNameFromWeights(firstNameWeights);
+-            const lastName = getRandomNameFromWeights(lastNameWeights);
+-            names.push({ firstName, lastName });
+-        }
+-
+-        return names;
+-    } catch (error) {
+-        console.error("Error generating random names batch:", error);
+-        throw error;
+-    }
+-}
+-
+Index: sim-game/src/data/storage.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { openDB, IDBPDatabase } from 'idb';\r\nimport { Game } from '@/types/game';\r\nimport { Team } from '@/types/team';\r\nimport { Player } from '@/types/player';\r\nimport { Meet, Race } from '@/types/schedule';\r\n\r\n// Database constants\r\nconst DATABASE_NAME = 'sportsSimDB';\r\nconst DATABASE_VERSION = 13;\r\n\r\nexport interface IDTracker {\r\n    gameId: number;\r\n    lastPlayerId: number;\r\n    lastTeamId: number;\r\n    lastMeetId: number;\r\n    lastRaceId: number;\r\n}\r\n\r\nlet db: IDBPDatabase | null = null;\r\n\r\n// Initialize the database\r\nexport async function initializeDB() {  \r\n    try {\r\n        db = await openDB(DATABASE_NAME, DATABASE_VERSION, {\r\n            upgrade(db) {\r\n                if (!db.objectStoreNames.contains('global_ids')) {\r\n                    db.createObjectStore('global_ids', { keyPath: 'key' }); // For tracking game_counter\r\n                }\r\n                if (!db.objectStoreNames.contains('games')) {\r\n                    db.createObjectStore('games', { keyPath: 'gameId' });\r\n                }\r\n                if (!db.objectStoreNames.contains('teams')) {\r\n                    db.createObjectStore('teams', { keyPath: ['gameId', 'teamId'] }).createIndex('by_game', 'gameId');\r\n                }\r\n                if (!db.objectStoreNames.contains('players')) {\r\n                    const playerStore = db.createObjectStore('players', { keyPath: ['gameId', 'playerId'] });\r\n                    playerStore.createIndex('by_team', ['gameId', 'teamId']);\r\n                    playerStore.createIndex('by_retired', ['gameId', 'retiredYear']);\r\n                    playerStore.createIndex('by_game', 'gameId');\r\n                }\r\n                if (!db.objectStoreNames.contains('meets')) {\r\n                    db.createObjectStore('meets', { keyPath: ['gameId', 'meetId'] }).createIndex('by_game', 'gameId');\r\n                }\r\n                if (!db.objectStoreNames.contains('races')) {\r\n                    const raceStore = db.createObjectStore('races', { keyPath: ['gameId', 'raceId'] });\r\n                    raceStore.createIndex('by_meet', ['gameId', 'meetId']);\r\n                    raceStore.createIndex('by_game', 'gameId');\r\n                }\r\n                if (!db.objectStoreNames.contains('id_trackers')) {\r\n                    db.createObjectStore('id_trackers', { keyPath: 'gameId' });\r\n                }\r\n            },\r\n            blocked() {\r\n                console.log('DB blocked');\r\n            },\r\n            terminated() {\r\n                console.log('DB terminated');\r\n            },\r\n            blocking() {     \r\n                console.log('DB blocking');\r\n            }\r\n        });\r\n    } catch (error) {\r\n        console.error('Failed to initialize the database:', error);\r\n        throw new Error('Failed to initialize the database');\r\n    }\r\n\r\n    return db;\r\n}\r\n\r\nasync function putData(storeName: string, data: unknown): Promise<IDBValidKey> {\r\n    if (data === undefined || data === null) {\r\n        console.warn(`Attempted to put undefined or null data into ${storeName}`);\r\n        throw new Error(`Invalid data for ${storeName}`);\r\n    }\r\n\r\n    try {\r\n        const db = await initializeDB();\r\n        if (db) {\r\n            const dbSuccess = await db.put(storeName, data);\r\n            return dbSuccess;\r\n        } else {\r\n            console.error(`Database is not initialized. Failed to put data into ${storeName}`);\r\n            throw new Error(`Database is not initialized for ${storeName}`);\r\n        }\r\n    } catch (error) {\r\n        console.error(`Failed to put data into ${storeName}:`, error);\r\n        throw error;\r\n    }\r\n}\r\n\r\nexport async function saveGame(game: Game): Promise<IDBValidKey> {\r\n    return await putData('games', game);\r\n}\r\n\r\nexport async function saveTeam(gameId: number, team: Team): Promise<IDBValidKey> {\r\n    return await putData('teams', { ...team, gameId });\r\n}\r\n\r\nexport async function savePlayer(gameId: number, player: Player): Promise<IDBValidKey> {\r\n    return await putData('players', { ...player, gameId });\r\n}\r\n\r\nexport async function saveMeet(gameId: number, meet: Meet): Promise<IDBValidKey> {\r\n    return await putData('meets', { ...meet, gameId });\r\n}\r\n\r\nexport async function saveRace(gameId: number, race: Race): Promise<IDBValidKey> {\r\n    return await putData('races', { ...race, gameId });\r\n}\r\n\r\nasync function getData(storeName: string, key: unknown) {\r\n    try {\r\n        const db = await initializeDB();\r\n        if (db) {\r\n            return await db.get(storeName, key as IDBValidKey);\r\n        } else {\r\n            console.error(`Database is not initialized. Failed to get data from ${storeName}`);\r\n            return null;\r\n        }\r\n    } catch (error) {\r\n        console.error(`Failed to get data from ${storeName}:`, error);\r\n    }\r\n}\r\n\r\nexport async function loadGameData(gameId: number) {\r\n    return await getData('games', gameId);\r\n}\r\n\r\nasync function getAllFromIndex(storeName: string, indexName: string, key: unknown) {\r\n    try {\r\n        const db = await initializeDB();\r\n        if (db) {\r\n            return await db.getAllFromIndex(storeName, indexName, key as IDBValidKey);\r\n        } else {\r\n            console.error(`Database is not initialized. Failed to get data from index ${indexName} in ${storeName}`);\r\n            return null;\r\n        }\r\n    } catch (error) {\r\n        console.error(`Failed to get data from index ${indexName} in ${storeName}:`, error);\r\n    }\r\n}\r\n\r\nexport async function loadTeams(gameId: number): Promise<Team[]> {\r\n    return await getAllFromIndex('teams', 'by_game', gameId) as Team[];\r\n}\r\n\r\nexport async function loadPlayers(gameId: number): Promise<Player[]> {\r\n    return await getAllFromIndex('players', 'by_game', gameId) as Player[];\r\n}\r\n\r\nexport async function loadActivePlayers(gameId: number): Promise<Player[]> {\r\n    return await getAllFromIndex('players', 'by_retired', [gameId, 0]) as Player[];\r\n}\r\n\r\nexport async function loadMeets(gameId: number): Promise<Meet[]> {\r\n    return await getAllFromIndex('meets', 'by_game', gameId) as Meet[];\r\n}\r\n\r\nexport async function loadRaces(gameId: number): Promise<Race[]> {\r\n    return await getAllFromIndex('races', 'by_game', gameId) as Race[];\r\n}\r\n\r\nexport async function deleteGameData(gameId: number) {\r\n    try {\r\n        const db = await initializeDB();\r\n\r\n        const game = await db.get('games', gameId);\r\n        if (!game) {\r\n            console.warn(`Game with ID ${gameId} does not exist.`);\r\n            return;\r\n        }\r\n\r\n        const deleteTx = db.transaction(['games', 'teams', 'players', 'meets', 'races', 'id_trackers'], 'readwrite');\r\n        const promises = [\r\n            deleteTx.objectStore('games').delete(gameId),\r\n            deleteTx.objectStore('teams').delete(IDBKeyRange.bound([gameId, 0], [gameId, Infinity])),\r\n            deleteTx.objectStore('players').delete(IDBKeyRange.bound([gameId, 0], [gameId, Infinity])),\r\n            deleteTx.objectStore('meets').delete(IDBKeyRange.bound([gameId, 0], [gameId, Infinity])),\r\n            deleteTx.objectStore('races').delete(IDBKeyRange.bound([gameId, 0], [gameId, Infinity])),\r\n            deleteTx.objectStore('id_trackers').delete(gameId),\r\n        ];\r\n        await Promise.all(promises);\r\n        await deleteTx.done;\r\n\r\n        if (!db) {\r\n            console.error('Database is not initialized.');\r\n            return;\r\n        }\r\n        const allGames = await db.getAllKeys('games');\r\n\r\n        const counterTx = db.transaction('global_ids', 'readwrite');\r\n        const counterStore = counterTx.objectStore('global_ids');\r\n\r\n        const newCounter = allGames.length > 0 ? Math.max(...allGames.map(Number)) : 0;\r\n        await counterStore.put({ key: 'game_counter', value: newCounter });\r\n        await counterTx.done;\r\n    } catch (error) {\r\n        console.error(`Failed to delete game data for gameId ${gameId}:`, error);\r\n    }\r\n}\r\n\r\nexport async function initializeIDTracker(gameId: number) {\r\n    await putData('id_trackers', {\r\n        gameId,\r\n        lastPlayerId: 0,\r\n        lastTeamId: 0,\r\n        lastMeetId: 0,\r\n        lastRaceId: 0,\r\n    });\r\n}\r\n\r\nexport async function initializeGameCounter() {\r\n    try {\r\n        const db = await initializeDB();\r\n        if (!db) {\r\n            throw new Error('Database is not initialized.');\r\n        }\r\n        const tx = db.transaction('global_ids', 'readwrite');\r\n        const store = tx.objectStore('global_ids');\r\n\r\n        const existingCounter = await store.get('game_counter');\r\n        if (!existingCounter) {\r\n            await store.put({ key: 'game_counter', value: 0 });\r\n        }\r\n\r\n        await tx.done;\r\n    } catch (error) {\r\n        console.error('Failed to initialize game counter:', error);\r\n    }\r\n}\r\n\r\nexport async function getNextGameId(): Promise<number> {\r\n    try {\r\n        const db = await initializeDB();\r\n        const tx = db.transaction('global_ids', 'readwrite');\r\n        const store = tx.objectStore('global_ids');\r\n\r\n        const counter = await store.get('game_counter');\r\n        const newId = (counter?.value || 0) + 1;\r\n\r\n        await store.put({ key: 'game_counter', value: newId });\r\n        await tx.done;\r\n\r\n        return newId;\r\n    } catch (error) {\r\n        console.error('Failed to get next game ID:', error);\r\n        throw error;\r\n    }\r\n}\r\n\r\nasync function getNextId(gameId: number, field: keyof IDTracker): Promise<number> {\r\n    try {\r\n        const db = await initializeDB();\r\n        if (!db) {\r\n            throw new Error('Database is not initialized.');\r\n        }\r\n        const tx = db.transaction('id_trackers', 'readwrite');\r\n        const tracker = await tx.objectStore('id_trackers').get(gameId);\r\n\r\n        if (!tracker) throw new Error(`ID Tracker not initialized for game ${gameId}`);\r\n\r\n        tracker[field]++;\r\n        await tx.objectStore('id_trackers').put(tracker);\r\n\r\n        await tx.done;\r\n        return tracker[field];\r\n    } catch (error) {\r\n        console.error(`Failed to get next ID for field ${field} in game ${gameId}:`, error);\r\n        throw error;\r\n    }\r\n}\r\n\r\nexport const getNextPlayerId = (gameId: number) => getNextId(gameId, 'lastPlayerId');\r\nexport const getNextTeamId = (gameId: number) => getNextId(gameId, 'lastTeamId');\r\nexport const getNextMeetId = (gameId: number) => getNextId(gameId, 'lastMeetId');\r\nexport const getNextRaceId = (gameId: number) => getNextId(gameId, 'lastRaceId');\r\n\r\nexport async function loadAllGames() {\r\n    try {\r\n        const db = await initializeDB();\r\n        return await db.getAll('games');\r\n    } catch (error) {\r\n        console.error('Failed to load all games:', error);\r\n    }\r\n}\r\n\r\nexport async function deleteAllGames() {\r\n    try {\r\n        const db = await initializeDB();\r\n\r\n        const tx = db.transaction(['games', 'teams', 'players', 'meets', 'races', 'id_trackers'], 'readwrite');\r\n\r\n        await Promise.all([\r\n            tx.objectStore('games').clear(),\r\n            tx.objectStore('teams').clear(),\r\n            tx.objectStore('players').clear(),\r\n            tx.objectStore('meets').clear(),\r\n            tx.objectStore('races').clear(),\r\n            tx.objectStore('id_trackers').clear(),\r\n        ]);\r\n\r\n        await tx.done;\r\n\r\n        const counterTx = db.transaction('global_ids', 'readwrite');\r\n        const counterStore = counterTx.objectStore('global_ids');\r\n\r\n        await counterStore.put({ key: 'game_counter', value: 0 });\r\n        await counterTx.done;\r\n    } catch (error) {\r\n        console.error('Failed to delete all games:', error);\r\n    }\r\n}\r\n\r\nasync function saveMultiple<T>(storeName: string, gameId: number, items: T[]): Promise<boolean> {\r\n    try {\r\n        const db = await initializeDB();\r\n        if (!db) {\r\n            console.error('Database is not initialized. Failed to save multiple items.');\r\n            return Promise.reject('Database is not initialized');\r\n        }\r\n        const tx = db.transaction(storeName, 'readwrite');\r\n        const store = tx.objectStore(storeName);\r\n        for (const item of items) {\r\n            if (item === undefined || item === null) {\r\n                console.warn(`Attempted to put undefined or null data into ${storeName}`);\r\n                continue;\r\n            }\r\n            store.put({ ...item, gameId });\r\n        }\r\n        await tx.done;\r\n        return Promise.resolve(true);\r\n    } catch (error) {\r\n        console.error(`Failed to save multiple items into ${storeName}:`, error);\r\n        return Promise.reject(error);\r\n    }\r\n}\r\n\r\nexport async function saveTeams(gameId: number, teams: Team[]): Promise<boolean> {\r\n    return await saveMultiple('teams', gameId, teams);\r\n}\r\n\r\nexport async function savePlayers(gameId: number, players: Player[]): Promise<boolean> {\r\n    return await saveMultiple('players', gameId, players);\r\n}\r\n\r\nexport async function saveRaces(gameId: number, races: Race[]): Promise<boolean> {\r\n    return await saveMultiple('races', gameId, races);\r\n}\r\n\r\nexport async function saveMeets(gameId: number, meets: Meet[]): Promise<boolean> {\r\n    return await saveMultiple('meets', gameId, meets);\r\n}\r\n\r\nasync function deleteItem(storeName: string, key: unknown) {\r\n    try {\r\n        const db = await initializeDB();\r\n        if (!db) {\r\n            console.error(`Database is not initialized. Failed to delete item from ${storeName}.`);\r\n            return;\r\n        }\r\n        const tx = db.transaction(storeName, 'readwrite');\r\n        const store = tx.objectStore(storeName);\r\n        const item = await store.get(key as IDBValidKey);\r\n        if (!item) {\r\n            console.error(`Item with key ${JSON.stringify(key as IDBValidKey)} does not exist in ${storeName}.`);\r\n            return;\r\n        }\r\n        await store.delete(key as IDBValidKey);\r\n        await tx.done;\r\n    } catch (error) {\r\n        console.error(`Failed to delete item from ${storeName} with key ${JSON.stringify(key)}:`, error);\r\n    }\r\n}\r\n\r\nexport async function deleteMeet(gameId: number, meetId: number) {\r\n    await deleteItem('meets', [gameId, meetId]);\r\n}\r\n\r\nexport async function deleteRace(gameId: number, raceId: number) {\r\n    await deleteItem('races', [gameId, raceId]);\r\n}\r\n\r\nexport async function deletePlayer(gameId: number, playerId: number) {\r\n    await deleteItem('players', [gameId, playerId]);\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/sim-game/src/data/storage.ts b/sim-game/src/data/storage.ts
+--- a/sim-game/src/data/storage.ts	(revision 55d05e9ed9fefb0758de01c9bb372dbaeb54d04e)
++++ b/sim-game/src/data/storage.ts	(date 1747016429474)
+@@ -1,8 +1,8 @@
+-import { openDB, IDBPDatabase } from 'idb';
+-import { Game } from '@/types/game';
+-import { Team } from '@/types/team';
+-import { Player } from '@/types/player';
+-import { Meet, Race } from '@/types/schedule';
++import {IDBPDatabase, openDB} from 'idb';
++import {Game} from '@/types/game';
++import {Team} from '@/types/team';
++import {Player} from '@/types/player';
++import {Meet, Race} from '@/types/schedule';
+ 
+ // Database constants
+ const DATABASE_NAME = 'sportsSimDB';
+@@ -77,8 +77,7 @@
+     try {
+         const db = await initializeDB();
+         if (db) {
+-            const dbSuccess = await db.put(storeName, data);
+-            return dbSuccess;
++            return await db.put(storeName, data);
+         } else {
+             console.error(`Database is not initialized. Failed to put data into ${storeName}`);
+             throw new Error(`Database is not initialized for ${storeName}`);
+Index: src/logic/generatePlayer.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { raceTypes } from \"@/constants/raceTypes\";\r\nimport { Player } from \"@/types/player\";\r\nimport { generate } from \"facesjs\";\r\nimport { generateRandomFullName } from \"../data/parseNames\";\r\nimport { getNextPlayerId, savePlayer } from \"@/data/storage\";\r\nimport { generatePlayerRatings } from \"./generatePlayerRatings\";\r\nimport { subArchetype } from \"@/constants/subArchetypes\";\r\n\r\nexport async function createPlayer(gameId: number, teamId: number, year: number, playerSubArchetype: subArchetype): Promise<Player> {\r\n    if (year === -1) {\r\n        year = Math.random() < 0.5 ? 1 : (Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 3 : 4))\r\n    }\r\n    const newPlayerId = await getNextPlayerId(gameId);\r\n\r\n    const jersey = [\"jersey\", \"jersey2\", \"jersey3\", \"jersey4\", \"jersey5\"];\r\n    \r\n    const accessories = [\"none\", \"headband\", \"headband-high\"];\r\n\r\n    const face = generate({\r\n        accessories: {id: accessories[Math.floor(Math.random() * accessories.length)]},\r\n        jersey: {id: jersey[Math.floor(Math.random() * jersey.length)]},\r\n    }, {\r\n        gender: 'male'\r\n    });\r\n\r\n    const name = await generateRandomFullName();\r\n    const seasons = generateSeasonTypes(playerSubArchetype);\r\n\r\n    const playerInfo = generatePlayerRatings(newPlayerId, playerSubArchetype, year);\r\n\r\n    const player: Player = {\r\n        playerId: newPlayerId,\r\n        teamId,\r\n        year,\r\n        firstName: name.firstName,\r\n        lastName: name.lastName,\r\n        seasons,\r\n        eventTypes: generateEventTypes(playerSubArchetype),\r\n        playerArch: playerInfo.pa,\r\n        face,\r\n        gameId,\r\n        playerRatings: playerInfo.pr,\r\n        playerSubArchetype,\r\n    };\r\n\r\n    await savePlayer(gameId, player); // Save player to IndexedDB\r\n    return player;\r\n}\r\n\r\nfunction generateSeasonTypes(playerSubArchetype: subArchetype): ('track_field' | 'cross_country')[] {\r\n    if (playerSubArchetype.num <= 6) {\r\n        return ['track_field'];\r\n    } else {\r\n        return ['cross_country', 'track_field'];\r\n    }\r\n}\r\n\r\nfunction generateEventTypes(playerSubArchetype: subArchetype): { cross_country: string[]; track_field: string[] } {\r\n    const events = {\r\n        cross_country: [] as string[],\r\n        track_field: [] as string[]\r\n    };\r\n\r\n    if (playerSubArchetype.events.some(event => raceTypes.cross_country.includes(event))) {\r\n        events.cross_country.push(...playerSubArchetype.events.filter(event => raceTypes.cross_country.includes(event)));\r\n    }\r\n\r\n    if (playerSubArchetype.events.some(event => raceTypes.track_field.includes(event))) {\r\n        events.track_field.push(...playerSubArchetype.events.filter(event => raceTypes.track_field.includes(event)));\r\n    }\r\n\r\n    return events;\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/logic/generatePlayer.ts b/src/logic/generatePlayer.ts
+--- a/src/logic/generatePlayer.ts	(revision 6060a4f66919a46201d6c4fe1c0849a002e95e19)
++++ b/src/logic/generatePlayer.ts	(date 1747016429517)
+@@ -1,7 +1,7 @@
+ import { raceTypes } from "@/constants/raceTypes";
+ import { Player } from "@/types/player";
+ import { generate } from "facesjs";
+-import { generateRandomFullName } from "../data/parseNames";
++import { generateRandomFullName } from "@/data/parseNames";
+ import { getNextPlayerId, savePlayer } from "@/data/storage";
+ import { generatePlayerRatings } from "./generatePlayerRatings";
+ import { subArchetype } from "@/constants/subArchetypes";
+Index: sim-game/src/logic/generatePlayer.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { raceTypes } from \"@/constants/raceTypes\";\r\nimport { Player } from \"@/types/player\";\r\nimport { generate } from \"facesjs\";\r\nimport { generateRandomFullName } from \"../data/parseNames\";\r\nimport { getNextPlayerId } from \"@/data/storage\";\r\nimport { generatePlayerRatings } from \"./generatePlayerRatings\";\r\nimport { subArchetype } from \"@/constants/subArchetypes\";\r\nimport { generatePlayerInteractions } from \"./generatePlayerInteractions\";\r\n\r\nexport async function createPlayer(gameId: number, teamId: number, schoolYear: number, playerSubArchetype: subArchetype, startYear: number, currentYear: number): Promise<Player> {\r\n    if (schoolYear === -1) {\r\n        schoolYear = Math.random() < 0.5 ? 1 : (Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 3 : 4))\r\n    }\r\n    const newPlayerId = await getNextPlayerId(gameId);\r\n\r\n    const jersey = [\"jersey\", \"jersey2\", \"jersey3\", \"jersey4\", \"jersey5\"];\r\n    \r\n    const accessories = [\"none\", \"headband\", \"headband-high\"];\r\n\r\n    const face = generate({\r\n        accessories: {id: accessories[Math.floor(Math.random() * accessories.length)]},\r\n        jersey: {id: jersey[Math.floor(Math.random() * jersey.length)]},\r\n    }, {\r\n        gender: 'male'\r\n    });\r\n\r\n    const name = await generateRandomFullName();\r\n    const seasons = generateSeasonTypes(playerSubArchetype);\r\n\r\n    const playerInfo = generatePlayerRatings(newPlayerId, playerSubArchetype, schoolYear);\r\n\r\n    const interactions = generatePlayerInteractions(playerInfo.pr, startYear, currentYear);\r\n\r\n    const player: Player = {\r\n        playerId: newPlayerId,\r\n        teamId,\r\n        year: schoolYear,\r\n        firstName: name.firstName,\r\n        lastName: name.lastName,\r\n        seasons,\r\n        eventTypes: generateEventTypes(playerSubArchetype),\r\n        playerArch: playerInfo.pa,\r\n        face,\r\n        gameId,\r\n        playerRatings: playerInfo.pr,\r\n        playerSubArchetype,\r\n        retiredYear: 0,\r\n        startYear: startYear,\r\n        interactions,\r\n    };\r\n\r\n   return player;\r\n}\r\n\r\nfunction generateSeasonTypes(playerSubArchetype: subArchetype): ('track_field' | 'cross_country')[] {\r\n    if (playerSubArchetype.num <= 6) {\r\n        return ['track_field'];\r\n    } else {\r\n        return ['cross_country', 'track_field'];\r\n    }\r\n}\r\n\r\nfunction generateEventTypes(playerSubArchetype: subArchetype): { cross_country: string[]; track_field: string[] } {\r\n    const events = {\r\n        cross_country: [] as string[],\r\n        track_field: [] as string[]\r\n    };\r\n\r\n    if (playerSubArchetype.events.some(event => raceTypes.cross_country.includes(event))) {\r\n        events.cross_country.push(...playerSubArchetype.events.filter(event => raceTypes.cross_country.includes(event)));\r\n    }\r\n\r\n    if (playerSubArchetype.events.some(event => raceTypes.track_field.includes(event))) {\r\n        events.track_field.push(...playerSubArchetype.events.filter(event => raceTypes.track_field.includes(event)));\r\n    }\r\n\r\n    return events;\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/sim-game/src/logic/generatePlayer.ts b/sim-game/src/logic/generatePlayer.ts
+--- a/sim-game/src/logic/generatePlayer.ts	(revision 55d05e9ed9fefb0758de01c9bb372dbaeb54d04e)
++++ b/sim-game/src/logic/generatePlayer.ts	(date 1747016429504)
+@@ -1,11 +1,11 @@
+-import { raceTypes } from "@/constants/raceTypes";
+-import { Player } from "@/types/player";
+-import { generate } from "facesjs";
+-import { generateRandomFullName } from "../data/parseNames";
+-import { getNextPlayerId } from "@/data/storage";
+-import { generatePlayerRatings } from "./generatePlayerRatings";
+-import { subArchetype } from "@/constants/subArchetypes";
+-import { generatePlayerInteractions } from "./generatePlayerInteractions";
++import {raceTypes} from "@/constants/raceTypes";
++import {Player} from "@/types/player";
++import {generate} from "facesjs";
++import {generateRandomFullName} from "../data/parseNames";
++import {getNextPlayerId} from "@/data/storage";
++import {generatePlayerRatings} from "./generatePlayerRatings";
++import {subArchetype} from "@/constants/subArchetypes";
++import {generatePlayerInteractions} from "./generatePlayerInteractions";
+ 
+ export async function createPlayer(gameId: number, teamId: number, schoolYear: number, playerSubArchetype: subArchetype, startYear: number, currentYear: number): Promise<Player> {
+     if (schoolYear === -1) {
+@@ -31,25 +31,23 @@
+ 
+     const interactions = generatePlayerInteractions(playerInfo.pr, startYear, currentYear);
+ 
+-    const player: Player = {
+-        playerId: newPlayerId,
+-        teamId,
+-        year: schoolYear,
+-        firstName: name.firstName,
+-        lastName: name.lastName,
+-        seasons,
+-        eventTypes: generateEventTypes(playerSubArchetype),
+-        playerArch: playerInfo.pa,
+-        face,
+-        gameId,
+-        playerRatings: playerInfo.pr,
+-        playerSubArchetype,
+-        retiredYear: 0,
+-        startYear: startYear,
+-        interactions,
+-    };
+-
+-   return player;
++   return {
++       playerId: newPlayerId,
++       teamId,
++       year: schoolYear,
++       firstName: name.firstName,
++       lastName: name.lastName,
++       seasons,
++       eventTypes: generateEventTypes(playerSubArchetype),
++       playerArch: playerInfo.pa,
++       face,
++       gameId,
++       playerRatings: playerInfo.pr,
++       playerSubArchetype,
++       retiredYear: 0,
++       startYear: startYear,
++       interactions,
++   };
+ }
+ 
+ function generateSeasonTypes(playerSubArchetype: subArchetype): ('track_field' | 'cross_country')[] {
+Index: src/logic/generateTeam.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { getCollegesbyConferenceId } from \"@/data/parseSchools\";\r\nimport { getNextTeamId } from \"@/data/storage\";\r\nimport { Conference, School } from \"@/types/regionals\";\r\nimport { Team } from \"@/types/team\";\r\n\r\nexport async function createTeamsForConference(gameId: number, year: number, conference: Conference, selectedCollegeId: number): Promise<Team[]> {\r\n    const schools: School[] = await getCollegesbyConferenceId(conference.conferenceId);\r\n    const teams: Team[] = [];\r\n    for (let i = 0; i < schools.length; i++) {\r\n        let player_control = false;\r\n        if(schools[i].collegeId === selectedCollegeId) { \r\n            player_control = true;\r\n        }\r\n        const team: Team = await createTeam(gameId, year, schools[i], player_control);\r\n        teams.push(team);\r\n    }\r\n\r\n    return teams;\r\n}\r\n\r\nexport async function createTeam(gameId: number, year: number, school: School, player_control: boolean): Promise<Team> {\r\n    const newTeamId: number = await getNextTeamId(gameId);\r\n\r\n\r\n    if (school === null || school.collegeId === -1) {\r\n        throw new Error(\"Failed to assign a college to a team.\");\r\n    }\r\n\r\n    const teamData: Team = {\r\n        teamId: newTeamId,\r\n        college: school.collegeName,\r\n        teamName: school.nickname,\r\n        gameId,\r\n        players: [],\r\n        points: 0,\r\n        teamSchedule: { teamId: newTeamId, meets: [], year},\r\n        conferenceId: school.conferenceId,\r\n        schoolId: school.collegeId,\r\n        state: school.state,\r\n        city: school.city,\r\n        ovr: 0,\r\n        sprint_ovr: 0,\r\n        middle_ovr: 0,\r\n        long_ovr: 0,\r\n        xc_ovr: 0,\r\n        abbr: school.collegeAbbr,\r\n        player_control,\r\n    };\r\n  \r\n    return teamData;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/logic/generateTeam.ts b/src/logic/generateTeam.ts
+--- a/src/logic/generateTeam.ts	(revision 6060a4f66919a46201d6c4fe1c0849a002e95e19)
++++ b/src/logic/generateTeam.ts	(date 1747016429552)
+@@ -1,7 +1,7 @@
+-import { getCollegesbyConferenceId } from "@/data/parseSchools";
+-import { getNextTeamId } from "@/data/storage";
+-import { Conference, School } from "@/types/regionals";
+-import { Team } from "@/types/team";
++import {getCollegesbyConferenceId} from "@/data/parseSchools";
++import {getNextTeamId} from "@/data/storage";
++import {Conference, School} from "@/types/regionals";
++import {Team} from "@/types/team";
+ 
+ export async function createTeamsForConference(gameId: number, year: number, conference: Conference, selectedCollegeId: number): Promise<Team[]> {
+     const schools: School[] = await getCollegesbyConferenceId(conference.conferenceId);
+@@ -26,14 +26,14 @@
+         throw new Error("Failed to assign a college to a team.");
+     }
+ 
+-    const teamData: Team = {
++    return {
+         teamId: newTeamId,
+         college: school.collegeName,
+         teamName: school.nickname,
+         gameId,
+         players: [],
+         points: 0,
+-        teamSchedule: { teamId: newTeamId, meets: [], year},
++        teamSchedule: {teamId: newTeamId, meets: [], year},
+         conferenceId: school.conferenceId,
+         schoolId: school.collegeId,
+         state: school.state,
+@@ -46,6 +46,4 @@
+         abbr: school.collegeAbbr,
+         player_control,
+     };
+-  
+-    return teamData;
+ }
+Index: sim-game/src/logic/scheduleGenerator.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Team, TeamSchedule } from '@/types/team';\r\nimport { Meet, Race } from '@/types/schedule';\r\nimport { mappedSeasonPhases } from '@/constants/seasonPhases';\r\nimport { createMeet } from './meetGenerator';\r\nimport { mapWeekToGamePhase } from './meetGenerator';\r\nimport { Player } from '@/types/player';\r\n\r\n// Generate League Schedule\r\nexport async function generateYearlyLeagueSchedule(gameId: number, teams: Team[], players: Player[], year: number): Promise<{ meets: Meet[], races: Race[] }> {\r\n    const meets: Meet[] = [];\r\n    const races: Race[] = [];\r\n    const regularSeasonPhase = mappedSeasonPhases.regularCrossCountry;\r\n    for (let week = regularSeasonPhase.startWeek; week <= regularSeasonPhase.endWeek; week++) {\r\n        const meetsForWeek = await createMeetsForWeek(gameId, teams, players, week, year);\r\n        meets.push(...meetsForWeek.meets);\r\n        races.push(...meetsForWeek.races);\r\n    }\r\n    const playoffSeasonPhase = mappedSeasonPhases.crossCountryPlayoffs;\r\n    for (let week = playoffSeasonPhase.startWeek; week <= playoffSeasonPhase.endWeek; week++) {\r\n        const meetsForWeek = await createMeetsForWeek(gameId, teams, players, week, year);\r\n        meets.push(...meetsForWeek.meets);\r\n        races.push(...meetsForWeek.races);\r\n    }\r\n    const trackField1RegularSeasonPhase = mappedSeasonPhases.regularTrackField1;\r\n    for (let week = trackField1RegularSeasonPhase.startWeek; week <= trackField1RegularSeasonPhase.endWeek; week++) {\r\n        const meetsForWeek = await createMeetsForWeek(gameId, teams, players, week, year);\r\n        meets.push(...meetsForWeek.meets);\r\n        races.push(...meetsForWeek.races);\r\n    }\r\n    const trackField1PlayoffSeasonPhase = mappedSeasonPhases.trackFieldPlayoffs1;\r\n    for (let week = trackField1PlayoffSeasonPhase.startWeek; week <= trackField1PlayoffSeasonPhase.endWeek; week++) {\r\n        const meetsForWeek = await createMeetsForWeek(gameId, teams, players, week, year);\r\n        meets.push(...meetsForWeek.meets);\r\n        races.push(...meetsForWeek.races);\r\n    }\r\n    const trackField2RegularSeasonPhase = mappedSeasonPhases.regularTrackField2;\r\n    for (let week = trackField2RegularSeasonPhase.startWeek; week <= trackField2RegularSeasonPhase.endWeek; week++) {\r\n        const meetsForWeek = await createMeetsForWeek(gameId, teams, players, week, year);\r\n        meets.push(...meetsForWeek.meets);\r\n        races.push(...meetsForWeek.races);\r\n    }\r\n    const trackField2PlayoffSeasonPhase = mappedSeasonPhases.trackFieldPlayoffs2;\r\n    for (let week = trackField2PlayoffSeasonPhase.startWeek; week <= trackField2PlayoffSeasonPhase.endWeek; week++) {\r\n        const meetsForWeek = await createMeetsForWeek(gameId, teams, players, week, year);\r\n        meets.push(...meetsForWeek.meets);\r\n        races.push(...meetsForWeek.races);\r\n    }\r\n    return { meets, races };\r\n}\r\n\r\n// Generate Meets for a Given Week\r\nexport async function createMeetsForWeek(gameId: number, teams: Team[], players: Player[], week: number, year: number): Promise<{ meets: Meet[], races: Race[] }> {\r\n    const teamGroups = groupTeams(teams, week);\r\n    const results = await Promise.all(teamGroups.map(async group => await createMeet(group, players, week, year, gameId)));\r\n    const meets = results.flatMap(result => result.meet);\r\n    const races = results.flatMap(result => result.races);\r\n    return { meets, races };\r\n}\r\n\r\n// Group Teams for Meets depending on the week and number of teams\r\nfunction groupTeams(teams: Team[], week: number): Team[][] {\r\n    const map = mapWeekToGamePhase(week);\r\n    if (map.type === 'playoffs') {\r\n        if (week === 10 || week === 25 || week === 40) {\r\n            // First week of playoffs: group teams by conferenceId\r\n            const groupsByConference: { [conferenceId: number]: Team[] } = {};\r\n            teams.forEach(team => {\r\n                if (!groupsByConference[team.conferenceId]) {\r\n                    groupsByConference[team.conferenceId] = [];\r\n                }\r\n                groupsByConference[team.conferenceId].push(team);\r\n            });\r\n            return Object.values(groupsByConference);\r\n        } else if (week === 11 || week === 26 || week === 41) {\r\n            // Second week of playoffs: all teams in one meet\r\n            return [teams];\r\n        }\r\n    }\r\n    // Regular grouping\r\n    const shuffledTeams = [...teams].sort(() => Math.random() - 0.5);\r\n    const totalTeams = shuffledTeams.length;\r\n    const groupSize = Math.ceil(Math.sqrt(totalTeams));\r\n    const groups: Team[][] = [];\r\n    for (let i = 0; i < totalTeams; i += groupSize) {\r\n        groups.push(shuffledTeams.slice(i, i + groupSize));\r\n    }\r\n\r\n    // Ensure no group has less than 3 teams\r\n    if (groups.length > 1) {\r\n        for (let i = groups.length - 1; i >= 0; i--) {\r\n            if (groups[i].length < 3) {\r\n                const smallGroup = groups.splice(i, 1)[0];\r\n                smallGroup.forEach((team, index) => {\r\n                    groups[index % groups.length].push(team);\r\n                });\r\n            }\r\n        }\r\n    }\r\n    return groups;\r\n}\r\n\r\n// Generate Individual Team Schedules from League Schedule\r\nexport function generateTeamSchedules(meets: Meet[], teams: Team[], year: number): TeamSchedule[] {\r\n\r\n    const teamSchedule = teams.map(team => ({\r\n        teamId: team.teamId,\r\n        year,\r\n        meets: meets\r\n            .filter(meet => meet.teams.some((t: { teamId: number }) => t.teamId === team.teamId))\r\n            .map((meet: Meet) => meet.meetId)\r\n    }));\r\n\r\n    return teamSchedule;\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/sim-game/src/logic/scheduleGenerator.ts b/sim-game/src/logic/scheduleGenerator.ts
+--- a/sim-game/src/logic/scheduleGenerator.ts	(revision 55d05e9ed9fefb0758de01c9bb372dbaeb54d04e)
++++ b/sim-game/src/logic/scheduleGenerator.ts	(date 1747016429568)
+@@ -1,9 +1,8 @@
+-import { Team, TeamSchedule } from '@/types/team';
+-import { Meet, Race } from '@/types/schedule';
+-import { mappedSeasonPhases } from '@/constants/seasonPhases';
+-import { createMeet } from './meetGenerator';
+-import { mapWeekToGamePhase } from './meetGenerator';
+-import { Player } from '@/types/player';
++import {Team, TeamSchedule} from '@/types/team';
++import {Meet, Race} from '@/types/schedule';
++import {mappedSeasonPhases} from '@/constants/seasonPhases';
++import {createMeet, mapWeekToGamePhase} from './meetGenerator';
++import {Player} from '@/types/player';
+ 
+ // Generate League Schedule
+ export async function generateYearlyLeagueSchedule(gameId: number, teams: Team[], players: Player[], year: number): Promise<{ meets: Meet[], races: Race[] }> {
+@@ -102,13 +101,11 @@
+ // Generate Individual Team Schedules from League Schedule
+ export function generateTeamSchedules(meets: Meet[], teams: Team[], year: number): TeamSchedule[] {
+ 
+-    const teamSchedule = teams.map(team => ({
++    return teams.map(team => ({
+         teamId: team.teamId,
+         year,
+         meets: meets
+             .filter(meet => meet.teams.some((t: { teamId: number }) => t.teamId === team.teamId))
+             .map((meet: Meet) => meet.meetId)
+     }));
+-
+-    return teamSchedule;
+ }
+\ No newline at end of file
+Index: src/logic/generateRaceTimes.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Player } from \"@/types/player\";\r\n\r\nconst minMax = {\r\n    '100m': [9.7, 14.5],\r\n    '200m': [19.0, 33.0],\r\n    '400m': [47.0, 70.0],\r\n    '800m': [108.0, 150.0],\r\n    '1500m': [220.0, 370.0],\r\n    '3000m': [495.0, 760.0],\r\n    '5000m': [840.0, 1320.0],\r\n    '10000m': [1740.0, 2800.0],\r\n    '8000m': [1380.0, 2100.0]\r\n};\r\n\r\nconst variability = {\r\n    '100m': 0.03,\r\n    '200m': 0.04,\r\n    '400m': 0.05,\r\n    '800m': 0.07,\r\n    '1500m': 0.11,\r\n    '3000m': 0.14,\r\n    '5000m': 0.16,\r\n    '10000m': 0.20,\r\n    '8000m': 0.18\r\n};\r\n\r\nfunction getBaseTimeForEvent(eventType: string): number {\r\n    const baselines = {\r\n        '100m': (minMax['100m'][0] + minMax['100m'][1]) / 2,\r\n        '200m': (minMax['200m'][0] + minMax['200m'][1]) / 2,\r\n        '400m': (minMax['400m'][0] + minMax['400m'][1]) / 2,\r\n        '800m': (minMax['800m'][0] + minMax['800m'][1]) / 2,\r\n        '1500m': (minMax['1500m'][0] + minMax['1500m'][1]) / 2,\r\n        '3000m': (minMax['3000m'][0] + minMax['3000m'][1]) / 2,\r\n        '5000m': (minMax['5000m'][0] + minMax['5000m'][1]) / 2,\r\n        '10000m': (minMax['10000m'][0] + minMax['10000m'][1]) / 2,\r\n        '8000m': (minMax['8000m'][0] + minMax['8000m'][1]) / 2\r\n    };\r\n    return baselines[eventType as keyof typeof baselines] || 0;\r\n}\r\n\r\nfunction getEventVariability(eventType: keyof typeof variability): number {\r\n    return variability[eventType] || 0.1;\r\n}\r\n\r\nexport function generateRaceTime(eventType: string, player: Player): number {\r\n    const baseTime = getBaseTimeForEvent(eventType);\r\n    const skillFactor = getPlayerSkill(player, eventType) / 10;\r\n\r\n    const mean = baseTime * (1 - skillFactor * 0.2); // Increased skill factor influence\r\n    const stdDev = getEventVariability(eventType as keyof typeof variability);\r\n\r\n    const randomFactor1 = Math.random();\r\n    const randomFactor2 = Math.random();\r\n    const z = Math.sqrt(-2 * Math.log(randomFactor1)) * Math.cos(2 * Math.PI * randomFactor2);\r\n    const raceTime = mean + stdDev * z;\r\n\r\n    const environmentalAdjustment = getEnvironmentalFactor(eventType);\r\n    const adjustedTime = raceTime + environmentalAdjustment;\r\n\r\n    return clampTime(adjustedTime, eventType as keyof typeof minMax);\r\n}\r\n\r\nfunction getPlayerSkill(player: Player, eventType: string): number {\r\n    const { playerRatings } = player;\r\n    const { typeRatings } = playerRatings;\r\n    let skill = 0;\r\n\r\n    switch (eventType) {\r\n        case '100m': {\r\n            const attributeSum =\r\n                (playerRatings.acceleration * 0.35) +\r\n                (playerRatings.explosiveness * 0.25) +\r\n                (playerRatings.topSpeed * 0.25) +\r\n                (playerRatings.stamina * 0.05);\r\n            skill = 0.5 * typeRatings.shortDistanceOvr + 0.5 * attributeSum;\r\n            break;\r\n        }\r\n        case '200m': {\r\n            const attributeSum =\r\n                (playerRatings.acceleration * 0.3) +\r\n                (playerRatings.explosiveness * 0.25) +\r\n                (playerRatings.topSpeed * 0.3) +\r\n                (playerRatings.stamina * 0.15);\r\n            skill = 0.5 * typeRatings.shortDistanceOvr + 0.5 * attributeSum;\r\n            break;\r\n        }\r\n        case '400m': {\r\n            const attributeSum =\r\n                (playerRatings.acceleration * 0.25) +\r\n                (playerRatings.explosiveness * 0.2) +\r\n                (playerRatings.topSpeed * 0.35) +\r\n                (playerRatings.stamina * 0.2);\r\n            skill = 0.5 * typeRatings.shortDistanceOvr + 0.5 * attributeSum;\r\n            break;\r\n        }\r\n        case '800m': {\r\n            const attributeSum =\r\n                (playerRatings.pacing * 0.2) +\r\n                (playerRatings.stamina * 0.25) +\r\n                (playerRatings.mentalToughness * 0.25) +\r\n                (playerRatings.endurance * 0.3);\r\n            skill = 0.5 * typeRatings.middleDistanceOvr + 0.5 * attributeSum;\r\n            break;\r\n        }\r\n        case '1500m': {\r\n            const attributeSum =\r\n                (playerRatings.pacing * 0.2) +\r\n                (playerRatings.stamina * 0.3) +\r\n                (playerRatings.mentalToughness * 0.25) +\r\n                (playerRatings.endurance * 0.25);\r\n            skill = 0.5 * typeRatings.middleDistanceOvr + 0.5 * attributeSum;\r\n            break;\r\n        }\r\n        case '3000m': {\r\n            const attributeSum =\r\n                (playerRatings.pacing * 0.2) +\r\n                (playerRatings.stamina * 0.3) +\r\n                (playerRatings.mentalToughness * 0.25) +\r\n                (playerRatings.endurance * 0.25);\r\n            skill = 0.5 * typeRatings.longDistanceOvr + 0.5 * attributeSum;\r\n            break;\r\n        }\r\n        case '5000m': {\r\n            const attributeSum =\r\n                (playerRatings.pacing * 0.2) +\r\n                (playerRatings.stamina * 0.25) +\r\n                (playerRatings.mentalToughness * 0.25) +\r\n                (playerRatings.endurance * 0.3);\r\n            skill = 0.5 * typeRatings.longDistanceOvr + 0.5 * attributeSum;\r\n            break;\r\n        }\r\n        case '8000m': {\r\n            const attributeSum =\r\n                (playerRatings.pacing * 0.25) +\r\n                (playerRatings.stamina * 0.25) +\r\n                (playerRatings.mentalToughness * 0.25) +\r\n                (playerRatings.endurance * 0.25);\r\n            skill = 0.5 * typeRatings.longDistanceOvr + 0.5 * attributeSum;\r\n            break;\r\n        }\r\n        case '10000m': {\r\n            const attributeSum =\r\n                (playerRatings.pacing * 0.2) +\r\n                (playerRatings.stamina * 0.25) +\r\n                (playerRatings.mentalToughness * 0.25) +\r\n                (playerRatings.endurance * 0.3);\r\n            skill = 0.5 * typeRatings.longDistanceOvr + 0.5 * attributeSum;\r\n            break;\r\n        }\r\n        default:\r\n            skill = 1;\r\n    }\r\n\r\n    // Add a small random factor\r\n    skill *= (0.9 + 0.1 * Math.random());\r\n\r\n    // Clamp to 1–100, then scale to 1–10\r\n    skill = Math.max(1, Math.min(100, skill)) / 10;\r\n    skill = Math.max(1, Math.min(10, skill));\r\n\r\n    return skill;\r\n}\r\n\r\nexport function generateRaceTimes(player: Player): { [eventType: string]: number } {\r\n    const events = Object.keys(minMax);\r\n    const raceTimes: { [eventType: string]: number } = {};\r\n\r\n    events.forEach(eventType => {\r\n        raceTimes[eventType] = generateRaceTime(eventType, player);\r\n    });\r\n\r\n    return raceTimes;\r\n}\r\n\r\nfunction getEnvironmentalFactor(eventType: string): number {\r\n    const eventLength = getRaceLength(eventType);\r\n    return (Math.random() - 0.5) * (eventLength / 1000) * 2;\r\n}\r\n\r\nfunction clampTime(time: number, eventType: keyof typeof minMax): number {\r\n    const [min, max] = minMax[eventType] || [0, Infinity];\r\n    return Math.max(min, Math.min(time, max));\r\n}\r\n\r\nfunction getRaceLength(eventType: string): number {\r\n    switch (eventType) {\r\n        case '100m':\r\n            return 100;\r\n        case '200m':\r\n            return 200;\r\n        case '400m':\r\n            return 400;\r\n        case '800m':\r\n            return 800;\r\n        case '1500m':\r\n            return 1500;\r\n        case '3000m':\r\n            return 3000;\r\n        case '5000m':\r\n            return 5000;\r\n        case '8000m':\r\n            return 8000;\r\n        case '10000m':\r\n            return 10000;\r\n        default:\r\n            return 0;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/logic/generateRaceTimes.ts b/src/logic/generateRaceTimes.ts
+--- a/src/logic/generateRaceTimes.ts	(revision 6060a4f66919a46201d6c4fe1c0849a002e95e19)
++++ b/src/logic/generateRaceTimes.ts	(date 1747016429461)
+@@ -64,7 +64,7 @@
+ function getPlayerSkill(player: Player, eventType: string): number {
+     const { playerRatings } = player;
+     const { typeRatings } = playerRatings;
+-    let skill = 0;
++    let skill;
+ 
+     switch (eventType) {
+         case '100m': {
+@@ -162,17 +162,6 @@
+     return skill;
+ }
+ 
+-export function generateRaceTimes(player: Player): { [eventType: string]: number } {
+-    const events = Object.keys(minMax);
+-    const raceTimes: { [eventType: string]: number } = {};
+-
+-    events.forEach(eventType => {
+-        raceTimes[eventType] = generateRaceTime(eventType, player);
+-    });
+-
+-    return raceTimes;
+-}
+-
+ function getEnvironmentalFactor(eventType: string): number {
+     const eventLength = getRaceLength(eventType);
+     return (Math.random() - 0.5) * (eventLength / 1000) * 2;
+Index: sim-game/src/logic/newYear.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Team } from '@/types/team';\r\nimport { createPlayer } from '@/logic/generatePlayer';\r\nimport { Game } from '@/types/game';\r\nimport { generateTeamSchedules, generateYearlyLeagueSchedule } from './scheduleGenerator';\r\nimport { Player } from '@/types/player';\r\nimport { Meet, Race } from '@/types/schedule';\r\nimport { assignTeamSchedules } from './gameSetup';\r\nimport { saveGame, saveMeets, savePlayers, saveRaces, saveTeams } from '@/data/storage';\r\nimport { calculateTeamOvrs } from './calculateTeamOvr';\r\n\r\n\r\n// Transition to next season: graduating seniors and adding new recruits\r\nexport async function handleNewYear(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {\r\n    try {\r\n        for (const team of teams) {\r\n            // Count graduating seniors\r\n            const teamPlayers: Player[] = players.filter((player: Player) => team.players.includes(player.playerId));\r\n            const graduatingSeniors: Player[] = teamPlayers.filter((player: Player) => player.year >= 4);\r\n            // Remove graduating seniors\r\n            const teamNonGraduatingSeniors: Player[] = teamPlayers.filter((player: Player) => player.year !== 4);\r\n\r\n            const teamGraduatedplayers = teamPlayers.filter((player: Player) => player.year === 4);\r\n            teamGraduatedplayers.forEach(async player => {\r\n                player.retiredYear = game.currentYear;\r\n            });\r\n\r\n            const teamGraduatedplayersSubArchetype = teamGraduatedplayers.map((player: Player) => player.playerSubArchetype);\r\n\r\n            // Promote remaining players\r\n            teamNonGraduatingSeniors.forEach(player => {\r\n                if (player.year == 3) player.year = 4;\r\n                else if (player.year == 2) player.year = 3;\r\n                else if (player.year == 1) player.year = 2;\r\n            });\r\n\r\n            // Add recruits as new freshmen\r\n            for (let i = 0; i < graduatingSeniors.length; i++) {\r\n                const player = await createPlayer(game.gameId, team.teamId, 1, teamGraduatedplayersSubArchetype[i], game.currentYear + 1, game.currentYear);\r\n                team.players.push(player.playerId);\r\n                players.push(player);\r\n            }\r\n\r\n            calculateTeamOvrs(team, players);\r\n        };\r\n\r\n        try {\r\n            const filteredPlayers = players.filter(player => player.retiredYear === 0);\r\n            const scheduleObject: { meets: Meet[], races: Race[] } = await generateYearlyLeagueSchedule(game.gameId, teams, filteredPlayers, game.currentYear);\r\n    \r\n            const leagueSchedule = {\r\n                year: game.currentYear,\r\n                meets: scheduleObject.meets.map(meet => meet.meetId)\r\n            };\r\n    \r\n            const teamSchedules = generateTeamSchedules(scheduleObject.meets, teams, game.currentYear);\r\n    \r\n            assignTeamSchedules(teams, teamSchedules);\r\n    \r\n            game.leagueSchedule = leagueSchedule;\r\n    \r\n            meets.push(...scheduleObject.meets);\r\n            races.push(...scheduleObject.races);\r\n    \r\n            await saveGame(game);\r\n            await saveMeets(game.gameId, meets);\r\n            await saveRaces(game.gameId, races);\r\n            await savePlayers(game.gameId, players);\r\n            await saveTeams(game.gameId, teams);\r\n    \r\n        } catch (error) {\r\n            console.error('Error handling new year schedule:', error);\r\n            return false;\r\n        }\r\n\r\n        return Promise.resolve(true);\r\n    } catch (error) {\r\n        console.error('Error handling offseason:', error);\r\n        return Promise.reject(false);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/sim-game/src/logic/newYear.ts b/sim-game/src/logic/newYear.ts
+--- a/sim-game/src/logic/newYear.ts	(revision 55d05e9ed9fefb0758de01c9bb372dbaeb54d04e)
++++ b/sim-game/src/logic/newYear.ts	(date 1747016427234)
+@@ -20,9 +20,9 @@
+             const teamNonGraduatingSeniors: Player[] = teamPlayers.filter((player: Player) => player.year !== 4);
+ 
+             const teamGraduatedplayers = teamPlayers.filter((player: Player) => player.year === 4);
+-            teamGraduatedplayers.forEach(async player => {
++            for (const player of teamGraduatedplayers) {
+                 player.retiredYear = game.currentYear;
+-            });
++            }
+ 
+             const teamGraduatedplayersSubArchetype = teamGraduatedplayers.map((player: Player) => player.playerSubArchetype);
+ 
+Index: src/logic/gameSetup.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { getNextGameId, initializeGameCounter, initializeIDTracker, saveGame, saveMeets, savePlayers, saveRaces, saveTeams } from '@/data/storage';\r\nimport { generateYearlyLeagueSchedule, generateTeamSchedules } from '@/logic/scheduleGenerator';\r\nimport { Team, TeamSchedule } from '@/types/team';\r\nimport { Game } from '@/types/game';\r\nimport { createPlayer } from './generatePlayer';\r\nimport { createTeamsForConference } from './generateTeam';\r\nimport { getAllColleges, getAllConferences } from '@/data/parseSchools';\r\nimport { Conference, School } from '@/types/regionals';\r\nimport { Player } from '@/types/player';\r\nimport { Meet, Race } from '@/types/schedule';\r\nimport { subArchetype } from '@/constants/subArchetypes';\r\nimport { calculateSubArchetype } from './calculateSubArchetype';\r\nimport { calculateTeamOvrs } from './calculateTeamOvr';\r\n\r\n\r\nexport async function initializeNewGame(conferences: Conference[], numPlayersPerTeam: number, selectedSchoolId: number ): Promise<Game> {\r\n    const teams: Team[] = [];\r\n    const players: Player[] = [];\r\n    const currentYear = 2024;\r\n\r\n    initializeGameCounter();\r\n    const gameId = await getNextGameId();\r\n    initializeIDTracker(gameId);\r\n    \r\n    for (let i = 0; i < conferences.length; i++) {\r\n        const conferenceTeams = await createTeamsForConference(gameId, currentYear, conferences[i], selectedSchoolId);\r\n        for (const team of conferenceTeams) {\r\n            for (let j = 0; j < numPlayersPerTeam; j++) {\r\n                const playerSubArchetypes: subArchetype = calculateSubArchetype();\r\n\r\n                const player = await createPlayer(gameId, team.teamId, -1, playerSubArchetypes);\r\n                players.push(player);\r\n                team.players.push(player.playerId);\r\n            }\r\n            calculateTeamOvrs(team, players);\r\n        }\r\n        teams.push(...conferenceTeams);\r\n    }\r\n\r\n    const scheduleObject: {meets: Meet[], races: Race[]} = await generateYearlyLeagueSchedule(gameId, teams, players, currentYear);\r\n\r\n    const leagueSchedule = {\r\n        year: currentYear,\r\n        meets: scheduleObject.meets.map(meet => meet.meetId)\r\n    };\r\n\r\n    const teamSchedules = generateTeamSchedules(scheduleObject.meets, teams, currentYear);\r\n\r\n    assignTeamSchedules(teams, teamSchedules);\r\n    \r\n    const game: Game = {\r\n        gameId,\r\n        teams: teams.map(team => team.teamId),\r\n        players: teams.reduce((acc: number[], team) => acc.concat(team.players), [] as number[]),\r\n        currentWeek: 1,\r\n        currentYear,\r\n        gamePhase: 'regular',\r\n        leagueSchedule,\r\n        remainingTeams: teams.map(team => team.teamId),\r\n        selectedCollegeId: selectedSchoolId,\r\n        conferences,\r\n    };\r\n\r\n    try {\r\n        await Promise.all([\r\n            saveGame(game),\r\n            saveTeams(gameId, teams),\r\n            saveMeets(gameId, scheduleObject.meets),\r\n            savePlayers(gameId, players),\r\n            saveRaces(gameId, scheduleObject.races)\r\n        ]);\r\n    } catch (error) {\r\n        console.error('Error saving game data:', error);\r\n        throw new Error('Failed to save game data');\r\n    }\r\n\r\n    return game;\r\n}\r\n\r\nexport async function getAllSchoolsAndConferences(): Promise<{ schools: School[], conferences: Conference[] }> {\r\n    const schools = await getAllColleges();\r\n    const conferences = await getAllConferences();\r\n    return { schools, conferences };\r\n}\r\n\r\nexport function assignTeamSchedules(teams: Team[], teamSchedules: TeamSchedule[]): void {\r\n    teams.forEach(team => {\r\n        try {\r\n                const s= teamSchedules.find(schedule => schedule.teamId === team.teamId)\r\n                if(!s) throw new Error(`No schedule found for team ${team.teamId}`);\r\n                team.teamSchedule = s;\r\n            } catch (error) {\r\n                console.error(`Error assigning schedule to team ${team.teamId}`, error);\r\n            }\r\n        });\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/logic/gameSetup.ts b/src/logic/gameSetup.ts
+--- a/src/logic/gameSetup.ts	(revision 6060a4f66919a46201d6c4fe1c0849a002e95e19)
++++ b/src/logic/gameSetup.ts	(date 1747016429528)
+@@ -18,9 +18,9 @@
+     const players: Player[] = [];
+     const currentYear = 2024;
+ 
+-    initializeGameCounter();
++    await initializeGameCounter();
+     const gameId = await getNextGameId();
+-    initializeIDTracker(gameId);
++    await initializeIDTracker(gameId);
+     
+     for (let i = 0; i < conferences.length; i++) {
+         const conferenceTeams = await createTeamsForConference(gameId, currentYear, conferences[i], selectedSchoolId);
+@@ -77,12 +77,6 @@
+     return game;
+ }
+ 
+-export async function getAllSchoolsAndConferences(): Promise<{ schools: School[], conferences: Conference[] }> {
+-    const schools = await getAllColleges();
+-    const conferences = await getAllConferences();
+-    return { schools, conferences };
+-}
+-
+ export function assignTeamSchedules(teams: Team[], teamSchedules: TeamSchedule[]): void {
+     teams.forEach(team => {
+         try {
+Index: src/logic/simulation.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Game } from '@/types/game';\r\nimport { loadGameData, loadMeets, loadPlayers, loadRaces, loadTeams,\r\n         saveTeams, saveGame, saveMeets, savePlayers, saveRaces } from '@/data/storage';\r\nimport { handleNewRecruits, handleNewYearSchedule } from './newYear';\r\nimport { mapWeekToGamePhase } from '@/logic/meetGenerator';\r\nimport { Meet, Race } from '@/types/schedule';\r\nimport { Team } from '@/types/team';\r\nimport { SeasonGamePhase } from '@/constants/seasons';\r\nimport { generateRaceTime, } from './generateRaceTimes';\r\nimport { Player } from '@/types/player';\r\nimport { updateTeamAndPlayerPoints } from './scoring';\r\nimport { simulatePlayoffs } from './simulatePlayoffs';\r\n\r\nexport async function simulateWeek(gameId: number) {\r\n    let game: Game;\r\n    let teams: Team[];\r\n    let players: Player[];\r\n    let meets: Meet[];\r\n    let races: Race[];\r\n\r\n    try {\r\n        [game, teams, players, meets, races] = await Promise.all([\r\n            loadGameData(gameId),\r\n            loadTeams(gameId),\r\n            loadPlayers(gameId),\r\n            loadMeets(gameId),\r\n            loadRaces(gameId)\r\n        ]);\r\n    } catch (error) {\r\n        console.error(\"Error loading game data\", error);\r\n        return;\r\n    }\r\n\r\n    const phase: SeasonGamePhase = mapWeekToGamePhase(game.currentWeek).type;\r\n    game.gamePhase = phase;\r\n\r\n    let success = false;\r\n\r\n\r\n    if (phase === 'regular') {\r\n        success = await simulateRegularSeason(game, teams, players, meets, races);\r\n    } else if (phase === 'playoffs') {\r\n        success = await simulatePlayoffs(game, teams, players, meets, races);\r\n    } else if (phase === 'offseason') {\r\n        success = await handleOffseason(game);\r\n    }\r\n\r\n    if (!success) {\r\n        console.error(\"Simulation failed\");\r\n        return;\r\n    }\r\n\r\n    const incrementSuccess = await incrementWeek(game);\r\n    if (incrementSuccess[1]) {\r\n        success = await handleNewRecruits(teams, players, gameId);\r\n        const newTeams = await loadTeams(gameId);\r\n        const newPlayers = await loadPlayers(gameId);\r\n        success = await handleNewYearSchedule(game, newTeams, newPlayers, meets, races);\r\n    }\r\n\r\n    if (!success) {\r\n        console.error(\"Increment week failed\");\r\n        return;\r\n    }\r\n\r\n    if (game.currentWeek == 11 || game.currentWeek == 26 || game.currentWeek == 41) {\r\n        await saveGame(game);\r\n        await savePlayers(gameId, players);\r\n        await saveTeams(gameId, teams);\r\n    }\r\n    else {\r\n        await saveMeets(gameId, meets);\r\n        await saveRaces(gameId, races);\r\n        await saveGame(game);\r\n        await savePlayers(gameId, players);\r\n        await saveTeams(gameId, teams);\r\n    }\r\n\r\n    teams = await loadTeams(gameId);\r\n}\r\n\r\nasync function simulateRegularSeason(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {\r\n    await simulateMeetsForWeek(game, meets, races, players);\r\n    await updateTeamAndPlayerPoints(game, teams, players, meets, races);\r\n    return Promise.resolve(true);\r\n}\r\n\r\nexport async function determineWinnersByPoints(matches: Meet[], races: Race[], players: Player[]): Promise<number[]> {\r\n    let winners: number[] = [];\r\n\r\n    try {\r\n        for (const meet of matches) {\r\n            const teamScores: { [teamId: number]: number } = {};\r\n\r\n            if (meet && meet.season === 'cross_country') {\r\n                // Cross-country scoring\r\n                meet.races.forEach(race => {\r\n                    races.filter(r => r.raceId === race).forEach(r => {\r\n                        if (!r.teams) {\r\n                            console.error(\"No team in race\");\r\n                            return Promise.reject([-1]);\r\n                        }\r\n                        r.teams.forEach(team => {\r\n                            if (team.points > 0) {\r\n                                teamScores[team.teamId] = (teamScores[team.teamId] || 0) + team.points;\r\n                            }\r\n                        });\r\n                    }\r\n                    );\r\n                });\r\n\r\n                const sortedTeams = Object.entries(teamScores).sort(([, a], [, b]) => a - b);\r\n                const numberOfTeamsToPush = Math.max(Math.ceil(sortedTeams.length * 0.25), 2);\r\n                const teamsToPush = sortedTeams.slice(0, numberOfTeamsToPush)\r\n                if (meet.week === 11 || meet.week === 26 || meet.week === 41) {\r\n                }\r\n                const teamstoPushIds: number[] = teamsToPush.map(([teamId]) => Number(teamId));\r\n\r\n                winners = teamstoPushIds;\r\n\r\n            } else if (meet && meet.season === 'track_field') {\r\n                // Track & field scoring\r\n                meet.races.forEach(race => {\r\n                    races.filter(r => r.raceId === race).forEach(r => {\r\n                        r.teams.forEach(team => {\r\n                            if (team.points > 0) {\r\n                                teamScores[team.teamId] = (teamScores[team.teamId] || 0) + team.points;\r\n                            }\r\n                        });\r\n                    }\r\n                    );\r\n                });\r\n\r\n                const sortedTeams = Object.entries(teamScores).sort(([, a], [, b]) => b - a);\r\n                const numberOfTeamsToPush = Math.max(Math.ceil(sortedTeams.length * 0.25), 2);\r\n                const teamsToPush = sortedTeams.slice(0, numberOfTeamsToPush).map(([teamId]) => Number(teamId));\r\n\r\n                winners = teamsToPush;\r\n            }\r\n        }\r\n    } catch (error) {\r\n        console.error(\"Error determining winners by points\", error);\r\n        return Promise.reject(error);\r\n    }\r\n\r\n    if (winners.length === 0) {\r\n        try {\r\n            const allRunners = races.flatMap(race => race.participants);\r\n            const sortedRunners = allRunners.sort((a, b) => a.playerTime - b.playerTime);\r\n            const topTwoTeams = new Set<number>();\r\n            for (const runner of sortedRunners) {\r\n                if (topTwoTeams.size < 2) {\r\n                    const player = players.find(player => player.playerId === runner.playerId);\r\n                    if (player) {\r\n                        const team = player.teamId;\r\n                        if (team !== undefined) {\r\n                            topTwoTeams.add(team);\r\n                        }\r\n                    }\r\n                } else {\r\n                    break;\r\n                }\r\n            }\r\n            winners = Array.from(topTwoTeams);\r\n        } catch (error) {\r\n            console.error(\"Error determining top two teams by runner times\", error);\r\n            return Promise.reject(error);\r\n        }\r\n    }\r\n\r\n    if(!winners || winners.length === 0) {\r\n        console.error(\"No winners found\");\r\n        return Promise.reject([-1]);\r\n    }\r\n\r\n    return Promise.resolve(winners);\r\n}\r\n\r\n// returns array of booleans [success, new year]\r\nasync function incrementWeek(game: Game): Promise<Array<boolean>> {\r\n    try {\r\n        game.currentWeek += 1;\r\n        if (game.currentWeek > 52) {\r\n            game.currentYear += 1;\r\n            game.currentWeek = 1;\r\n            return [true, true]\r\n        }\r\n        return [true, false];\r\n    } catch (error) {\r\n        console.error(\"Error incrementing week\", error);\r\n        return [false, false];\r\n    }\r\n}\r\n\r\nasync function handleOffseason(game: Game): Promise<boolean> {\r\n\r\n    game.remainingTeams = game.teams; // Reset for the next season\r\n    return Promise.resolve(true);\r\n}\r\n\r\nexport async function simulateMeetsForWeek(game: Game, meets: Meet[], races: Race[], players: Player[]): Promise<boolean> {\r\n    // Simulate all meets for the current week\r\n    const week = game.currentWeek;\r\n    const year = game.currentYear\r\n    const weekMeets = meets.filter(meet => meet.week === week && meet.year === year);\r\n    for (const meet of weekMeets) {\r\n        const meetRaces = races.filter(race => meet.races.includes(race.raceId));\r\n        for (const race of meetRaces) {\r\n            for (const participant of race.participants) {\r\n                const player: Player | undefined = players.find(p => p.playerId === participant.playerId);\r\n                if (player === undefined) {\r\n                    console.error(\"No player found\");\r\n                    return Promise.reject(false);\r\n                }\r\n                const raceTime = generateRaceTime(race.eventType, player);\r\n                const participantIndex = race.participants.findIndex(p => p.playerId === participant.playerId);\r\n                if (participantIndex !== -1) {\r\n                    race.participants[participantIndex].playerTime = raceTime;\r\n                } else {\r\n                    console.error(`Participant with ID ${participant.playerId} not found in race`);\r\n                    return Promise.reject(false);\r\n                }\r\n            }\r\n        }\r\n\r\n    }\r\n    return Promise.resolve(true);\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/logic/simulation.ts b/src/logic/simulation.ts
+--- a/src/logic/simulation.ts	(revision 6060a4f66919a46201d6c4fe1c0849a002e95e19)
++++ b/src/logic/simulation.ts	(date 1747016429538)
+@@ -75,8 +75,6 @@
+         await savePlayers(gameId, players);
+         await saveTeams(gameId, teams);
+     }
+-
+-    teams = await loadTeams(gameId);
+ }
+ 
+ async function simulateRegularSeason(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
+Index: src/logic/scoring.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Game } from \"@/types/game\";\r\nimport { Player } from \"@/types/player\";\r\nimport { Meet, RaceParticipant, Race } from \"@/types/schedule\";\r\nimport { Team } from \"@/types/team\";\r\n\r\nexport async function updateTeamAndPlayerPoints(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {\r\n    try {\r\n        const week = game.currentWeek;\r\n        const leagueMeets = game.leagueSchedule.meets\r\n            .map(meetId => meets.find(meet => meet.meetId === meetId))\r\n            .filter(meet => meet && meet.week === week);\r\n\r\n        leagueMeets.forEach(meet => {\r\n            if (meet && meet.season === 'cross_country') {\r\n                meet.races.forEach(raceId => {\r\n                    try {\r\n                        const race = races.find(r => r.raceId === raceId);\r\n                        if (race) {\r\n                            handleCrossCountryScoring(race, teams, players, meet);\r\n                        } else {\r\n                            console.error(`Race not found for raceId ${raceId} in meet ${meet.meetId}`);\r\n                        }\r\n                    } catch (error) {\r\n                        console.error(`Error handling cross country scoring for race ${raceId} in meet ${meet.meetId}`, error);\r\n                    }\r\n                });\r\n            } else if (meet && meet.season === 'track_field') {\r\n                meet.races.forEach(raceId => {\r\n                    try {\r\n                        const race = races.find(r => r.raceId === raceId);\r\n                        if (race) {\r\n                            handleTrackFieldScoring(race, teams, meet);\r\n                        } else {\r\n                            console.error(`Race not found for raceId ${raceId} in meet ${meet.meetId}`);\r\n                        }\r\n                    } catch (error) {\r\n                        console.error(`Error handling track and field scoring for race ${raceId} in meet ${meet.meetId}`, error);\r\n                    }\r\n                });\r\n            }\r\n        });\r\n        return Promise.resolve(true);\r\n    } catch (error) {\r\n        console.error(\"Error updating team and player points\", error);\r\n        return Promise.reject(false);\r\n    }\r\n}\r\n\r\nexport function handleCrossCountryScoring(race: Race, teams: Team[], players: Player[], meet: Meet): void {\r\n    try {\r\n        const teamParticipants: { [teamId: number]: RaceParticipant[] } = {};\r\n\r\n        // Group participants by team and take top 7\r\n        race.participants.forEach((participant: RaceParticipant) => {\r\n            const player = players.find(player => player.playerId == participant.playerId);\r\n            if (!player) {\r\n                console.error(\"Player not found\");\r\n                return;\r\n            }\r\n            const teamId = player.teamId;\r\n            if (teamId) {\r\n                if (!teamParticipants[teamId]) {\r\n                    teamParticipants[teamId] = [];\r\n                }\r\n                teamParticipants[teamId].push(participant);\r\n            }\r\n        });\r\n\r\n        // Sort each team's participants and take top 7\r\n        for (const teamId in teamParticipants) {\r\n            if (teamParticipants[teamId]) {\r\n                teamParticipants[teamId] = teamParticipants[teamId]\r\n                    .sort((a, b) => a.playerTime - b.playerTime)\r\n                    .slice(0, 7);\r\n            }\r\n        }\r\n\r\n        // Create a combined list of all top 7 participants from each team\r\n        const combinedParticipants = Object.values(teamParticipants).flat();\r\n        combinedParticipants.sort((a, b) => a.playerTime - b.playerTime);\r\n\r\n        // Filter out participants from teams with less than 5 racers\r\n        const validParticipants = combinedParticipants.filter(participant => {\r\n            const teamId = players.find(player => player.playerId == participant.playerId)?.teamId;\r\n            if (teamId) {\r\n                return teamParticipants[teamId] && teamParticipants[teamId].length >= 5;\r\n            } else {\r\n                console.error(\"Team not found\");\r\n            }\r\n        });\r\n\r\n        // Assign points based on position in the filtered list\r\n        validParticipants.forEach((participant, index) => {\r\n            const points = index + 1; // Position in the race (1st place = 1 point)\r\n            participant.scoring.points = points;\r\n        });\r\n\r\n        // Add points to meet teams for teams with at least 5 participants\r\n        const teamPoints: { [teamId: number]: number } = {};\r\n\r\n        validParticipants.forEach(participant => {\r\n            const teamId = players.find(player => player.playerId == participant.playerId)?.teamId;\r\n            if (teamId === undefined) {\r\n                console.error(\"Team not found\");\r\n                throw new Error(\"Team not found\");\r\n            }\r\n            if (teamPoints[teamId] === undefined) {\r\n                teamPoints[teamId] = 0;\r\n            }\r\n            if (teamParticipants[teamId].indexOf(participant) < 5) {\r\n                participant.scoring.team_top_five = true;\r\n                participant.scoring.team_top_seven = true;\r\n                teamPoints[teamId] += participant.scoring.points;\r\n            } else if (teamParticipants[teamId].indexOf(participant) < 7) {\r\n                participant.scoring.team_top_seven = true;\r\n            }\r\n        });\r\n\r\n        for (const teamId in teamPoints) {\r\n            const meetTeam = meet.teams.find(t => t.teamId === Number(teamId));\r\n            if (meetTeam) {\r\n                meetTeam.has_five_racers = true;\r\n                meetTeam.points = teamPoints[teamId];\r\n                const raceTeam = race.teams.find(t => t.teamId === Number(teamId));\r\n                if (raceTeam) {\r\n                    raceTeam.points = teamPoints[teamId];\r\n                } else {\r\n                    console.error(`Race team not found for teamId ${teamId}`);\r\n                }\r\n            } else {\r\n                console.error(`Meet team not found for teamId ${teamId}`);\r\n            }\r\n        }\r\n\r\n        teams.forEach(team => {\r\n            const meetTeam = meet.teams.find(t => t.teamId === team.teamId);\r\n            if (meetTeam) {\r\n                team.points += meetTeam.points;\r\n            }\r\n        });\r\n\r\n    } catch (error) {\r\n        console.error(\"Error handling cross country scoring\", error);\r\n    }\r\n}\r\n\r\nexport function handleTrackFieldScoring(race: Race, teams: Team[], meet: Meet): void {\r\n    const pointsByPlace = [10, 8, 6, 4, 2, 1]; // Points for 1st through 6th\r\n    const sortedParticipants = race.participants.sort((a, b) => a.playerTime - b.playerTime);\r\n\r\n    sortedParticipants.forEach((participant, index) => {\r\n        const points = pointsByPlace[index] || 0; // Assign points to top 6\r\n\r\n        // Update participant points\r\n        participant.scoring.points = points;\r\n\r\n        const team = teams.find(t => t.players.some(p => p === participant.playerId));\r\n        if (team) {\r\n\r\n            const raceTeam = race.teams.find(t => t.teamId === team.teamId);\r\n            const meetTeam = meet.teams.find(t => t.teamId === team.teamId);\r\n            if (meetTeam && raceTeam) {\r\n                meetTeam.points += points;\r\n                raceTeam.points += points;\r\n            }\r\n        }\r\n    });\r\n\r\n    // Update team points\r\n    teams.forEach(team => {\r\n        const meetTeam = meet.teams.find(t => t.teamId === team.teamId);\r\n        if (meetTeam) {\r\n            team.points += meetTeam.points;\r\n        }\r\n    });\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/logic/scoring.ts b/src/logic/scoring.ts
+--- a/src/logic/scoring.ts	(revision 6060a4f66919a46201d6c4fe1c0849a002e95e19)
++++ b/src/logic/scoring.ts	(date 1747016429454)
+@@ -1,7 +1,7 @@
+-import { Game } from "@/types/game";
+-import { Player } from "@/types/player";
+-import { Meet, RaceParticipant, Race } from "@/types/schedule";
+-import { Team } from "@/types/team";
++import {Game} from "@/types/game";
++import {Player} from "@/types/player";
++import {Meet, Race, RaceParticipant} from "@/types/schedule";
++import {Team} from "@/types/team";
+ 
+ export async function updateTeamAndPlayerPoints(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
+     try {
+@@ -91,8 +91,8 @@
+ 
+         // Assign points based on position in the filtered list
+         validParticipants.forEach((participant, index) => {
+-            const points = index + 1; // Position in the race (1st place = 1 point)
+-            participant.scoring.points = points;
++             // Position in the race (1st place = 1 point)
++            participant.scoring.points = index + 1;
+         });
+ 
+         // Add points to meet teams for teams with at least 5 participants
+Index: src/types/game.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { YearlyLeagueSchedule } from './schedule';\r\nimport { SeasonGamePhase } from '@/constants/seasons';\r\nimport { Conference, School } from './regionals';\r\n\r\nexport interface Game {\r\n    gamePhase: SeasonGamePhase;\r\n    gameId: number;\r\n    teams: number[];\r\n    players: number[];\r\n    currentYear: number;  \r\n    currentWeek: number;     \r\n    leagueSchedule: YearlyLeagueSchedule;    // Full season schedule\r\n    remainingTeams: number[]; // TeamIds still in the playoffs\r\n    selectedCollegeId: number\r\n    conferences: Conference[];  \r\n}\r\n\r\nexport interface GameSetup {\r\n    conferenceIds: number[];\r\n    numPlayersPerTeam: number;\r\n    schools: School[];\r\n    conferences: Conference[];\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/types/game.ts b/src/types/game.ts
+--- a/src/types/game.ts	(revision 6060a4f66919a46201d6c4fe1c0849a002e95e19)
++++ b/src/types/game.ts	(date 1747016429546)
+@@ -1,6 +1,6 @@
+ import { YearlyLeagueSchedule } from './schedule';
+ import { SeasonGamePhase } from '@/constants/seasons';
+-import { Conference, School } from './regionals';
++import { Conference } from './regionals';
+ 
+ export interface Game {
+     gamePhase: SeasonGamePhase;
+@@ -9,15 +9,8 @@
+     players: number[];
+     currentYear: number;  
+     currentWeek: number;     
+-    leagueSchedule: YearlyLeagueSchedule;    // Full season schedule
+-    remainingTeams: number[]; // TeamIds still in the playoffs
++    leagueSchedule: YearlyLeagueSchedule;
++    remainingTeams: number[];
+     selectedCollegeId: number
+     conferences: Conference[];  
+ }
+-
+-export interface GameSetup {
+-    conferenceIds: number[];
+-    numPlayersPerTeam: number;
+-    schools: School[];
+-    conferences: Conference[];
+-}
+\ No newline at end of file
+Index: sim-game/src/constants/subArchetypes.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { mainArchetypes as ma} from \"./mainArchetypes\"\r\n\r\nconst a1 = { main: [ma.s], events: ['100m', '200m', '400m'], chance: 0.1, num: 1 };\r\nconst a2 = { main: [ma.s], events: ['100m', '200m'], chance: 0.2, num: 2};\r\nconst a3 = { main: [ma.md, ma.s], events: ['400m', '800m', '1500m'], chance: 0.3, num: 3 };\r\nconst a4 = { main: [ma.md, ma.s], events: ['400m', '800m'], chance: 0.4, num: 4 };\r\nconst a5 = { main: [ma.md], events: ['800m', '1500m'], chance: 0.45, num: 5 };\r\nconst a6 = { main: [ma.ld, ma.md], events: ['1500m', '3000m'], chance: 0.55, num: 6 };\r\nconst a7 = { main: [ma.ld, ma.md], events: ['1500m', '3000m', '5000m', '10000m', '8000m'], chance: 0.597, num: 7 };\r\nconst a8 = { main: [ma.ld, ma.md], events: ['3000m', '5000m','8000m'], chance: 0.697, num: 8 };\r\nconst a9 = { main: [ma.ld, ma.md], events: ['1500m', '3000m','8000m'], chance: 0.797, num: 9 };\r\nconst a10 = { main: [ma.ld, ma.md], events: ['3000m', '5000m', '8000m', '10000m'], chance: 0.897, num: 10 };\r\nconst a11 = { main: [ma.ld], events: ['5000m', '8000m', '10000m'], chance: 0.997, num: 11 };\r\nconst a12 = { main: [ma.md, ma.s, ma.ld], events: ['400m', '800m', '1500m', '8000m'], chance: 0.999, num: 12 };\r\nconst a13 = { main: [ma.md, ma.s, ma.ld], events: ['200m', '400m', '800m', '1500m', '3000m', '5000m', '10000m', '8000m'], chance: 1 , num: 13 };\r\n// const a14 = { main: [ma.h], racse: ['110mH', '400mH'], chance: 1, num: 14 };\r\n// const a15 = { main: [ma.h, ma.s], events:['110mH', '100m', '200m'], chance: 1, num: 15 };\r\n// const a16 = {main: [ma.h, ma.s], events: ['110mH', '400mH', '100m', '200m', '400m'], chance: 1, num: 16 };\r\n\r\nexport interface subArchetype {\r\n    num: number,\r\n    main: string[],\r\n    events: string[],\r\n}\r\n\r\nexport const subArchetypeList = [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13];\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/sim-game/src/constants/subArchetypes.ts b/sim-game/src/constants/subArchetypes.ts
+--- a/sim-game/src/constants/subArchetypes.ts	(revision 55d05e9ed9fefb0758de01c9bb372dbaeb54d04e)
++++ b/sim-game/src/constants/subArchetypes.ts	(date 1747016429490)
+@@ -13,7 +13,7 @@
+ const a11 = { main: [ma.ld], events: ['5000m', '8000m', '10000m'], chance: 0.997, num: 11 };
+ const a12 = { main: [ma.md, ma.s, ma.ld], events: ['400m', '800m', '1500m', '8000m'], chance: 0.999, num: 12 };
+ const a13 = { main: [ma.md, ma.s, ma.ld], events: ['200m', '400m', '800m', '1500m', '3000m', '5000m', '10000m', '8000m'], chance: 1 , num: 13 };
+-// const a14 = { main: [ma.h], racse: ['110mH', '400mH'], chance: 1, num: 14 };
++// const a14 = { main: [ma.h], races: ['110mH', '400mH'], chance: 1, num: 14 };
+ // const a15 = { main: [ma.h, ma.s], events:['110mH', '100m', '200m'], chance: 1, num: 15 };
+ // const a16 = {main: [ma.h, ma.s], events: ['110mH', '400mH', '100m', '200m', '400m'], chance: 1, num: 16 };
+ 
