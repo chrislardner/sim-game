@@ -1,5 +1,5 @@
 import { generate } from "facesjs";
-import { subArchetype } from "@/constants/subArchetypes"; 
+import { SubArchetype } from "@/constants/subArchetypes";
 
 // Player Stats
 export interface PlayerRatings {
@@ -72,7 +72,7 @@ export interface Player {
     year: number;
     face: ReturnType<typeof generate>; 
     playerRatings: PlayerRatings;
-    playerSubArchetype: subArchetype;
+    playerSubArchetype: SubArchetype;
     retiredYear: number;
     startYear: number;
     interactions: PlayerInteractions;

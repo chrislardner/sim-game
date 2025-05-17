@@ -1,6 +1,6 @@
-import { subArchetype, subArchetypeList } from "@/constants/subArchetypes";
+import { SubArchetype, subArchetypeList } from "@/constants/subArchetypes";
 
-export function calculateSubArchetype(): subArchetype {
+export function calculateSubArchetype(): SubArchetype {
     const subArchetype = Math.random();
     if (subArchetype < subArchetypeList[0].chance) return subArchetypeList[0];
     else if (subArchetype < subArchetypeList[1].chance) return subArchetypeList[1];

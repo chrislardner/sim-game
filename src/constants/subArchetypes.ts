@@ -17,7 +17,7 @@ const a13 = { main: [ma.md, ma.s, ma.ld], events: ['200m', '400m', '800m', '1500
 // const a15 = { main: [ma.h, ma.s], events:['110mH', '100m', '200m'], chance: 1, num: 15 };
 // const a16 = {main: [ma.h, ma.s], events: ['110mH', '400mH', '100m', '200m', '400m'], chance: 1, num: 16 };
 
-export interface subArchetype {
+export interface SubArchetype {
     num: number,
     main: string[],
     events: string[],

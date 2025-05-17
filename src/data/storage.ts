@@ -237,7 +237,7 @@ export async function getNextGameId(): Promise<number> {
         const store = tx.objectStore('global_ids');
 
         const counter = await store.get('game_counter');
-        const newId = (counter?.value || 0) + 1;
+        const newId = (counter?.value ?? 0) + 1;
 
         await store.put({ key: 'game_counter', value: newId });
         await tx.done;

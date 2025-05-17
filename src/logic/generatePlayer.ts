@@ -4,12 +4,16 @@ import { generate } from "facesjs";
 import { generateRandomFullName } from "../data/parseNames";
 import { getNextPlayerId } from "@/data/storage";
 import { generatePlayerRatings } from "./generatePlayerRatings";
-import { subArchetype } from "@/constants/subArchetypes";
+import { SubArchetype } from "@/constants/subArchetypes";
 import { generatePlayerInteractions } from "./generatePlayerInteractions";
 
-export async function createPlayer(gameId: number, teamId: number, schoolYear: number, playerSubArchetype: subArchetype, startYear: number, currentYear: number): Promise<Player> {
+function generateRandomPlayerYear() {
+    return Math.random() < 0.5 ? 1 : (Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 3 : 4))
+}
+
+export async function createPlayer(gameId: number, teamId: number, schoolYear: number, playerSubArchetype: SubArchetype, startYear: number, currentYear: number): Promise<Player> {
     if (schoolYear === -1) {
-        schoolYear = Math.random() < 0.5 ? 1 : (Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 3 : 4))
+        schoolYear = generateRandomPlayerYear();
     }
     const newPlayerId = await getNextPlayerId(gameId);
 
@@ -52,7 +56,7 @@ export async function createPlayer(gameId: number, teamId: number, schoolYear: n
    return player;
 }
 
-function generateSeasonTypes(playerSubArchetype: subArchetype): ('track_field' | 'cross_country')[] {
+function generateSeasonTypes(playerSubArchetype: SubArchetype): ('track_field' | 'cross_country')[] {
     if (playerSubArchetype.num <= 6) {
         return ['track_field'];
     } else {
@@ -60,7 +64,7 @@ function generateSeasonTypes(playerSubArchetype: subArchetype): ('track_field' |
     }
 }
 
-function generateEventTypes(playerSubArchetype: subArchetype): { cross_country: string[]; track_field: string[] } {
+function generateEventTypes(playerSubArchetype: SubArchetype): { cross_country: string[]; track_field: string[] } {
     const events = {
         cross_country: [] as string[],
         track_field: [] as string[]

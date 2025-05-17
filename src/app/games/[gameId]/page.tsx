@@ -7,7 +7,7 @@ import { simulateWeek } from '@/logic/simulation';
 import { Team } from '@/types/team';
 import { useRouter } from 'next/navigation';
 
-export default function GameDashboard({ params }: { params: Promise<{ gameId: string }> }) {
+export default function GameDashboard({ params }: Readonly<{ params: Promise<{ gameId: string }> }>) {
     const { gameId } = use(params);
     const [gameData, setGameData] = useState<Game>();
     const [teams, setTeamsData] = useState<Team[]>();

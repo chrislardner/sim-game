@@ -70,7 +70,7 @@ export function handleCrossCountryScoring(race: Race, teams: Team[], players: Pl
         for (const teamId in teamParticipants) {
             if (teamParticipants[teamId]) {
                 teamParticipants[teamId] = teamParticipants[teamId]
-                    .sort((a, b) => a.playerTime - b.playerTime)
+                    .toSorted((a, b) => a.playerTime - b.playerTime)
                     .slice(0, 7);
             }
         }
@@ -104,9 +104,7 @@ export function handleCrossCountryScoring(race: Race, teams: Team[], players: Pl
                 console.error("Team not found");
                 throw new Error("Team not found");
             }
-            if (teamPoints[teamId] === undefined) {
-                teamPoints[teamId] = 0;
-            }
+            teamPoints[teamId] ??= 0;
             if (teamParticipants[teamId].indexOf(participant) < 5) {
                 participant.scoring.team_top_five = true;
                 participant.scoring.team_top_seven = true;
@@ -146,7 +144,7 @@ export function handleCrossCountryScoring(race: Race, teams: Team[], players: Pl
 
 export function handleTrackFieldScoring(race: Race, teams: Team[], meet: Meet): void {
     const pointsByPlace = [10, 8, 6, 4, 2, 1]; // Points for 1st through 6th
-    const sortedParticipants = race.participants.sort((a, b) => a.playerTime - b.playerTime);
+    const sortedParticipants = race.participants.toSorted((a, b) => a.playerTime - b.playerTime);
 
     sortedParticipants.forEach((participant, index) => {
         const points = pointsByPlace[index] || 0; // Assign points to top 6

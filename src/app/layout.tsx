@@ -6,8 +6,9 @@ import '@/styles/globals.css';
 import { ThemeProvider } from '@/context/ThemeContext';
 import MainNav from '@/components/MainNav';
 import { Analytics } from "@vercel/analytics/react"
+import React from "react";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     const pathname = usePathname();
     const gameId = pathname.split('/games/')[1]?.split('/')[0] || '';
 

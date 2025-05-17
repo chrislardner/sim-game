@@ -125,7 +125,8 @@ function getPlayerSkill(player: Player, eventType: string): number {
             const attributeSum =
                 (playerRatings.pacing * 0.2) +
                 (playerRatings.stamina * 0.25) +
-                (playerRatings.mentalToughness * 0.25) +
+                (playerRatings.acceleration * 0.05) +
+                (playerRatings.mentalToughness * 0.20) +
                 (playerRatings.endurance * 0.3);
             skill = 0.5 * typeRatings.longDistanceOvr + 0.5 * attributeSum;
             break;

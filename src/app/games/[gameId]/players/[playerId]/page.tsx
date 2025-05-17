@@ -7,7 +7,7 @@ import { display } from 'facesjs';
 import PlayerResults from '@/components/PlayerResults';
 import PlayerRatingsTable from '@/components/PlayerRatingsTable';
 
-export default function PlayerPage({ params }: { params: Promise<{ gameId: string, playerId: string }> }) {
+export default function PlayerPage({ params }: Readonly<{ params: Promise<{ gameId: string, playerId: string }> }>) {
     const { gameId, playerId } = use(params);
     const [player, setPlayer] = useState<Player>();
     const faceContainerRef = useRef(null);

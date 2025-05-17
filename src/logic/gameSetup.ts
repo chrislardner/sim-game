@@ -8,7 +8,7 @@ import { getAllColleges, getAllConferences } from '@/data/parseSchools';
 import { Conference, School } from '@/types/regionals';
 import { Player } from '@/types/player';
 import { Meet, Race } from '@/types/schedule';
-import { subArchetype } from '@/constants/subArchetypes';
+import { SubArchetype } from '@/constants/subArchetypes';
 import { calculateSubArchetype } from './calculateSubArchetype';
 import { calculateTeamOvrs } from './calculateTeamOvr';
 
@@ -22,11 +22,11 @@ export async function initializeNewGame(conferences: Conference[], numPlayersPer
     const gameId = await getNextGameId();
     initializeIDTracker(gameId);
     
-    for (let i = 0; i < conferences.length; i++) {
-        const conferenceTeams = await createTeamsForConference(gameId, currentYear, conferences[i], selectedSchoolId);
+    for (const conference of conferences) {
+        const conferenceTeams = await createTeamsForConference(gameId, currentYear, conference, selectedSchoolId);
         for (const team of conferenceTeams) {
             for (let j = 0; j < numPlayersPerTeam; j++) {
-                const playerSubArchetypes: subArchetype = calculateSubArchetype();
+                const playerSubArchetypes: SubArchetype = calculateSubArchetype();
 
                 const player = await createPlayer(gameId, team.teamId, -1, playerSubArchetypes, currentYear, currentYear);
                 players.push(player);

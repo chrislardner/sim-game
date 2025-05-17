@@ -6,12 +6,12 @@ import { Team } from "@/types/team";
 export async function createTeamsForConference(gameId: number, year: number, conference: Conference, selectedCollegeId: number): Promise<Team[]> {
     const schools: School[] = await getCollegesbyConferenceId(conference.conferenceId);
     const teams: Team[] = [];
-    for (let i = 0; i < schools.length; i++) {
+    for (const school of schools) {
         let player_control = false;
-        if(schools[i].collegeId === selectedCollegeId) { 
+        if (school.collegeId === selectedCollegeId) {
             player_control = true;
         }
-        const team: Team = await createTeam(gameId, year, schools[i], player_control);
+        const team: Team = await createTeam(gameId, year, school, player_control);
         teams.push(team);
     }
 

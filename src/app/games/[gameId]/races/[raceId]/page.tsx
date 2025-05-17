@@ -7,7 +7,7 @@ import { Meet, Race } from '@/types/schedule';
 import { Player } from '@/types/player';
 import { Team } from '@/types/team';
 
-export default function RaceResultsPage({ params }: { params: Promise<{ gameId: string, raceId: string }> }) {
+export default function RaceResultsPage({ params }: Readonly<{ params: Promise<{ gameId: string, raceId: string }> }>) {
     const router = useRouter();
     const [unwrappedParams, setUnwrappedParams] = useState<{ gameId: string, raceId: string } | null>(null);
     const [race, setRace] = useState<Race>();
@@ -79,7 +79,7 @@ export default function RaceResultsPage({ params }: { params: Promise<{ gameId: 
     if (!race) return <div>Loading...</div>;
 
     const sortedParticipants = race.participants
-        .sort((a, b) => a.playerTime - b.playerTime)
+        .toSorted((a, b) => a.playerTime - b.playerTime)
         .map((participant, index) => ({
             ...participant,
             position: index + 1,

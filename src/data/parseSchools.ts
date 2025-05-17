@@ -99,8 +99,8 @@ export async function getCollegesbyConferenceId(conferenceId: number): Promise<C
         if (!conference || !conference.teamIds) {
             throw new Error("Conference or teamIds not found.");
         }
-        for (let i = 0; i < conference.teamIds.length; i++) {
-            const generatedCollege = getCollegeById(conference.teamIds[i]);
+        for (const teamId of conference.teamIds) {
+            const generatedCollege = getCollegeById(teamId);
             if (generatedCollege) {
                 generatedColleges.push(generatedCollege);
             }

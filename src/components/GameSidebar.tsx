@@ -1,10 +1,10 @@
 "use client";
 
 import { useRouter, usePathname } from 'next/navigation';
-import { useEffect } from 'react';
-import { use } from 'react';
+import { useEffect, use} from 'react';
 
-export default function GameSidebar({ params }: { params: Promise<{ gameId: string }> }) {
+
+export default function GameSidebar({ params }: Readonly<{ params: Promise<{ gameId: string }> }>) {
     const router = useRouter();
     const pathname = usePathname();
     const { gameId } = use(params);

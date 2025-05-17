@@ -8,11 +8,11 @@ import { Player } from '@/types/player';
 import Table from '@/components/Table';
 import { Conference } from '@/types/regionals';
 
-export default function TeamPage({ params }: { params: Promise<{ gameId: string, teamId: string }> }) {
+export default function TeamPage({ params }: Readonly<{ params: Promise<{ gameId: string, teamId: string }> }>) {
     const router = useRouter();
     const { gameId, teamId } = use(params);
     const [team, setTeam] = useState<Team>();
-    const [players, setTeamPlayers] = useState<Player[]>([]);
+    const [players, setPlayers] = useState<Player[]>([]);
     const [conference, setConference] = useState<Conference>();
     
     useEffect(() => {
@@ -22,7 +22,7 @@ export default function TeamPage({ params }: { params: Promise<{ gameId: string,
             setTeam(selectedTeam);
             const playerData = await loadActivePlayers(Number(gameId));
             const teamPlayers = playerData?.filter((p: Player) => p.teamId === Number(teamId));
-            setTeamPlayers(teamPlayers);
+            setPlayers(teamPlayers);
             const gameData = await loadGameData(Number(gameId));
             const conferenceData = gameData?.conferences.find((conf: Conference) => conf.conferenceId === selectedTeam?.conferenceId);
             setConference(conferenceData);

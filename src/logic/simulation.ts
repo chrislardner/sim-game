@@ -182,7 +182,7 @@ export async function determineWinnersByPoints(matches: Meet[], races: Race[], p
                 const sortedTeams = Object.entries(teamScores).sort(([, a], [, b]) => a - b);
                 const numberOfTeamsToPush = Math.max(Math.ceil(sortedTeams.length * 0.25), 2);
                 const teamsToPush = sortedTeams.slice(0, numberOfTeamsToPush)
-                if (meet.week === 11 || meet.week === 26 || meet.week === 41) {
+                if (meet.week === 11 || meet.week === 26 || meet.week === 41) { /* empty */
                 }
                 const teamstoPushIds: number[] = teamsToPush.map(([teamId]) => Number(teamId));
 
@@ -216,7 +216,7 @@ export async function determineWinnersByPoints(matches: Meet[], races: Race[], p
     if (winners.length === 0) {
         try {
             const allRunners = races.flatMap(race => race.participants);
-            const sortedRunners = allRunners.sort((a, b) => a.playerTime - b.playerTime);
+            const sortedRunners = allRunners.toSorted((a, b) => a.playerTime - b.playerTime);
             const topTwoTeams = new Set<number>();
             for (const runner of sortedRunners) {
                 if (topTwoTeams.size < 2) {
@@ -338,7 +338,7 @@ async function updateChampionshipWeek(game: Game, teams: Team[], players: Player
                 console.error(`Team with ID ${mt.teamId} not found`);
                 return null;
             }
-        }).filter(team => team !== null) as Team[]
+        }).filter(team => team !== null)
     
     const newRaces = await createRacesForMeet(raceTeams, players, game.gameId, shedObj.season, foundMeet.meetId, game.currentYear);
 

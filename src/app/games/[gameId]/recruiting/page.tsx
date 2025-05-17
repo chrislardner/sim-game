@@ -5,17 +5,17 @@ import { loadGameData, loadTeams } from '@/data/storage';
 import { Game } from '@/types/game';
 import { Team } from '@/types/team';
 
-export default function RecruitingPage({ params }: { params: Promise<{ gameId: string }> }) {
+export default function RecruitingPage({ params }: Readonly<{ params: Promise<{ gameId: string }> }>) {
     const { gameId } = use(params);
     const [gameData, setGameData] = useState<Game>();
-    const [teams, setTeamsData] = useState<Team[]>();
+    const [teams, setTeams] = useState<Team[]>();
     const [doneRecruiting, setDoneRecruiting] = useState(false);
     useEffect(() => {
         async function fetchData() {
             const data = await loadGameData(Number(gameId));
             setGameData(data);
             const teamsData = await loadTeams(Number(gameId));
-            setTeamsData(teamsData);
+            setTeams(teamsData);
         }
         fetchData();
     }, [gameId]);
@@ -24,7 +24,7 @@ export default function RecruitingPage({ params }: { params: Promise<{ gameId: s
     const handleRecruits: () => Promise<void> = async () => {
         if (!doneRecruiting && gameData) {
             try {
-                const updatedGame = await loadGameData(gameData.gameId); // Reload to get updated state
+                const updatedGame = await loadGameData(gameData.gameId); // Reload to get an updated state
                 setGameData(updatedGame);
                 setDoneRecruiting(true);
                 return Promise.resolve();
@@ -52,7 +52,7 @@ export default function RecruitingPage({ params }: { params: Promise<{ gameId: s
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                     <h2 className="text-lg font-semibold">Current Team</h2>
-                    <p>{teams && teams[0]?.college}</p>
+                    <p>{teams?.[0]?.college}</p>
                 </div>
                 <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                     <h2 className="text-lg font-semibold">Current Week</h2>

@@ -13,7 +13,7 @@ type TransformedMeet = Omit<Meet, 'teams' | 'season'> & {
     season: 'TF' | 'XC';
 };
 
-export default function LeagueSchedulePage({ params }: { params: Promise<{ gameId: string }> }) {
+export default function LeagueSchedulePage({ params }: Readonly<{ params: Promise<{ gameId: string }> }>) {
     const { gameId } = use(params);
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
     const [meets, setMeets] = useState<Meet[]>([]);

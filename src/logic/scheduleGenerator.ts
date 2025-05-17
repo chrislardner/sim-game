@@ -1,8 +1,7 @@
 import { Team, TeamSchedule } from '@/types/team';
 import { Meet, Race } from '@/types/schedule';
 import { mappedSeasonPhases } from '@/constants/seasonPhases';
-import { createMeet } from './meetGenerator';
-import { mapWeekToGamePhase } from './meetGenerator';
+import { createMeet, mapWeekToGamePhase } from './meetGenerator';
 import { Player } from '@/types/player';
 
 // Generate League Schedule

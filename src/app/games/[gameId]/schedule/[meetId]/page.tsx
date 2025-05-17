@@ -1,8 +1,7 @@
 "use client";
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useRouter, useParams} from 'next/navigation';
+import {useEffect, useState} from 'react';
 import { loadMeets, loadRaces, loadTeams, loadPlayers } from '@/data/storage';
 import { Meet, Race, RaceParticipant } from '@/types/schedule';
 import { Team } from '@/types/team';
@@ -112,7 +111,7 @@ export default function MeetPage() {
                             <h3 className="text-xl font-semibold text-accent">{race.eventType}</h3>
                             {viewMode === 'teamPoints' ? (
                                 <Table
-                                    data={race.teams.sort((a, b) => {
+                                    data={race.teams.toSorted((a, b) => {
                                         if (meet.season === 'track_field') {
                                             return b.points - a.points;
                                         } else if (meet.season === 'cross_country') {
@@ -132,7 +131,7 @@ export default function MeetPage() {
                                 />
                             ) : (
                                 <Table
-                                    data={race.participants.sort((a, b) => a.playerTime - b.playerTime).map((participant: RaceParticipant) => ({
+                                    data={race.participants.toSorted((a, b) => a.playerTime - b.playerTime).map((participant: RaceParticipant) => ({
                                         player: `${playersMap[participant.playerId]?.firstName} ${playersMap[participant.playerId]?.lastName}`,
                                         team: teamsMap[playersMap[participant.playerId]?.teamId]?.abbr,
                                         points: participant.scoring.points,

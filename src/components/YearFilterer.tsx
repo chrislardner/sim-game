@@ -9,7 +9,7 @@ interface YearFilterProps {
     onYearChange: (year: number | "all") => void;
 }
 
-export default function YearFilter({ availableYears, currentYear, selectedYear, onYearChange }: YearFilterProps) {
+export default function YearFilter({ availableYears, currentYear, selectedYear, onYearChange }: Readonly<YearFilterProps>) {
     const [years, setYears] = useState<number[]>([]);
 
     useEffect(() => {

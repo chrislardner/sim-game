@@ -1,4 +1,4 @@
-import { subArchetype } from "@/constants/subArchetypes";
+import { SubArchetype } from "@/constants/subArchetypes";
 import { PlayerRatings, TypeRatings, PlayerArch } from "@/types/player";
 
 interface Attributes {
@@ -13,7 +13,7 @@ interface Attributes {
     speedStamina: number;
 }
 
-export function generatePlayerRatings(playerId: number, playerSubArchetype: subArchetype, playerYear: number): { pr: PlayerRatings, pa: PlayerArch } {
+export function generatePlayerRatings(playerId: number, playerSubArchetype: SubArchetype, playerYear: number): { pr: PlayerRatings, pa: PlayerArch } {
 
     const injuryResistance = Math.floor(Math.random() * 100);
     const consistency = Math.floor(Math.random() * 100);
@@ -133,7 +133,14 @@ function calculatePlayerOverall(pa: PlayerArch, t: TypeRatings): number {
 }
 
 function calculatePlayerPotential(playerYear: number, overall: number): number {
-    const ageModifier = playerYear < 2 ? 1.5 : playerYear < 3 ? 1.25 : playerYear < 4 ? 1.1 : 1;
+    let ageModifier = 1;
+    if (playerYear < 2) {
+        ageModifier = 1.5;
+    } else if (playerYear < 3) {
+        ageModifier = 1.25;
+    } else if (playerYear < 4) {
+        ageModifier = 1.1;
+    }
     return Math.floor(overall * ageModifier);
 }
 

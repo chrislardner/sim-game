@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { loadActivePlayers, loadTeams } from '@/data/storage';
 import { Player } from '@/types/player';
 import Table from '@/components/Table';
-import { use } from 'react';
 import { Team } from '@/types/team';
 
-export default function PlayersPage({ params }: { params: Promise<{ gameId: string }> }) {
+export default function PlayersPage({ params }: Readonly<{ params: Promise<{ gameId: string }> }>) {
     const { gameId } = use(params);
     const [players, setPlayers] = useState<Player[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);

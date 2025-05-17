@@ -13,10 +13,10 @@ type TransformedMeet = Omit<Meet, "teams" | "season"> & {
     season: 'TF' | 'XC';
 };
 
-export default function TeamSchedulePage({ params }: { params: Promise<{ gameId: string; teamId: string }> }) {
+export default function TeamSchedulePage({ params }: Readonly<{ params: Promise<{ gameId: string; teamId: string }> }>) {
     const { gameId, teamId } = use(params);
     const [team, setTeam] = useState<Team>();
-    const [meets, setTeamMeets] = useState<Meet[]>([]);
+    const [meets, setMeets] = useState<Meet[]>([]);
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
     const [currentYear, setCurrentYear] = useState<number>(2024);
     const [selectedYear, setSelectedYear] = useState<number | "all">(currentYear);
@@ -32,7 +32,7 @@ export default function TeamSchedulePage({ params }: { params: Promise<{ gameId:
 
             const meetData: Meet[] = await loadMeets(Number(gameId));
             const teamMeets: Meet[] = meetData.filter((m: Meet) => m.teams.some(team => team.teamId === Number(teamId)));
-            setTeamMeets(teamMeets);
+            setMeets(teamMeets);
 
             // Create a mapping of teamId to team college
             const teamsMapping = teamData.reduce((accumlated: { [key: number]: Team }, team) => {

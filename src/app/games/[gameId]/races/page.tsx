@@ -21,7 +21,7 @@ type TransformedRace = {
     teams: string;
 };
 
-export default function RacesOverviewPage({ params }: { params: Promise<{ gameId: string }> }) {
+export default function RacesOverviewPage({ params }: Readonly<{ params: Promise<{ gameId: string }> }>) {
     const { gameId } = use(params);
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
     const [playersMap, setPlayersMap] = useState<{ [key: number]: Player }>({});
@@ -91,7 +91,7 @@ export default function RacesOverviewPage({ params }: { params: Promise<{ gameId
 
     const getTopTeam = (race: Race) => {
         const validTeams = race?.teams.filter(team => team.points > 0) || [];
-        const sortedTeams = validTeams.sort((a, b) => {
+        const sortedTeams = validTeams.toSorted((a, b) => {
             if (race?.eventType === '8000m') {
                 return a.points - b.points; // Less points first for cross country
             } else {
