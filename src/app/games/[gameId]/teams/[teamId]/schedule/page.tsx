@@ -79,7 +79,7 @@ export default function TeamSchedulePage({ params }: Readonly<{ params: Promise<
                 availableYears={availableYears}
                 currentYear={currentYear}
                 selectedYear={selectedYear}
-                onYearChange={setSelectedYear}
+                onYearChangeAction={setSelectedYear}
             />
 
             <Table data={data} columns={columns} getRowLink={getRowLink} linkColumns={["week"]} />

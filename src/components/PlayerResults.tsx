@@ -143,7 +143,7 @@ const PlayerResults: React.FC<PlayerResultsProps> = ({ gameId, playerId }) => {
                     availableYears={availableYears}
                     currentYear={currentYear}
                     selectedYear={selectedYear}
-                    onYearChange={setSelectedYear}
+                    onYearChangeAction={setSelectedYear}
                 />
                 <Table data={filteredResults} columns={columns} />
             </div>

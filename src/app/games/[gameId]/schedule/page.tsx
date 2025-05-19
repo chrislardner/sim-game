@@ -68,7 +68,7 @@ export default function LeagueSchedulePage({ params }: Readonly<{ params: Promis
                 availableYears={availableYears}
                 currentYear={currentYear}
                 selectedYear={selectedYear}
-                onYearChange={setSelectedYear}
+                onYearChangeAction={setSelectedYear}
             />
 
             <Table data={data} columns={columns} getRowLink={getRowLink} linkColumns={['week']} />

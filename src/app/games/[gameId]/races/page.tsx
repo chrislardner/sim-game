@@ -152,7 +152,7 @@ export default function RacesOverviewPage({ params }: Readonly<{ params: Promise
                 availableYears={availableYears}
                 currentYear={currentYear}
                 selectedYear={selectedYear}
-                onYearChange={setSelectedYear}
+                onYearChangeAction={setSelectedYear}
             />
 
             {filteredMeets.map(meet => (

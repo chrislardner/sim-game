@@ -6,10 +6,10 @@ interface YearFilterProps {
     availableYears: number[];
     currentYear: number;
     selectedYear: number | "all";
-    onYearChange: (year: number | "all") => void;
+    onYearChangeAction: (year: number | "all") => void;
 }
 
-export default function YearFilter({ availableYears, currentYear, selectedYear, onYearChange }: Readonly<YearFilterProps>) {
+export default function YearFilter({ availableYears, currentYear, selectedYear, onYearChangeAction }: Readonly<YearFilterProps>) {
     const [years, setYears] = useState<number[]>([]);
 
     useEffect(() => {
@@ -25,7 +25,7 @@ export default function YearFilter({ availableYears, currentYear, selectedYear, 
                 id="year-select"
                 className="border rounded px-3 py-2 bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark"
                 value={selectedYear}
-                onChange={(e) => onYearChange(e.target.value === "all" ? "all" : Number(e.target.value))}
+                onChange={(e) => onYearChangeAction(e.target.value === "all" ? "all" : Number(e.target.value))}
             >
                 <option value="all">All</option>
                 {years.map(year => (
