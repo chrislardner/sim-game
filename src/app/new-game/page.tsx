@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { initializeNewGame } from '@/logic/gameSetup';
 import { useRouter } from 'next/navigation';
-import { getAllConferences, getCollegesbyConferenceId } from '@/data/parseSchools';
+import { getAllConferences, getCollegesByConferenceId } from '@/data/parseSchools';
 import { Conference, School } from '@/types/regionals';
 
 export default function NewGamePage() {
@@ -27,7 +27,7 @@ export default function NewGamePage() {
     useEffect(() => {
         const fetchSchools = async () => {
             if (selectedConferences) {
-                const schools = await Promise.all(selectedConferences.map(conf => getCollegesbyConferenceId(conf.conferenceId)));
+                const schools = await Promise.all(selectedConferences.map(conf => getCollegesByConferenceId(conf.conferenceId)));
                 const flatSchools = schools.flat();
                 setSchools(flatSchools);
                 if (selectedSchool && !flatSchools.some(school => school.collegeId === selectedSchool)) {

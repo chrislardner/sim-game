@@ -41,17 +41,17 @@ export default function RaceResultsPage({ params }: Readonly<{ params: Promise<{
                 teams.forEach(t => { teamsMapping[t.teamId] = t; });
                 setTeamsMap(teamsMapping);
 
-                const playersMapping = teams.reduce((accumlated: { [key: number]: { player: Player, team: Team } }, team) => {
+                const playersMapping = teams.reduce((accumulated: { [key: number]: { player: Player, team: Team } }, team) => {
                     team.players.forEach(playerId => {
                         const player = selectPlayers.find(p => p.playerId === playerId);
                         if (player) {
-                            accumlated[playerId] = {
+                            accumulated[playerId] = {
                                 player,
                                 team,
                             };
                         }
                     });
-                    return accumlated;
+                    return accumulated;
                 }, {});
                 setPlayersMap(playersMapping);
 

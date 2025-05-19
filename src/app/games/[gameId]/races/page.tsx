@@ -50,15 +50,15 @@ export default function RacesOverviewPage({ params }: Readonly<{ params: Promise
 
             setMeets(meetsData);
 
-            const teamsMapping = teamData.reduce((accumlated: { [key: number]: Team }, team) => {
-                accumlated[team.teamId] = team;
-                return accumlated;
+            const teamsMapping = teamData.reduce((accumulated: { [key: number]: Team }, team) => {
+                accumulated[team.teamId] = team;
+                return accumulated;
             }, {});
             setTeamsMap(teamsMapping);
 
-            const playersMapping = playersData.reduce((accumlated: { [key: number]: Player }, player) => {
-                accumlated[player.playerId] = player;
-                return accumlated;
+            const playersMapping = playersData.reduce((accumulated: { [key: number]: Player }, player) => {
+                accumulated[player.playerId] = player;
+                return accumulated;
             }, {});
             setPlayersMap(playersMapping);
 

@@ -1,8 +1,8 @@
-import { Team, TeamSchedule } from '@/types/team';
-import { Meet, Race } from '@/types/schedule';
-import { mappedSeasonPhases } from '@/constants/seasonPhases';
-import { createMeet, mapWeekToGamePhase } from './meetGenerator';
-import { Player } from '@/types/player';
+import {Team, TeamSchedule} from '@/types/team';
+import {Meet, Race} from '@/types/schedule';
+import {mappedSeasonPhases} from '@/constants/seasonPhases';
+import {createMeet, mapWeekToGamePhase} from './meetGenerator';
+import {Player} from '@/types/player';
 
 // Generate League Schedule
 export async function generateYearlyLeagueSchedule(gameId: number, teams: Team[], players: Player[], year: number): Promise<{ meets: Meet[], races: Race[] }> {
@@ -101,13 +101,11 @@ function groupTeams(teams: Team[], week: number): Team[][] {
 // Generate Individual Team Schedules from League Schedule
 export function generateTeamSchedules(meets: Meet[], teams: Team[], year: number): TeamSchedule[] {
 
-    const teamSchedule = teams.map(team => ({
+    return teams.map(team => ({
         teamId: team.teamId,
         year,
         meets: meets
             .filter(meet => meet.teams.some((t: { teamId: number }) => t.teamId === team.teamId))
             .map((meet: Meet) => meet.meetId)
     }));
-
-    return teamSchedule;
 }

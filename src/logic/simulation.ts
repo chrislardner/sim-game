@@ -184,9 +184,9 @@ export async function determineWinnersByPoints(matches: Meet[], races: Race[], p
                 const teamsToPush = sortedTeams.slice(0, numberOfTeamsToPush)
                 if (meet.week === 11 || meet.week === 26 || meet.week === 41) { /* empty */
                 }
-                const teamstoPushIds: number[] = teamsToPush.map(([teamId]) => Number(teamId));
+                const teamsToPushIds: number[] = teamsToPush.map(([teamId]) => Number(teamId));
 
-                winners = teamstoPushIds;
+                winners = teamsToPushIds;
 
             } else if (meet && meet.season === 'track_field') {
                 // Track & field scoring

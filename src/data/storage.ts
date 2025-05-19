@@ -1,8 +1,8 @@
-import { openDB, IDBPDatabase } from 'idb';
-import { Game } from '@/types/game';
-import { Team } from '@/types/team';
-import { Player } from '@/types/player';
-import { Meet, Race } from '@/types/schedule';
+import {IDBPDatabase, openDB} from 'idb';
+import {Game} from '@/types/game';
+import {Team} from '@/types/team';
+import {Player} from '@/types/player';
+import {Meet, Race} from '@/types/schedule';
 
 // Database constants
 const DATABASE_NAME = 'sportsSimDB';
@@ -77,8 +77,7 @@ async function putData(storeName: string, data: unknown): Promise<IDBValidKey> {
     try {
         const db = await initializeDB();
         if (db) {
-            const dbSuccess = await db.put(storeName, data);
-            return dbSuccess;
+            return await db.put(storeName, data);
         } else {
             console.error(`Database is not initialized. Failed to put data into ${storeName}`);
             throw new Error(`Database is not initialized for ${storeName}`);

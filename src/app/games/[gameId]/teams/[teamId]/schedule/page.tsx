@@ -35,9 +35,9 @@ export default function TeamSchedulePage({ params }: Readonly<{ params: Promise<
             setMeets(teamMeets);
 
             // Create a mapping of teamId to team college
-            const teamsMapping = teamData.reduce((accumlated: { [key: number]: Team }, team) => {
-                accumlated[team.teamId] = team;
-                return accumlated;
+            const teamsMapping = teamData.reduce((accumulated: { [key: number]: Team }, team) => {
+                accumulated[team.teamId] = team;
+                return accumulated;
             }, {});
             setTeamsMap(teamsMapping);
 

@@ -50,7 +50,7 @@ export function handleCrossCountryScoring(race: Race, teams: Team[], players: Pl
     try {
         const teamParticipants: { [teamId: number]: RaceParticipant[] } = {};
 
-        // Group participants by team and take top 7
+        // Group participants by team and take the top 7
         race.participants.forEach((participant: RaceParticipant) => {
             const player = players.find(player => player.playerId == participant.playerId);
             if (!player) {
@@ -66,7 +66,7 @@ export function handleCrossCountryScoring(race: Race, teams: Team[], players: Pl
             }
         });
 
-        // Sort each team's participants and take top 7
+        // Sort each team's participants and take the top 7
         for (const teamId in teamParticipants) {
             if (teamParticipants[teamId]) {
                 teamParticipants[teamId] = teamParticipants[teamId]
@@ -147,7 +147,7 @@ export function handleTrackFieldScoring(race: Race, teams: Team[], meet: Meet): 
     const sortedParticipants = race.participants.toSorted((a, b) => a.playerTime - b.playerTime);
 
     sortedParticipants.forEach((participant, index) => {
-        const points = pointsByPlace[index] || 0; // Assign points to top 6
+        const points = pointsByPlace[index] || 0; // Assign points to the top 6
 
         // Update participant points
         participant.scoring.points = points;

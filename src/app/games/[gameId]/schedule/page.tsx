@@ -32,9 +32,9 @@ export default function LeagueSchedulePage({ params }: Readonly<{ params: Promis
             setSelectedYear(gameData.currentYear); // Set the selected year to the current game year
             setMeets(meetsData);
             // Create a mapping of teamId to team college
-            const teamsMapping = teamsData.reduce((accumlated: { [key: number]: Team }, team: Team) => {
-                accumlated[team.teamId] = team;
-                return accumlated;
+            const teamsMapping = teamsData.reduce((accumulated: { [key: number]: Team }, team: Team) => {
+                accumulated[team.teamId] = team;
+                return accumulated;
             }, {});
             setTeamsMap(teamsMapping);
 

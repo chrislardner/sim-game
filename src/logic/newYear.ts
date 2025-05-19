@@ -19,12 +19,12 @@ export async function handleNewYear(game: Game, teams: Team[], players: Player[]
             // Remove graduating seniors
             const teamNonGraduatingSeniors: Player[] = teamPlayers.filter((player: Player) => player.year !== 4);
 
-            const teamGraduatedplayers = teamPlayers.filter((player: Player) => player.year === 4);
-            teamGraduatedplayers.forEach(async player => {
+            const teamGraduatedPlayers = teamPlayers.filter((player: Player) => player.year === 4);
+            for (const player of teamGraduatedPlayers) {
                 player.retiredYear = game.currentYear;
-            });
+            }
 
-            const teamGraduatedplayersSubArchetype = teamGraduatedplayers.map((player: Player) => player.playerSubArchetype);
+            const teamGraduatedPlayersSubArchetype = teamGraduatedPlayers.map((player: Player) => player.playerSubArchetype);
 
             // Promote remaining players
             teamNonGraduatingSeniors.forEach(player => {
@@ -35,13 +35,13 @@ export async function handleNewYear(game: Game, teams: Team[], players: Player[]
 
             // Add recruits as new freshmen
             for (let i = 0; i < graduatingSeniors.length; i++) {
-                const player = await createPlayer(game.gameId, team.teamId, 1, teamGraduatedplayersSubArchetype[i], game.currentYear + 1, game.currentYear);
+                const player = await createPlayer(game.gameId, team.teamId, 1, teamGraduatedPlayersSubArchetype[i], game.currentYear + 1, game.currentYear);
                 team.players.push(player.playerId);
                 players.push(player);
             }
 
             calculateTeamOvrs(team, players);
-        };
+        }
 
         try {
             const filteredPlayers = players.filter(player => player.retiredYear === 0);

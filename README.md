@@ -1,30 +1,30 @@
 # Sim Game
 
-Sim Game is a sports simulation web application inspired by games like *Basketball-GM* and *Out of the Park Baseball*. It focuses on managing and simulating university-level **track & field** and **cross country** teams. Players recruit athletes, train them, and compete in events to achieve victory through strategic team management. (title of the project is a WIP, as is the game.)
+Sim Game is a sports simulation web application inspired by games like *Basketball-GM* and *Out of the Park Baseball*. It focuses on managing and simulating university-level **track & field** and **cross country** teams. Players recruit athletes, train them, and compete in events to achieve victory through strategic team management. (the title of the project is a WIP, as is the game.)
 
 ## Table of Contents
 - [Features](#features)
 - [Game Mechanics](#game-mechanics)
   - [Seasons and Phases](#seasons-and-phases)
-- [Future Plans](#future-plans)
+- [Plans](#plans)
 
 ---
 
 ## Features
 
 1. **Dynamic Seasons and Playoffs**
-   - Simulate cross country and track & field events over the span of multiple seasons, including a realistic playoff schedule. 
+   - Simulate cross country and track and field events over the span of multiple seasons, including a realistic playoff schedule. 
    - Dynamic schedules with randomly generated meets and participant results.
    - Allow player ratings to influence race results
-   - Goals: make schedules, and race results be more realistic and life-like.
+   - Goals: make schedules and race results be more realistic and life-like.
 
 2. **Team and Player Management**
    - Goals: Allow the recruiting high school athletes to join your university team.
    - Goals: Allow holding tryouts, managing practice schedules, workouts, etc.
-   - Allow better UI for users to see their team statistics better
+   - Allow a better UI for users to see their team statistics better
 
 3. **Realistic Scoring Systems**
-   - Cross country: Top 5 finishers contribute to team scores. If a team doesn't have 5 racers, the team gets zero points, and players don't contribute to scoring system.
+   - Cross country: Top 5 finishers contribute to team scores. If a team doesn't have five racers, the team gets zero points, and players don't contribute to a scoring system.
    - Track & field: Points awarded by placement for top 6 participants.
 
 4. **Interactive Player Profiles**
@@ -45,8 +45,8 @@ Sim Game is a sports simulation web application inspired by games like *Basketba
 The game operates on a **yearly cycle**, broken into the following phases:
 
 1. **Cross Country Season (Weeks 1–9)**:
-   - Weekly meets where top 5 participants contribute to team scores. (top 7 participants are counted as "pushers")
-   - Scoring favors lower times (1st place = 1 point).
+   - Weekly meets where the top five participants contribute to team scores. (top 7 participants are counted as "pushers")
+   - Scoring favors lower times (first place = 1 point).
 
 2. **Playoffs (Weeks 10–11)**:
    - All teams start in the first round.
@@ -57,7 +57,7 @@ The game operates on a **yearly cycle**, broken into the following phases:
 
 4. **Track & Field Season (Weeks 15–39)**:
    - Weekly meets with track events.
-   - Points awarded for top 6 finishers in each event.
+   - Points are awarded for the top 6 finishers in each event.
 
 5. **Track & Field Playoffs (Weeks 40–41)**:
    - Similar to cross country playoffs but based on track events.
@@ -67,7 +67,7 @@ The game operates on a **yearly cycle**, broken into the following phases:
 
 ---
 
-## Future Plans
+## Plans
 (Not in particularly any order)
 
 - Improve player rating distribution

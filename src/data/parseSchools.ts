@@ -88,7 +88,7 @@ export async function generateRandomTeam(): Promise<CollegeEntry | null> {
 }
 
 // Generate colleges based on conference Id
-export async function getCollegesbyConferenceId(conferenceId: number): Promise<CollegeEntry[]> {
+export async function getCollegesByConferenceId(conferenceId: number): Promise<CollegeEntry[]> {
     try {
         if (!isDataLoaded) {
             await preloadMatchedData();

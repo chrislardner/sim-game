@@ -1,10 +1,10 @@
-import { getCollegesbyConferenceId } from "@/data/parseSchools";
-import { getNextTeamId } from "@/data/storage";
-import { Conference, School } from "@/types/regionals";
-import { Team } from "@/types/team";
+import {getCollegesByConferenceId} from "@/data/parseSchools";
+import {getNextTeamId} from "@/data/storage";
+import {Conference, School} from "@/types/regionals";
+import {Team} from "@/types/team";
 
 export async function createTeamsForConference(gameId: number, year: number, conference: Conference, selectedCollegeId: number): Promise<Team[]> {
-    const schools: School[] = await getCollegesbyConferenceId(conference.conferenceId);
+    const schools: School[] = await getCollegesByConferenceId(conference.conferenceId);
     const teams: Team[] = [];
     for (const school of schools) {
         let player_control = false;
@@ -26,14 +26,14 @@ export async function createTeam(gameId: number, year: number, school: School, p
         throw new Error("Failed to assign a college to a team.");
     }
 
-    const teamData: Team = {
+    return {
         teamId: newTeamId,
         college: school.collegeName,
         teamName: school.nickname,
         gameId,
         players: [],
         points: 0,
-        teamSchedule: { teamId: newTeamId, meets: [], year},
+        teamSchedule: {teamId: newTeamId, meets: [], year},
         conferenceId: school.conferenceId,
         schoolId: school.collegeId,
         state: school.state,
@@ -46,6 +46,4 @@ export async function createTeam(gameId: number, year: number, school: School, p
         abbr: school.collegeAbbr,
         player_control,
     };
-  
-    return teamData;
 }

@@ -1,11 +1,11 @@
-import { raceTypes } from "@/constants/raceTypes";
-import { Player } from "@/types/player";
-import { generate } from "facesjs";
-import { generateRandomFullName } from "../data/parseNames";
-import { getNextPlayerId } from "@/data/storage";
-import { generatePlayerRatings } from "./generatePlayerRatings";
-import { SubArchetype } from "@/constants/subArchetypes";
-import { generatePlayerInteractions } from "./generatePlayerInteractions";
+import {raceTypes} from "@/constants/raceTypes";
+import {Player} from "@/types/player";
+import {generate} from "facesjs";
+import {generateRandomFullName} from "@/data/parseNames";
+import {getNextPlayerId} from "@/data/storage";
+import {generatePlayerRatings} from "./generatePlayerRatings";
+import {SubArchetype} from "@/constants/subArchetypes";
+import {generatePlayerInteractions} from "./generatePlayerInteractions";
 
 function generateRandomPlayerYear() {
     return Math.random() < 0.5 ? 1 : (Math.random() < 0.5 ? 2 : (Math.random() < 0.5 ? 3 : 4))
@@ -35,25 +35,23 @@ export async function createPlayer(gameId: number, teamId: number, schoolYear: n
 
     const interactions = generatePlayerInteractions(playerInfo.pr, startYear, currentYear);
 
-    const player: Player = {
-        playerId: newPlayerId,
-        teamId,
-        year: schoolYear,
-        firstName: name.firstName,
-        lastName: name.lastName,
-        seasons,
-        eventTypes: generateEventTypes(playerSubArchetype),
-        playerArch: playerInfo.pa,
-        face,
-        gameId,
-        playerRatings: playerInfo.pr,
-        playerSubArchetype,
-        retiredYear: 0,
-        startYear: startYear,
-        interactions,
-    };
-
-   return player;
+   return {
+       playerId: newPlayerId,
+       teamId,
+       year: schoolYear,
+       firstName: name.firstName,
+       lastName: name.lastName,
+       seasons,
+       eventTypes: generateEventTypes(playerSubArchetype),
+       playerArch: playerInfo.pa,
+       face,
+       gameId,
+       playerRatings: playerInfo.pr,
+       playerSubArchetype,
+       retiredYear: 0,
+       startYear: startYear,
+       interactions,
+   };
 }
 
 function generateSeasonTypes(playerSubArchetype: SubArchetype): ('track_field' | 'cross_country')[] {
