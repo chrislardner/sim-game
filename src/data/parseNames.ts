@@ -133,23 +133,3 @@ export async function generateRandomFullName(): Promise<{ firstName: string; las
         throw error;
     }
 }
-
-// Generate thousands of names in a batch
-export async function generateRandomNamesBatch(count: number): Promise<{ firstName: string; lastName: string }[]> {
-    try {
-        await preloadCSV();
-
-        const names: { firstName: string; lastName: string }[] = [];
-        for (let i = 0; i < count; i++) {
-            const firstName = getRandomNameFromWeights(firstNameWeights);
-            const lastName = getRandomNameFromWeights(lastNameWeights);
-            names.push({ firstName, lastName });
-        }
-
-        return names;
-    } catch (error) {
-        console.error("Error generating random names batch:", error);
-        throw error;
-    }
-}
-

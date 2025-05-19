@@ -64,7 +64,7 @@ export function generateRaceTime(eventType: string, player: Player): number {
 function getPlayerSkill(player: Player, eventType: string): number {
     const { playerRatings } = player;
     const { typeRatings } = playerRatings;
-    let skill = 0;
+    let skill;
 
     switch (eventType) {
         case '100m': {

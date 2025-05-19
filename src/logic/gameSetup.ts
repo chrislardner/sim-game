@@ -79,12 +79,6 @@ export async function initializeNewGame(conferences: Conference[], numPlayersPer
     return game;
 }
 
-export async function getAllSchoolsAndConferences(): Promise<{ schools: School[], conferences: Conference[] }> {
-    const schools = await getAllColleges();
-    const conferences = await getAllConferences();
-    return { schools, conferences };
-}
-
 export function assignTeamSchedules(teams: Team[], teamSchedules: TeamSchedule[]): void {
     teams.forEach(team => {
         try {

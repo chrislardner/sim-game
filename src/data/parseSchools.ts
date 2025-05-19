@@ -68,25 +68,6 @@ function getRandomCollege(): CollegeEntry | null {
     return colleges[randomIndex];
 }
 
-// Generate a team with a random college
-export async function generateRandomTeam(): Promise<CollegeEntry | null> {
-    try {
-        if (!isDataLoaded) {
-            await preloadMatchedData();
-        }
-
-        const randomCollege = getRandomCollege();
-        if (!randomCollege) {
-            throw new Error("Failed to generate random college.");
-        }
-
-        return randomCollege;
-    } catch (error) {
-        console.error("Error generating random team:", error);
-        throw error;
-    }
-}
-
 // Generate colleges based on conference Id
 export async function getCollegesByConferenceId(conferenceId: number): Promise<CollegeEntry[]> {
     try {
