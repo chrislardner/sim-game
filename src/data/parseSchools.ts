@@ -31,14 +31,6 @@ async function preloadMatchedData(): Promise<void> {
     }
 }
 
-export async function getAllColleges(): Promise<CollegeEntry[]> { 
-    if (!isDataLoaded) {
-        await preloadMatchedData();
-    }
-
-    return colleges;
-}
-
 export async function getAllConferences(): Promise<ConferenceEntry[]> {
     if (!isDataLoaded) {
         await preloadMatchedData();
@@ -55,17 +47,6 @@ export function getConferenceById(conferenceId: number): ConferenceEntry | null 
 // Get a college by its ID
 function getCollegeById(collegeId: number): CollegeEntry | null {
     return colleges.find((college) => college.collegeId === collegeId) || null;
-}
-
-// Fetch a random college from the matched data
-function getRandomCollege(): CollegeEntry | null {
-    if (colleges.length === 0) {
-        console.error("No colleges available. Ensure data is preloaded.");
-        return null;
-    }
-
-    const randomIndex = Math.floor(Math.random() * colleges.length);
-    return colleges[randomIndex];
 }
 
 // Generate colleges based on conference Id

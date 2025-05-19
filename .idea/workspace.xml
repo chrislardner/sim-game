@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e28de870-d56b-4166-941d-22f71990bd83" name="Changes" comment="delete unused code" />
+    <list default="true" id="e28de870-d56b-4166-941d-22f71990bd83" name="Changes" comment="rename onyear">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/parseNames.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/parseNames.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/parseSchools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/parseSchools.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logic/gameSetup.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logic/gameSetup.ts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -123,6 +128,7 @@
       <workItem from="1747593193845" duration="34000" />
       <workItem from="1747593355300" duration="6000" />
       <workItem from="1747615559232" duration="4034000" />
+      <workItem from="1747622085013" duration="2351000" />
     </task>
     <task id="LOCAL-00001" summary="update README.md">
       <option name="closed" value="true" />
@@ -204,7 +210,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747619349059</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="rename onyear">
+      <option name="closed" value="true" />
+      <created>1747622557288</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1747622557288</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -258,7 +272,8 @@
     <MESSAGE value="Update xmls" />
     <MESSAGE value="refactor for cleaner code" />
     <MESSAGE value="delete unused code" />
-    <option name="LAST_COMMIT_MESSAGE" value="delete unused code" />
+    <MESSAGE value="rename onyear" />
+    <option name="LAST_COMMIT_MESSAGE" value="rename onyear" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
