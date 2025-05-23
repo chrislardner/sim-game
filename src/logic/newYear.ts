@@ -1,15 +1,13 @@
-import { Team } from '@/types/team';
-import { createPlayer } from '@/logic/generatePlayer';
-import { Game } from '@/types/game';
-import { generateTeamSchedules, generateYearlyLeagueSchedule } from './scheduleGenerator';
-import { Player } from '@/types/player';
-import { Meet, Race } from '@/types/schedule';
-import { assignTeamSchedules } from './gameSetup';
-import { saveGame, saveMeets, savePlayers, saveRaces, saveTeams } from '@/data/storage';
-import { calculateTeamOvrs } from './calculateTeamOvr';
+import {Team} from '@/types/team';
+import {createPlayer} from '@/logic/generatePlayer';
+import {Game} from '@/types/game';
+import {generateTeamSchedules, generateYearlyLeagueSchedule} from './scheduleGenerator';
+import {Player} from '@/types/player';
+import {Meet, Race} from '@/types/schedule';
+import {assignTeamSchedules} from './gameSetup';
+import {saveGame, saveMeets, savePlayers, saveRaces, saveTeams} from '@/data/storage';
+import {calculateTeamOvrs} from './calculateTeamOvr';
 
-
-// Transition to next season: graduating seniors and adding new recruits
 export async function handleNewYear(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
     try {
         for (const team of teams) {
@@ -45,28 +43,31 @@ export async function handleNewYear(game: Game, teams: Team[], players: Player[]
 
         try {
             const filteredPlayers = players.filter(player => player.retiredYear === 0);
-            const scheduleObject: { meets: Meet[], races: Race[] } = await generateYearlyLeagueSchedule(game.gameId, teams, filteredPlayers, game.currentYear);
-    
+            const scheduleObject: {
+                meets: Meet[],
+                races: Race[]
+            } = await generateYearlyLeagueSchedule(game.gameId, teams, filteredPlayers, game.currentYear);
+
             const leagueSchedule = {
                 year: game.currentYear,
                 meets: scheduleObject.meets.map(meet => meet.meetId)
             };
-    
+
             const teamSchedules = generateTeamSchedules(scheduleObject.meets, teams, game.currentYear);
-    
+
             assignTeamSchedules(teams, teamSchedules);
-    
+
             game.leagueSchedule = leagueSchedule;
-    
+
             meets.push(...scheduleObject.meets);
             races.push(...scheduleObject.races);
-    
+
             await saveGame(game);
             await saveMeets(game.gameId, meets);
             await saveRaces(game.gameId, races);
             await savePlayers(game.gameId, players);
             await saveTeams(game.gameId, teams);
-    
+
         } catch (error) {
             console.error('Error handling new year schedule:', error);
             return false;

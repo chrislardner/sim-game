@@ -1,5 +1,5 @@
-import { SubArchetype } from "@/constants/subArchetypes";
-import { PlayerRatings, TypeRatings, PlayerArch } from "@/types/player";
+import {SubArchetype} from "@/constants/subArchetypes";
+import {PlayerArch, PlayerRatings, TypeRatings} from "@/types/player";
 
 interface Attributes {
     topSpeed: number;
@@ -13,7 +13,10 @@ interface Attributes {
     speedStamina: number;
 }
 
-export function generatePlayerRatings(playerId: number, playerSubArchetype: SubArchetype, playerYear: number): { pr: PlayerRatings, pa: PlayerArch } {
+export function generatePlayerRatings(playerId: number, playerSubArchetype: SubArchetype, playerYear: number): {
+    pr: PlayerRatings,
+    pa: PlayerArch
+} {
 
     const injuryResistance = Math.floor(Math.random() * 100);
     const consistency = Math.floor(Math.random() * 100);
@@ -28,24 +31,24 @@ export function generatePlayerRatings(playerId: number, playerSubArchetype: SubA
     } else if (playerSubArchetype.num >= 2 && playerSubArchetype.num <= 3) {
         isSprinter = true;
         isMiddleDistance = true;
-    }
-    else if (playerSubArchetype.num == 4) {
+    } else if (playerSubArchetype.num == 4) {
         isMiddleDistance = true;
-    }
-    else if (playerSubArchetype.num >= 5 && playerSubArchetype.num <= 9) {
+    } else if (playerSubArchetype.num >= 5 && playerSubArchetype.num <= 9) {
         isMiddleDistance = true;
         isLongDistance = true;
-    }
-    else if (playerSubArchetype.num == 10) {
+    } else if (playerSubArchetype.num == 10) {
         isLongDistance = true;
-    }
-    else if (playerSubArchetype.num >= 11) {
+    } else if (playerSubArchetype.num >= 11) {
         isSprinter = true;
         isMiddleDistance = true;
         isLongDistance = true;
     }
 
-    const generateAttribute = (values: { sprinter: number, middleDistance: number, longDistance: number }, floors: { sprinter: number, middleDistance: number, longDistance: number }) => {
+    const generateAttribute = (values: { sprinter: number, middleDistance: number, longDistance: number }, floors: {
+        sprinter: number,
+        middleDistance: number,
+        longDistance: number
+    }) => {
         const potentialValues = [];
         if (isSprinter) potentialValues.push(Math.min(Math.max(Math.floor(Math.random() * values.sprinter), floors.sprinter), values.sprinter));
         if (isMiddleDistance) potentialValues.push(Math.min(Math.max(Math.floor(Math.random() * values.middleDistance), floors.middleDistance), values.middleDistance));
@@ -54,26 +57,72 @@ export function generatePlayerRatings(playerId: number, playerSubArchetype: SubA
     };
 
     const attributes = {
-        topSpeed: generateAttribute({ sprinter: 100, middleDistance: 75, longDistance: 50 }, { sprinter: 50, middleDistance: 30, longDistance: 20 }),
-        strength: generateAttribute({ sprinter: 100, middleDistance: 75, longDistance: 50 }, { sprinter: 50, middleDistance: 30, longDistance: 20 }),
-        explosiveness: generateAttribute({ sprinter: 100, middleDistance: 75, longDistance: 50 }, { sprinter: 50, middleDistance: 30, longDistance: 20 }),
-        acceleration: generateAttribute({ sprinter: 100, middleDistance: 75, longDistance: 50 }, { sprinter: 50, middleDistance: 30, longDistance: 20 }),
-        speedStamina: generateAttribute({ sprinter: 50, middleDistance: 100, longDistance: 50 }, { sprinter: 20, middleDistance: 50, longDistance: 20 }),
-        pacing: generateAttribute({ sprinter: 50, middleDistance: 75, longDistance: 100 }, { sprinter: 20, middleDistance: 30, longDistance: 50 }),
-        stamina: generateAttribute({ sprinter: 50, middleDistance: 75, longDistance: 100 }, { sprinter: 20, middleDistance: 30, longDistance: 50 }),
-        mentalToughness: generateAttribute({ sprinter: 50, middleDistance: 75, longDistance: 100 }, { sprinter: 20, middleDistance: 30, longDistance: 50 }),
-        endurance: generateAttribute({ sprinter: 50, middleDistance: 75, longDistance: 100 }, { sprinter: 20, middleDistance: 30, longDistance: 50 }),
+        topSpeed: generateAttribute({sprinter: 100, middleDistance: 75, longDistance: 50}, {
+            sprinter: 50,
+            middleDistance: 30,
+            longDistance: 20
+        }),
+        strength: generateAttribute({sprinter: 100, middleDistance: 75, longDistance: 50}, {
+            sprinter: 50,
+            middleDistance: 30,
+            longDistance: 20
+        }),
+        explosiveness: generateAttribute({sprinter: 100, middleDistance: 75, longDistance: 50}, {
+            sprinter: 50,
+            middleDistance: 30,
+            longDistance: 20
+        }),
+        acceleration: generateAttribute({sprinter: 100, middleDistance: 75, longDistance: 50}, {
+            sprinter: 50,
+            middleDistance: 30,
+            longDistance: 20
+        }),
+        speedStamina: generateAttribute({sprinter: 50, middleDistance: 100, longDistance: 50}, {
+            sprinter: 20,
+            middleDistance: 50,
+            longDistance: 20
+        }),
+        pacing: generateAttribute({sprinter: 50, middleDistance: 75, longDistance: 100}, {
+            sprinter: 20,
+            middleDistance: 30,
+            longDistance: 50
+        }),
+        stamina: generateAttribute({sprinter: 50, middleDistance: 75, longDistance: 100}, {
+            sprinter: 20,
+            middleDistance: 30,
+            longDistance: 50
+        }),
+        mentalToughness: generateAttribute({sprinter: 50, middleDistance: 75, longDistance: 100}, {
+            sprinter: 20,
+            middleDistance: 30,
+            longDistance: 50
+        }),
+        endurance: generateAttribute({sprinter: 50, middleDistance: 75, longDistance: 100}, {
+            sprinter: 20,
+            middleDistance: 30,
+            longDistance: 50
+        }),
     };
 
-    const { topSpeed, strength, explosiveness, acceleration, speedStamina, pacing, stamina, mentalToughness, endurance } = attributes;
+    const {
+        topSpeed,
+        strength,
+        explosiveness,
+        acceleration,
+        speedStamina,
+        pacing,
+        stamina,
+        mentalToughness,
+        endurance
+    } = attributes;
 
     const longDistanceOvr = calculateLongDistanceOvr(attributes, athleticism);
     const middleDistanceOvr = calculateMiddleDistanceOvr(attributes, athleticism);
     const shortDistanceOvr = calculateSprintingOvr(attributes, athleticism);
 
-    const playerArch: PlayerArch = { isLongDistance, isMiddleDistance, isSprinter };
+    const playerArch: PlayerArch = {isLongDistance, isMiddleDistance, isSprinter};
 
-    const typeRatings = { longDistanceOvr, middleDistanceOvr, shortDistanceOvr };
+    const typeRatings = {longDistanceOvr, middleDistanceOvr, shortDistanceOvr};
 
     const overall = calculatePlayerOverall(playerArch, typeRatings);
     const potential = calculatePlayerPotential(playerYear, overall);
@@ -155,7 +204,7 @@ function calculateLongDistanceOvr(attributes: Attributes, athleticism: number): 
         (attributes.strength * 0.00) +
         (attributes.explosiveness * 0.00) +
         (attributes.acceleration * 0.05) +
-        (athleticism * 0.01) + 
+        (athleticism * 0.01) +
         (attributes.speedStamina * 0.05)
     );
 }
@@ -185,7 +234,7 @@ function calculateSprintingOvr(attributes: Attributes, athleticism: number): num
         (attributes.pacing * 0.00) +
         (attributes.stamina * 0.00) +
         (attributes.mentalToughness * 0.00) +
-        (athleticism * 0.11) + 
+        (athleticism * 0.11) +
         (attributes.speedStamina * 0.01)
     );
 }

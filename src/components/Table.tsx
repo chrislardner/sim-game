@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
-import { useRouter } from 'next/navigation';
+import React, {useState} from 'react';
+import {FaSort, FaSortDown, FaSortUp} from 'react-icons/fa';
+import {useRouter} from 'next/navigation';
 import '@/styles/raceTables.css';
 
 type SortConfig<T> = {
@@ -15,7 +15,7 @@ type TableProps<T> = {
     linkColumns?: (keyof T)[];
 };
 
-const Table = <T,>({ data, columns, getRowLink, linkColumns = [] }: TableProps<T>) => {
+const Table = <T, >({data, columns, getRowLink, linkColumns = []}: TableProps<T>) => {
     const [sortConfig, setSortConfig] = useState<SortConfig<T>>(null);
     const router = useRouter();
 
@@ -38,17 +38,17 @@ const Table = <T,>({ data, columns, getRowLink, linkColumns = [] }: TableProps<T
         if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
             direction = 'descending';
         }
-        setSortConfig({ key, direction });
+        setSortConfig({key, direction});
     };
 
     const getSortIcon = (key: keyof T) => {
         if (!sortConfig || sortConfig.key !== key) {
-            return <FaSort />;
+            return <FaSort/>;
         }
         if (sortConfig.direction === 'ascending') {
-            return <FaSortUp />;
+            return <FaSortUp/>;
         }
-        return <FaSortDown />;
+        return <FaSortDown/>;
     };
 
     return (
@@ -56,40 +56,41 @@ const Table = <T,>({ data, columns, getRowLink, linkColumns = [] }: TableProps<T
             <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead className="bg-gray-50 dark:bg-gray-700">
-                        <tr>
-                            {columns.map((column) => (
-                                <th
-                                    key={String(column.key)}
-                                    onClick={() => requestSort(column.key)}
-                                    className={`px-2 py-2 text-left text-xs font-small text-gray-500 uppercase tracking-wider ${column.className}`}
-                                >
-                                    <div className="flex items-center">
-                                        {column.label}
-                                        <span className="ml-2">{getSortIcon(column.key)}</span>
-                                    </div>
-                                </th>
-                            ))}
-                        </tr>
+                    <tr>
+                        {columns.map((column) => (
+                            <th
+                                key={String(column.key)}
+                                onClick={() => requestSort(column.key)}
+                                className={`px-2 py-2 text-left text-xs font-small text-gray-500 uppercase tracking-wider ${column.className}`}
+                            >
+                                <div className="flex items-center">
+                                    {column.label}
+                                    <span className="ml-2">{getSortIcon(column.key)}</span>
+                                </div>
+                            </th>
+                        ))}
+                    </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        {sortedData.map((item, index) => (
-                            <tr key={index} className="hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
-                                {columns.map((column) => (
-                                    <td key={String(column.key)} className={`px-2 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 ${column.className}`}>
-                                        {linkColumns.includes(column.key) && getRowLink ? (
-                                            <span
-                                                className="text-blue-500 hover:underline cursor-pointer"
-                                                onClick={() => router.push(getRowLink(item))}
-                                            >
+                    {sortedData.map((item, index) => (
+                        <tr key={index} className="hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                            {columns.map((column) => (
+                                <td key={String(column.key)}
+                                    className={`px-2 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 ${column.className}`}>
+                                    {linkColumns.includes(column.key) && getRowLink ? (
+                                        <span
+                                            className="text-blue-500 hover:underline cursor-pointer"
+                                            onClick={() => router.push(getRowLink(item))}
+                                        >
                                                 {String(item[column.key])}
                                             </span>
-                                        ) : (
-                                            String(item[column.key])
-                                        )}
-                                    </td>
-                                ))}
-                            </tr>
-                        ))}
+                                    ) : (
+                                        String(item[column.key])
+                                    )}
+                                </td>
+                            ))}
+                        </tr>
+                    ))}
                     </tbody>
                 </table>
             </div>

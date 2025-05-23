@@ -36,7 +36,7 @@ class NameGenerator {
             }
             const csvData = await response.text();
             const parsedData = await this.parseCSV(csvData);
-            
+
             this.computeWeights(parsedData);
             this.isDataLoaded = true;
         } catch (error) {
@@ -66,7 +66,7 @@ class NameGenerator {
         return data
             .filter(this.isValidEntry)
             .map(this.convertEntry.bind(this))
-            .filter((entry): entry is NameEntry => 
+            .filter((entry): entry is NameEntry =>
                 entry !== null && entry.firstNameRate > 0 && entry.lastNameRate > 0);
     }
 
@@ -107,12 +107,12 @@ class NameGenerator {
 
         this.firstNameWeights = parsedData.map((entry) => {
             firstCumulative += entry.firstNameRate;
-            return { cumulativeWeight: firstCumulative, name: entry.firstName };
+            return {cumulativeWeight: firstCumulative, name: entry.firstName};
         });
 
         this.lastNameWeights = parsedData.map((entry) => {
             lastCumulative += entry.lastNameRate;
-            return { cumulativeWeight: lastCumulative, name: entry.lastName };
+            return {cumulativeWeight: lastCumulative, name: entry.lastName};
         });
 
         if (this.firstNameWeights.length === 0 || this.lastNameWeights.length === 0) {
@@ -123,10 +123,10 @@ class NameGenerator {
     private getRandomNameFromWeights(weights: WeightEntry[]): string {
         const totalWeight = weights[weights.length - 1].cumulativeWeight;
         const randomWeight = Math.random() * totalWeight;
-        
+
         let low = 0;
         let high = weights.length - 1;
-        
+
         while (low < high) {
             const mid = Math.floor((low + high) / 2);
             if (weights[mid].cumulativeWeight < randomWeight) {
@@ -142,7 +142,7 @@ class NameGenerator {
         if (!this.isDataLoaded) {
             await this.preloadCSV();
         }
-        
+
         if (this.firstNameWeights.length === 0 || this.lastNameWeights.length === 0) {
             throw new Error("Weights are empty. Ensure CSV data is valid and preloaded correctly.");
         }

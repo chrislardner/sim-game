@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import {useEffect, useState} from "react";
 
 interface YearFilterProps {
     availableYears: number[];
@@ -9,7 +9,12 @@ interface YearFilterProps {
     onYearChangeAction: (year: number | "all") => void;
 }
 
-export default function YearFilter({ availableYears, currentYear, selectedYear, onYearChangeAction }: Readonly<YearFilterProps>) {
+export default function YearFilter({
+                                       availableYears,
+                                       currentYear,
+                                       selectedYear,
+                                       onYearChangeAction
+                                   }: Readonly<YearFilterProps>) {
     const [years, setYears] = useState<number[]>([]);
 
     useEffect(() => {

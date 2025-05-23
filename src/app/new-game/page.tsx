@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { initializeNewGame } from '@/logic/gameSetup';
-import { useRouter } from 'next/navigation';
-import { getAllConferences, getCollegesByConferenceId } from '@/data/parseSchools';
-import { Conference, School } from '@/types/regionals';
+import {useEffect, useState} from 'react';
+import {initializeNewGame} from '@/logic/gameSetup';
+import {useRouter} from 'next/navigation';
+import {getAllConferences, getCollegesByConferenceId} from '@/data/parseSchools';
+import {Conference, School} from '@/types/regionals';
 
 export default function NewGamePage() {
     const [conferenceIds, setConferenceIds] = useState<number[]>([]);
@@ -40,7 +40,7 @@ export default function NewGamePage() {
 
     const handleCreateGame = async () => {
 
-        if(!selectedConferences || !selectedSchool) {
+        if (!selectedConferences || !selectedSchool) {
             alert("Please select at least one conference and a school to start the game.");
             return;
         }
@@ -93,9 +93,9 @@ export default function NewGamePage() {
                                     key={`conference-${conference.conferenceId}`}
                                     onClick={() => handleConferenceClick(conference.conferenceId)}
                                     className={`p-4 rounded-lg cursor-pointer text-center transition-colors duration-200 ${conferenceIds.includes(conference.conferenceId)
-                                            ? 'bg-secondary-dark text-text-dark'
-                                            : 'bg-info-dark text-text-dark hover:bg-info-light hover:text-text-light'
-                                        }`}
+                                        ? 'bg-secondary-dark text-text-dark'
+                                        : 'bg-info-dark text-text-dark hover:bg-info-light hover:text-text-light'
+                                    }`}
                                 >
                                     {conference.conferenceName}
                                 </div>
@@ -111,9 +111,9 @@ export default function NewGamePage() {
                                     key={`school-${school.collegeId}`}
                                     onClick={() => setSelectedSchool(school.collegeId)}
                                     className={`p-4 rounded-lg cursor-pointer text-center transition-colors duration-200 ${selectedSchool === school.collegeId
-                                            ? 'bg-secondary-dark text-text-dark'
-                                            : 'bg-info-dark text-text-dark hover:bg-info-light hover:text-text-light'
-                                        }`}
+                                        ? 'bg-secondary-dark text-text-dark'
+                                        : 'bg-info-dark text-text-dark hover:bg-info-light hover:text-text-light'
+                                    }`}
                                 >
                                     {school.collegeName}
                                 </div>

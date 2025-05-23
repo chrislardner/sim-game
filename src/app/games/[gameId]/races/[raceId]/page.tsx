@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { loadMeets, loadPlayers, loadRaces, loadTeams } from '@/data/storage';
-import { Meet, Race } from '@/types/schedule';
-import { Player } from '@/types/player';
-import { Team } from '@/types/team';
+import {useEffect, useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {loadMeets, loadPlayers, loadRaces, loadTeams} from '@/data/storage';
+import {Meet, Race} from '@/types/schedule';
+import {Player} from '@/types/player';
+import {Team} from '@/types/team';
 
-export default function RaceResultsPage({ params }: Readonly<{ params: Promise<{ gameId: string, raceId: string }> }>) {
+export default function RaceResultsPage({params}: Readonly<{ params: Promise<{ gameId: string, raceId: string }> }>) {
     const router = useRouter();
     const [unwrappedParams, setUnwrappedParams] = useState<{ gameId: string, raceId: string } | null>(null);
     const [race, setRace] = useState<Race>();
@@ -23,7 +23,7 @@ export default function RaceResultsPage({ params }: Readonly<{ params: Promise<{
     useEffect(() => {
         async function fetchData() {
             if (unwrappedParams?.gameId && unwrappedParams?.raceId) {
-                const { gameId, raceId } = unwrappedParams;
+                const {gameId, raceId} = unwrappedParams;
                 const raceData = await loadRaces(Number(gameId));
                 const playerData = await loadPlayers(Number(gameId));
                 const meetData = await loadMeets(Number(gameId));
@@ -38,10 +38,14 @@ export default function RaceResultsPage({ params }: Readonly<{ params: Promise<{
 
                 // Create a mapping of teamId to team college
                 const teamsMapping: { [key: number]: Team } = {};
-                teams.forEach(t => { teamsMapping[t.teamId] = t; });
+                teams.forEach(t => {
+                    teamsMapping[t.teamId] = t;
+                });
                 setTeamsMap(teamsMapping);
 
-                const playersMapping = teams.reduce((accumulated: { [key: number]: { player: Player, team: Team } }, team) => {
+                const playersMapping = teams.reduce((accumulated: {
+                    [key: number]: { player: Player, team: Team }
+                }, team) => {
                     team.players.forEach(playerId => {
                         const player = selectPlayers.find(p => p.playerId === playerId);
                         if (player) {
@@ -56,7 +60,7 @@ export default function RaceResultsPage({ params }: Readonly<{ params: Promise<{
                 setPlayersMap(playersMapping);
 
                 const teamPoints = selectRace?.teams.reduce((accumulated: { [key: number]: number }, team) => {
-                    if(team.points > 0) {
+                    if (team.points > 0) {
                         accumulated[team.teamId] = team.points;
                     }
                     return accumulated;
@@ -66,6 +70,7 @@ export default function RaceResultsPage({ params }: Readonly<{ params: Promise<{
                 }
             }
         }
+
         fetchData();
     }, [unwrappedParams]);
 
@@ -96,55 +101,58 @@ export default function RaceResultsPage({ params }: Readonly<{ params: Promise<{
     return (
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">Race Results</h1>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 cursor-pointer" onClick={() => router.push(`/games/${unwrappedParams?.gameId}/schedule/${meet?.meetId}`)}>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 cursor-pointer"
+               onClick={() => router.push(`/games/${unwrappedParams?.gameId}/schedule/${meet?.meetId}`)}>
                 Meet: <span className="font-semibold">{meet?.week} - {meet?.season}</span>
             </p>
             <p className="text-gray-700 dark:text-gray-300">Teams: {meet?.teams.map(team => teamsMap[team.teamId].abbr).join(', ')}</p>
-            <p className="text-gray-700 dark:text-gray-300">Event: <span className="font-semibold">{race?.eventType}</span></p>
+            <p className="text-gray-700 dark:text-gray-300">Event: <span
+                className="font-semibold">{race?.eventType}</span></p>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Results</h2>
             <table className="min-w-full bg-white dark:bg-gray-800">
                 <thead>
-                    <tr>
-                        <th className="py-2 px-4 border-b">Position</th>
-                        <th className="py-2 px-4 border-b">Player</th>
-                        <th className="py-2 px-4 border-b">Team</th>
-                        <th className="py-2 px-4 border-b">Time</th>
-                        <th className="py-2 px-4 border-b">Points</th>
-                    </tr>
+                <tr>
+                    <th className="py-2 px-4 border-b">Position</th>
+                    <th className="py-2 px-4 border-b">Player</th>
+                    <th className="py-2 px-4 border-b">Team</th>
+                    <th className="py-2 px-4 border-b">Time</th>
+                    <th className="py-2 px-4 border-b">Points</th>
+                </tr>
                 </thead>
                 <tbody className="min-w-full">
-                    {sortedParticipants.map(({ playerId, playerTime, scoring: { points }, position }) => (
-                        <tr key={playerId}>
-                            <td className="py-2 px-4 border-b text-center">{position}</td>
-                            <td className="py-2 px-4 border-b text-center cursor-pointer" onClick={() => router.push(`/games/${unwrappedParams?.gameId}/players/${playerId}`)}>
-                                {playersMap[Number(playerId)]?.player.firstName + ' ' + playersMap[Number(playerId)]?.player.lastName}
-                            </td>
-                            <td className="py-2 px-4 border-b text-center">
-                                {playersMap[Number(playerId)]?.team.college + ' (' + playersMap[Number(playerId)]?.team.abbr + ')'}
-                            </td>
-                            <td className="py-2 px-4 border-b text-center">{formatTime(playerTime)}</td>
-                            <td className="py-2 px-4 border-b text-center">{points}</td>
-                        </tr>
-                    ))}
+                {sortedParticipants.map(({playerId, playerTime, scoring: {points}, position}) => (
+                    <tr key={playerId}>
+                        <td className="py-2 px-4 border-b text-center">{position}</td>
+                        <td className="py-2 px-4 border-b text-center cursor-pointer"
+                            onClick={() => router.push(`/games/${unwrappedParams?.gameId}/players/${playerId}`)}>
+                            {playersMap[Number(playerId)]?.player.firstName + ' ' + playersMap[Number(playerId)]?.player.lastName}
+                        </td>
+                        <td className="py-2 px-4 border-b text-center">
+                            {playersMap[Number(playerId)]?.team.college + ' (' + playersMap[Number(playerId)]?.team.abbr + ')'}
+                        </td>
+                        <td className="py-2 px-4 border-b text-center">{formatTime(playerTime)}</td>
+                        <td className="py-2 px-4 border-b text-center">{points}</td>
+                    </tr>
+                ))}
                 </tbody>
             </table>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Team Points</h2>
             <table className="min-w-full bg-white dark:bg-gray-800">
                 <thead>
-                    <tr>
-                        <th className="py-2 px-4 border-b">Team</th>
-                        <th className="py-2 px-4 border-b">Points</th>
-                    </tr>
+                <tr>
+                    <th className="py-2 px-4 border-b">Team</th>
+                    <th className="py-2 px-4 border-b">Points</th>
+                </tr>
                 </thead>
                 <tbody className="min-w-full">
-                    {sortedTeamPoints.map(([teamId, points]) => (
-                        <tr key={teamId}>
-                            <td className="py-2 px-4 border-b text-center">{teamsMap[Number(teamId)].college + ' (' + teamsMap[Number(teamId)]?.abbr + ')'}</td>
-                            <td className="py-2 px-4 border-b text-center">{points}</td>
-                        </tr>
-                    ))}
+                {sortedTeamPoints.map(([teamId, points]) => (
+                    <tr key={teamId}>
+                        <td className="py-2 px-4 border-b text-center">{teamsMap[Number(teamId)].college + ' (' + teamsMap[Number(teamId)]?.abbr + ')'}</td>
+                        <td className="py-2 px-4 border-b text-center">{points}</td>
+                    </tr>
+                ))}
                 </tbody>
             </table>
         </div>

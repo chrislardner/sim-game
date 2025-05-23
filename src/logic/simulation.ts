@@ -1,13 +1,26 @@
-import { Game } from '@/types/game';
-import { saveGame, loadGameData, loadMeets, loadPlayers, loadRaces, loadTeams, saveTeams, saveMeets, savePlayers, saveRaces, deleteMeet, deleteRace } from '@/data/storage';
-import { handleNewYear } from './newYear';
-import { createRacesForMeet, mapWeekToGamePhase } from '@/logic/meetGenerator';
-import { Meet, Race } from '@/types/schedule';
-import { Team } from '@/types/team';
-import { SeasonGamePhase } from '@/constants/seasons';
-import { generateRaceTime, } from './generateRaceTimes';
-import { Player } from '@/types/player';
-import { updateTeamAndPlayerPoints } from './scoring';
+import {Game} from '@/types/game';
+import {
+    deleteMeet,
+    deleteRace,
+    loadGameData,
+    loadMeets,
+    loadPlayers,
+    loadRaces,
+    loadTeams,
+    saveGame,
+    saveMeets,
+    savePlayers,
+    saveRaces,
+    saveTeams
+} from '@/data/storage';
+import {handleNewYear} from './newYear';
+import {createRacesForMeet, mapWeekToGamePhase} from '@/logic/meetGenerator';
+import {Meet, Race} from '@/types/schedule';
+import {Team} from '@/types/team';
+import {SeasonGamePhase} from '@/constants/seasons';
+import {generateRaceTime,} from './generateRaceTimes';
+import {Player} from '@/types/player';
+import {updateTeamAndPlayerPoints} from './scoring';
 
 export async function simulateWeek(gameId: number): Promise<boolean> {
     let game: Game;
@@ -65,8 +78,7 @@ export async function simulateWeek(gameId: number): Promise<boolean> {
         await saveTeams(gameId, teams);
         return Promise.resolve(true);
 
-    }
-    else {
+    } else {
         await saveMeets(gameId, meets);
         await saveRaces(gameId, races);
         await saveGame(game);
@@ -90,8 +102,7 @@ export async function simulatePlayoffs(game: Game, teams: Team[], players: Playe
         const p5 = await prepareForNextRound(game, teams, players, meets, races);
         if (p1 && p2 && p5) {
             return Promise.resolve(true);
-        }
-        else {
+        } else {
             console.error(p1, p2, p5, "p1 p2 p5");
             return Promise.reject(false);
         }
@@ -114,7 +125,7 @@ async function prepareForNextRound(game: Game, teams: Team[], players: Player[],
             return Promise.reject(false);
         }
 
-        if(!game.remainingTeams || game.remainingTeams.length === 0 || game.remainingTeams[0] === -1) {
+        if (!game.remainingTeams || game.remainingTeams.length === 0 || game.remainingTeams[0] === -1) {
             console.error("No remaining teams found");
             return Promise.reject(false);
         }
@@ -126,8 +137,7 @@ async function prepareForNextRound(game: Game, teams: Team[], players: Player[],
 
         console.error("error", game.remainingTeams);
         return Promise.reject(false);
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error preparing for next round", error);
         return Promise.reject(false);
     }
@@ -148,8 +158,7 @@ async function enterNextWeek(game: Game, teams: Team[], players: Player[], meets
             return Promise.resolve(true);
         }
         return Promise.resolve(true);
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error entering next week", error);
         return Promise.reject(false);
     }
@@ -161,21 +170,20 @@ export async function determineWinnersByPoints(matches: Meet[], races: Race[], p
     try {
         for (const meet of matches) {
             const teamScores: { [teamId: number]: number } = {};
-
             if (meet && meet.season === 'cross_country') {
                 // Cross-country scoring
                 meet.races.forEach(race => {
                     races.filter(r => r.raceId === race).forEach(r => {
-                        if (!r.teams) {
-                            console.error("No team in race");
-                            return Promise.reject([-1]);
-                        }
-                        r.teams.forEach(team => {
-                            if (team.points > 0) {
-                                teamScores[team.teamId] = (teamScores[team.teamId] || 0) + team.points;
+                            if (!r.teams) {
+                                console.error("No team in race");
+                                return Promise.reject([-1]);
                             }
-                        });
-                    }
+                            r.teams.forEach(team => {
+                                if (team.points > 0) {
+                                    teamScores[team.teamId] = (teamScores[team.teamId] || 0) + team.points;
+                                }
+                            });
+                        }
                     );
                 });
 
@@ -192,12 +200,12 @@ export async function determineWinnersByPoints(matches: Meet[], races: Race[], p
                 // Track & field scoring
                 meet.races.forEach(race => {
                     races.filter(r => r.raceId === race).forEach(r => {
-                        r.teams.forEach(team => {
-                            if (team.points > 0) {
-                                teamScores[team.teamId] = (teamScores[team.teamId] || 0) + team.points;
-                            }
-                        });
-                    }
+                            r.teams.forEach(team => {
+                                if (team.points > 0) {
+                                    teamScores[team.teamId] = (teamScores[team.teamId] || 0) + team.points;
+                                }
+                            });
+                        }
                     );
                 });
 
@@ -238,7 +246,7 @@ export async function determineWinnersByPoints(matches: Meet[], races: Race[], p
         }
     }
 
-    if(!winners || winners.length === 0) {
+    if (!winners || winners.length === 0) {
         console.error("No winners found");
         return Promise.reject([-1]);
     }
@@ -298,16 +306,16 @@ async function simulateMeetsForWeek(game: Game, meets: Meet[], races: Race[], pl
 }
 
 async function updateChampionshipWeek(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
-        
+
     const shedObj = mapWeekToGamePhase(game.currentWeek);
     const foundMeet = meets.find(meet => meet.week === game.currentWeek + 1 && meet.year === game.currentYear);
 
-    if(!game.remainingTeams) {
+    if (!game.remainingTeams) {
         console.error("No game remaining teams found");
         return Promise.reject(false);
     }
 
-    if(!teams) {
+    if (!teams) {
         console.error("No teams found");
         return Promise.reject(false);
     }
@@ -327,9 +335,13 @@ async function updateChampionshipWeek(game: Game, teams: Team[], players: Player
     races = races.filter(r => r.meetId !== foundMeet.meetId);
     meets = meets.filter(m => m.meetId !== foundMeet.meetId);
 
-    const meetTeams = teams.filter(team => game.remainingTeams.includes(team.teamId)).map(team => ({ teamId: team.teamId, points: 0, has_five_racers: false }));
-    
-    const raceTeams: Team[] = 
+    const meetTeams = teams.filter(team => game.remainingTeams.includes(team.teamId)).map(team => ({
+        teamId: team.teamId,
+        points: 0,
+        has_five_racers: false
+    }));
+
+    const raceTeams: Team[] =
         meetTeams.map(mt => {
             const team = teams.find(t => t.teamId === mt.teamId);
             if (team) {
@@ -339,10 +351,10 @@ async function updateChampionshipWeek(game: Game, teams: Team[], players: Player
                 return null;
             }
         }).filter(team => team !== null)
-    
+
     const newRaces = await createRacesForMeet(raceTeams, players, game.gameId, shedObj.season, foundMeet.meetId, game.currentYear);
 
-    if(!meetTeams) {
+    if (!meetTeams) {
         console.error("No meet teams found");
         return Promise.reject(false);
     }

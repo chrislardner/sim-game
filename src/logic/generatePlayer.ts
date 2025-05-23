@@ -18,7 +18,7 @@ export async function createPlayer(gameId: number, teamId: number, schoolYear: n
     const newPlayerId = await getNextPlayerId(gameId);
 
     const jersey = ["jersey", "jersey2", "jersey3", "jersey4", "jersey5"];
-    
+
     const accessories = ["none", "headband", "headband-high"];
 
     const face = generate({
@@ -35,23 +35,23 @@ export async function createPlayer(gameId: number, teamId: number, schoolYear: n
 
     const interactions = generatePlayerInteractions(playerInfo.pr, startYear, currentYear);
 
-   return {
-       playerId: newPlayerId,
-       teamId,
-       year: schoolYear,
-       firstName: name.firstName,
-       lastName: name.lastName,
-       seasons,
-       eventTypes: generateEventTypes(playerSubArchetype),
-       playerArch: playerInfo.pa,
-       face,
-       gameId,
-       playerRatings: playerInfo.pr,
-       playerSubArchetype,
-       retiredYear: 0,
-       startYear: startYear,
-       interactions,
-   };
+    return {
+        playerId: newPlayerId,
+        teamId,
+        year: schoolYear,
+        firstName: name.firstName,
+        lastName: name.lastName,
+        seasons,
+        eventTypes: generateEventTypes(playerSubArchetype),
+        playerArch: playerInfo.pa,
+        face,
+        gameId,
+        playerRatings: playerInfo.pr,
+        playerSubArchetype,
+        retiredYear: 0,
+        startYear: startYear,
+        interactions,
+    };
 }
 
 function generateSeasonTypes(playerSubArchetype: SubArchetype): ('track_field' | 'cross_country')[] {
@@ -67,15 +67,11 @@ function generateEventTypes(playerSubArchetype: SubArchetype): { cross_country: 
         cross_country: [] as string[],
         track_field: [] as string[]
     };
-
     if (playerSubArchetype.events.some(event => raceTypes.cross_country.includes(event))) {
         events.cross_country.push(...playerSubArchetype.events.filter(event => raceTypes.cross_country.includes(event)));
     }
-
     if (playerSubArchetype.events.some(event => raceTypes.track_field.includes(event))) {
         events.track_field.push(...playerSubArchetype.events.filter(event => raceTypes.track_field.includes(event)));
     }
-
     return events;
 }
-

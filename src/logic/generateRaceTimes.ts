@@ -1,4 +1,4 @@
-import { Player } from "@/types/player";
+import {Player} from "@/types/player";
 
 const minMax = {
     '100m': [9.7, 14.5],
@@ -62,8 +62,8 @@ export function generateRaceTime(eventType: string, player: Player): number {
 }
 
 function getPlayerSkill(player: Player, eventType: string): number {
-    const { playerRatings } = player;
-    const { typeRatings } = playerRatings;
+    const {playerRatings} = player;
+    const {typeRatings} = playerRatings;
     let skill;
 
     switch (eventType) {

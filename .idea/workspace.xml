@@ -4,11 +4,57 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e28de870-d56b-4166-941d-22f71990bd83" name="Changes" comment="rename onyear">
+    <list default="true" id="e28de870-d56b-4166-941d-22f71990bd83" name="Changes" comment="reformat files based on webstorm auto format">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_11_2025_10_50_PM_[Changes]1/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_11_2025_10_50_PM__Changes_1.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/.nojekyll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/players/[playerId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/players/[playerId]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/players/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/players/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/races/[raceId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/races/[raceId]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/races/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/races/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/recruiting/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/recruiting/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/schedule/[meetId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/schedule/[meetId]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/schedule/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/schedule/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/teams/[teamId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/teams/[teamId]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/teams/[teamId]/schedule/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/teams/[teamId]/schedule/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/teams/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/teams/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/new-game/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/new-game/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/saved/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/saved/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/settings/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/settings/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/GameSidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/GameSidebar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/MainNav.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MainNav.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PlayerAverageTimesTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PlayerAverageTimesTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PlayerRatingsTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PlayerRatingsTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PlayerResults.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PlayerResults.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Table.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Table.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/YearFilterer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/YearFilterer.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/seasonPhases.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/seasonPhases.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/seasons.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/seasons.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/subArchetypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/subArchetypes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/context/ThemeContext.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/context/ThemeContext.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/data/parseNames.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/parseNames.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/data/parseSchools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/parseSchools.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/storage.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/storage.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logic/calculateSubArchetype.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logic/calculateSubArchetype.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logic/calculateTeamOvr.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logic/calculateTeamOvr.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/logic/gameSetup.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logic/gameSetup.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logic/generatePlayer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logic/generatePlayer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logic/generatePlayerInteractions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logic/generatePlayerInteractions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logic/generatePlayerRatings.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logic/generatePlayerRatings.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logic/generateRaceTimes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logic/generateRaceTimes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logic/meetGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logic/meetGenerator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logic/newYear.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logic/newYear.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logic/scheduleGenerator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logic/scheduleGenerator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logic/scoring.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logic/scoring.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logic/simulation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logic/simulation.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/game.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/game.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/player.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/player.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/schedule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/schedule.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/team.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/team.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,7 +174,13 @@
       <workItem from="1747593193845" duration="34000" />
       <workItem from="1747593355300" duration="6000" />
       <workItem from="1747615559232" duration="4034000" />
-      <workItem from="1747622085013" duration="2351000" />
+      <workItem from="1747622085013" duration="2770000" />
+      <workItem from="1747706365663" duration="692000" />
+      <workItem from="1747790998293" duration="791000" />
+      <workItem from="1747795343696" duration="45000" />
+      <workItem from="1747869605885" duration="6000" />
+      <workItem from="1747935591417" duration="1156000" />
+      <workItem from="1747958173855" duration="590000" />
     </task>
     <task id="LOCAL-00001" summary="update README.md">
       <option name="closed" value="true" />
@@ -218,7 +270,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747622557288</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="remove eslint rules">
+      <option name="closed" value="true" />
+      <created>1747624644148</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1747624644148</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -273,7 +333,9 @@
     <MESSAGE value="refactor for cleaner code" />
     <MESSAGE value="delete unused code" />
     <MESSAGE value="rename onyear" />
-    <option name="LAST_COMMIT_MESSAGE" value="rename onyear" />
+    <MESSAGE value="remove eslint rules" />
+    <MESSAGE value="reformat files based on webstorm auto format" />
+    <option name="LAST_COMMIT_MESSAGE" value="reformat files based on webstorm auto format" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -284,7 +346,6 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/app/games/[gameId]/races/[raceId]/page.tsx</url>
-          <line>2</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>

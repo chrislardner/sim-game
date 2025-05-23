@@ -1,13 +1,13 @@
 "use client";
 
-import { use, useEffect, useState } from 'react';
-import { loadGameData, loadMeets, loadPlayers, loadRaces, loadTeams } from '@/data/storage';
-import { Meet, Race } from '@/types/schedule';
-import { Player } from '@/types/player';
-import { Team } from '@/types/team';
-import Table from '@/components/Table'; 
-import YearFilter from '@/components/YearFilterer'; 
-import { Game } from '@/types/game';
+import {use, useEffect, useState} from 'react';
+import {loadGameData, loadMeets, loadPlayers, loadRaces, loadTeams} from '@/data/storage';
+import {Meet, Race} from '@/types/schedule';
+import {Player} from '@/types/player';
+import {Team} from '@/types/team';
+import Table from '@/components/Table';
+import YearFilter from '@/components/YearFilterer';
+import {Game} from '@/types/game';
 
 type TransformedRace = {
     raceId: number;
@@ -17,12 +17,12 @@ type TransformedRace = {
     meetWeek: number;
     topWinner: string;
     topTeam: string;
-    points: string; 
+    points: string;
     teams: string;
 };
 
-export default function RacesOverviewPage({ params }: Readonly<{ params: Promise<{ gameId: string }> }>) {
-    const { gameId } = use(params);
+export default function RacesOverviewPage({params}: Readonly<{ params: Promise<{ gameId: string }> }>) {
+    const {gameId} = use(params);
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
     const [playersMap, setPlayersMap] = useState<{ [key: number]: Player }>({});
     const [racesMap, setRacesMap] = useState<{ [key: number]: Race }>({});
@@ -37,7 +37,7 @@ export default function RacesOverviewPage({ params }: Readonly<{ params: Promise
 
         async function fetchData() {
             const gameData: Game = await loadGameData(Number(gameId));
-            
+
             const teamData: Team[] = await loadTeams(Number(gameId));
             const playersData: Player[] = await loadPlayers(Number(gameId));
             const meetsData: Meet[] = await loadMeets(Number(gameId));
@@ -63,9 +63,12 @@ export default function RacesOverviewPage({ params }: Readonly<{ params: Promise
             setPlayersMap(playersMapping);
 
             const racesMapping: { [key: number]: Race } = {};
-            raceData.forEach(r => { racesMapping[r.raceId] = r; });
+            raceData.forEach(r => {
+                racesMapping[r.raceId] = r;
+            });
             setRacesMap(racesMapping);
         }
+
         fetchData();
     }, [gameId]);
 
@@ -101,7 +104,7 @@ export default function RacesOverviewPage({ params }: Readonly<{ params: Promise
         const topTeam = sortedTeams[0];
         if (topTeam) {
             const team = teamsMap[topTeam.teamId];
-            return `${team?.college + ' (' + team?.abbr + ')' } - ${topTeam.points} points`;
+            return `${team?.college + ' (' + team?.abbr + ')'} - ${topTeam.points} points`;
         }
         return 'N/A';
     };
@@ -113,7 +116,7 @@ export default function RacesOverviewPage({ params }: Readonly<{ params: Promise
         return `${minutes}:${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
     };
 
-    const data: TransformedRace[] = filteredMeets.flatMap(meet => 
+    const data: TransformedRace[] = filteredMeets.flatMap(meet =>
         meet.races.map(raceId => {
             const race = racesMap[raceId];
             const topWinner = getTopWinner(race);
@@ -135,11 +138,11 @@ export default function RacesOverviewPage({ params }: Readonly<{ params: Promise
     );
 
     const columns: { key: keyof TransformedRace; label: string; className: string }[] = [
-        { key: 'eventType', label: 'Event Type', className: 'table-column-eventType' },
-        { key: 'meetWeek', label: 'Week', className: 'table-column-meetWeek' },
-        { key: 'date', label: 'Date', className: 'table-column-date' },
-        { key: 'topWinner', label: 'Event Winner', className: 'table-column-topWinner' },
-        { key: 'topTeam', label: 'Top Team', className: 'table-column-topTeam' },
+        {key: 'eventType', label: 'Event Type', className: 'table-column-eventType'},
+        {key: 'meetWeek', label: 'Week', className: 'table-column-meetWeek'},
+        {key: 'date', label: 'Date', className: 'table-column-date'},
+        {key: 'topWinner', label: 'Event Winner', className: 'table-column-topWinner'},
+        {key: 'topTeam', label: 'Top Team', className: 'table-column-topTeam'},
     ];
 
     const getRowLink = (race: TransformedRace) => `/games/${gameId}/races/${race.raceId}`;
@@ -158,7 +161,8 @@ export default function RacesOverviewPage({ params }: Readonly<{ params: Promise
             {filteredMeets.map(meet => (
                 <div key={meet.meetId} className="mb-6">
                     <h2 className="text-2xl font-semibold mb-2">{`Meet ${meet.meetId} - ${meet.date}`}</h2>
-                    <Table data={data.filter(race => race.meetId === meet.meetId)} columns={columns} getRowLink={getRowLink} linkColumns={['eventType']} />
+                    <Table data={data.filter(race => race.meetId === meet.meetId)} columns={columns}
+                           getRowLink={getRowLink} linkColumns={['eventType']}/>
                 </div>
             ))}
         </div>

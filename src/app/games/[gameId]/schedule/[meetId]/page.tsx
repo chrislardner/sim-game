@@ -1,16 +1,16 @@
 "use client";
 
-import { useRouter, useParams} from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import { loadMeets, loadRaces, loadTeams, loadPlayers } from '@/data/storage';
-import { Meet, Race, RaceParticipant } from '@/types/schedule';
-import { Team } from '@/types/team';
-import { Player } from '@/types/player';
+import {loadMeets, loadPlayers, loadRaces, loadTeams} from '@/data/storage';
+import {Meet, Race, RaceParticipant} from '@/types/schedule';
+import {Team} from '@/types/team';
+import {Player} from '@/types/player';
 import Table from '@/components/Table';
 
 export default function MeetPage() {
     const router = useRouter();
-    const { gameId, meetId } = useParams();
+    const {gameId, meetId} = useParams();
     const [meet, setMeet] = useState<Meet>();
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
     const [teamPoints, setTeamPoints] = useState<{ [key: number]: number }>({});
@@ -42,13 +42,18 @@ export default function MeetPage() {
             setTeamPoints(pointsMapping);
 
             const racesMapping: { [key: number]: Race } = {};
-            racesData.forEach(r => { racesMapping[r.raceId] = r; });
+            racesData.forEach(r => {
+                racesMapping[r.raceId] = r;
+            });
             setRacesMap(racesMapping);
 
             const playersMapping: { [key: number]: Player } = {};
-            playersData.forEach(p => { playersMapping[p.playerId] = p; });
+            playersData.forEach(p => {
+                playersMapping[p.playerId] = p;
+            });
             setPlayersMap(playersMapping);
         }
+
         fetchData();
     }, [gameId, meetId]);
 
@@ -78,9 +83,13 @@ export default function MeetPage() {
 
     return (
         <div className="p-4">
-            <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">Meet on {meet.date}</h1>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Season: <span className="font-semibold">{meet.season === 'track_field' ? 'Track & Field (TF)' : 'Cross Country (XC)'}</span></p>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Type: <span className="font-semibold">{meet.type}</span></p>
+            <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">Meet
+                on {meet.date}</h1>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Season: <span
+                className="font-semibold">{meet.season === 'track_field' ? 'Track & Field (TF)' : 'Cross Country (XC)'}</span>
+            </p>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Type: <span
+                className="font-semibold">{meet.type}</span></p>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Team Points</h2>
             <Table
@@ -89,8 +98,8 @@ export default function MeetPage() {
                     points
                 }))}
                 columns={[
-                    { key: 'team', label: 'Team' },
-                    { key: 'points', label: 'Points' }
+                    {key: 'team', label: 'Team'},
+                    {key: 'points', label: 'Points'}
                 ]}
             />
 
@@ -107,7 +116,8 @@ export default function MeetPage() {
                     if (!race) return null;
 
                     return (
-                        <div key={index} className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
+                        <div key={index}
+                             className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                             <h3 className="text-xl font-semibold text-accent">{race.eventType}</h3>
                             {viewMode === 'teamPoints' ? (
                                 <Table
@@ -125,8 +135,8 @@ export default function MeetPage() {
                                         points: team.points
                                     }))}
                                     columns={[
-                                        { key: 'team', label: 'Team' },
-                                        { key: 'points', label: 'Points' }
+                                        {key: 'team', label: 'Team'},
+                                        {key: 'points', label: 'Points'}
                                     ]}
                                 />
                             ) : (
@@ -138,10 +148,10 @@ export default function MeetPage() {
                                         time: formatTime(participant.playerTime)
                                     }))}
                                     columns={[
-                                        { key: 'player', label: 'Player' },
-                                        { key: 'team', label: 'Team' },
-                                        { key: 'points', label: 'Points' },
-                                        { key: 'time', label: 'Time' }
+                                        {key: 'player', label: 'Player'},
+                                        {key: 'team', label: 'Team'},
+                                        {key: 'points', label: 'Points'},
+                                        {key: 'time', label: 'Time'}
                                     ]}
                                 />
                             )}
