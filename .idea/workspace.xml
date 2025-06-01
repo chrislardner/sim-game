@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e28de870-d56b-4166-941d-22f71990bd83" name="Changes" comment="rename onyear">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_11_2025_10_50_PM_[Changes]1/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_11_2025_10_50_PM__Changes_1.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/parseNames.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/parseNames.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/parseSchools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/parseSchools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/logic/gameSetup.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/logic/gameSetup.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,12 +32,12 @@
     &quot;assignee&quot;: &quot;chrislardner&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/rhit-lardnece/sim-game.git&quot;,
-    &quot;accountId&quot;: &quot;0b1bca09-9096-4154-bdc5-2d0ee5fd34d8&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/chrislardner/sim-game.git",
+    "accountId": "5f516e4b-40b2-4bb6-9d3a-c83f22b7f7c3"
   }
-}</component>
+}]]></component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="ProjectErrors" />
   </component>
@@ -94,7 +93,8 @@
       <scripts>
         <script value="dev" />
       </scripts>
-      <node-interpreter value="project" />
+      <node-interpreter value="$USER_HOME$/.nvm/versions/node/v22.15.0/bin/node" />
+      <package-manager value="npm" />
       <envs />
       <method v="2" />
     </configuration>
@@ -129,6 +129,7 @@
       <workItem from="1747593355300" duration="6000" />
       <workItem from="1747615559232" duration="4034000" />
       <workItem from="1747622085013" duration="2351000" />
+      <workItem from="1748800852603" duration="1153000" />
     </task>
     <task id="LOCAL-00001" summary="update README.md">
       <option name="closed" value="true" />
