@@ -55,7 +55,7 @@ export default function GameDashboard({params}: Readonly<{ params: Promise<{ gam
 
             <button
                 onClick={handleSimulateWeek}
-                className="px-4 py-2 bg-accent-dark hover:bg-accent-light font-semibold text-white rounded"
+                className="px-4 py-2 bg-accent-dark hover:bg-accent-light font-semibold text-white rounded-sm"
                 disabled={isSimulating}
             >
                 {isSimulating ? 'Simulating...' : 'Simulate Next Week'}

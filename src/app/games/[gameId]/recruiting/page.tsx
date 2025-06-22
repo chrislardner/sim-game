@@ -44,7 +44,7 @@ export default function RecruitingPage({params}: Readonly<{ params: Promise<{ ga
 
             <button
                 onClick={handleRecruits}
-                className="px-4 py-2 bg-accent-dark hover:bg-accent-light font-semibold text-white rounded"
+                className="px-4 py-2 bg-accent-dark hover:bg-accent-light font-semibold text-white rounded-sm"
                 disabled={doneRecruiting}
             >
                 {'Handle Offseason'}

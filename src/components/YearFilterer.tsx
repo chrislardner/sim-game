@@ -28,7 +28,7 @@ export default function YearFilter({
             </label>
             <select
                 id="year-select"
-                className="border rounded px-3 py-2 bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark"
+                className="border rounded-sm px-3 py-2 bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark"
                 value={selectedYear}
                 onChange={(e) => onYearChangeAction(e.target.value === "all" ? "all" : Number(e.target.value))}
             >

@@ -83,7 +83,7 @@ export default function NewGamePage() {
                         placeholder="Search Conferences"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="mb-4 p-2 border rounded text-text-light"
+                        className="mb-4 p-2 border rounded-sm text-text-light"
                     />
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filteredConferences
@@ -131,7 +131,7 @@ export default function NewGamePage() {
                         className="ml-2 text-black"
                     />
                 </label>
-                <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">
+                <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-sm">
                     Start Game
                 </button>
             </form>
