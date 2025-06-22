@@ -43,7 +43,7 @@ export default function PlayerPage({params}: Readonly<{ params: Promise<{ gameId
                     className="font-semibold">{player.seasons.join(', ')}</span></p>
                 <p className="text-gray-700 dark:text-gray-300">Archetype: <span
                     className="font-semibold">{player.playerSubArchetype.main.join(', ')}</span></p>
-                {/* <div ref={faceContainerRef} className="w-48 h-48"></div> */}
+                 <div ref={faceContainerRef} className="w-48 h-48"></div>
             </div>
             <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg mt-4 transition-colors">
                 <h2 className="text-xl font-semibold text-accent mb-2">Player Personality</h2>
