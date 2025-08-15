@@ -1,20 +1,20 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
-import { loadGameData, loadMeets, loadTeams } from "@/data/storage";
-import { Meet } from "@/types/schedule";
-import { Team } from "@/types/team";
+import {use, useEffect, useState} from "react";
+import {loadGameData, loadMeets, loadTeams} from "@/data/storage";
+import {Meet} from "@/types/schedule";
+import {Team} from "@/types/team";
 import Table from "@/components/Table";
-import YearFilter from "@/components/YearFilterer"; 
-import { Game } from "@/types/game";
+import YearFilter from "@/components/YearFilterer";
+import {Game} from "@/types/game";
 
 type TransformedMeet = Omit<Meet, "teams" | "season"> & {
     teams: string;
     season: 'TF' | 'XC';
 };
 
-export default function TeamSchedulePage({ params }: Readonly<{ params: Promise<{ gameId: string; teamId: string }> }>) {
-    const { gameId, teamId } = use(params);
+export default function TeamSchedulePage({params}: Readonly<{ params: Promise<{ gameId: string; teamId: string }> }>) {
+    const {gameId, teamId} = use(params);
     const [team, setTeam] = useState<Team>();
     const [meets, setMeets] = useState<Meet[]>([]);
     const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
@@ -44,8 +44,9 @@ export default function TeamSchedulePage({ params }: Readonly<{ params: Promise<
             const years = Array.from(new Set(teamMeets.map(meet => meet.year)));
             setAvailableYears(years);
             setCurrentYear(gameData.currentYear);
-            setSelectedYear(gameData.currentYear); 
+            setSelectedYear(gameData.currentYear);
         }
+
         fetchData().catch(console.error);
     }, [gameId, teamId]);
 
@@ -54,11 +55,11 @@ export default function TeamSchedulePage({ params }: Readonly<{ params: Promise<
     const filteredMeets = selectedYear === "all" ? meets : meets.filter(meet => meet.year === selectedYear);
 
     const columns: { key: keyof TransformedMeet; label: string }[] = [
-        { key: "week", label: "Week" },
-        { key: "type", label: "Type" },
-        { key: "season", label: "Season" },
-        { key: "year", label: "Year" },
-        { key: "teams", label: "Teams" },
+        {key: "week", label: "Week"},
+        {key: "type", label: "Type"},
+        {key: "season", label: "Season"},
+        {key: "year", label: "Year"},
+        {key: "teams", label: "Teams"},
     ];
 
     const data: TransformedMeet[] = filteredMeets.map(meet => ({
@@ -82,7 +83,7 @@ export default function TeamSchedulePage({ params }: Readonly<{ params: Promise<
                 onYearChangeAction={setSelectedYear}
             />
 
-            <Table data={data} columns={columns} getRowLink={getRowLink} linkColumns={["week"]} />
+            <Table data={data} columns={columns} getRowLink={getRowLink} linkColumns={["week"]}/>
         </div>
     );
 }

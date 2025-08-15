@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Game } from '@/types/game';
-import { Meet, Race } from '@/types/schedule';
-import { loadGameData, loadMeets, loadRaces } from '@/data/storage';
+import React, {useEffect, useState} from 'react';
+import {Game} from '@/types/game';
+import {Meet, Race} from '@/types/schedule';
+import {loadGameData, loadMeets, loadRaces} from '@/data/storage';
 import YearFilter from './YearFilterer';
 import Table from './Table';
 
@@ -10,7 +10,7 @@ interface PlayerResultsProps {
     playerId: number;
 }
 
-const PlayerResults: React.FC<PlayerResultsProps> = ({ gameId, playerId }) => {
+const PlayerResults: React.FC<PlayerResultsProps> = ({gameId, playerId}) => {
     interface PlayerResult {
         meetWeek: number;
         meetYear: number;
@@ -26,7 +26,9 @@ const PlayerResults: React.FC<PlayerResultsProps> = ({ gameId, playerId }) => {
     const [availableYears, setAvailableYears] = useState<number[]>([]);
     const [currentYear, setCurrentYear] = useState<number>(0);
     const [selectedYear, setSelectedYear] = useState<number | 'all'>('all');
-    const [averageTimes, setAverageTimes] = useState<{ [eventType: string]: { [year: number]: number, overall: number } }>({});
+    const [averageTimes, setAverageTimes] = useState<{
+        [eventType: string]: { [year: number]: number, overall: number }
+    }>({});
 
     const formatTime = (time: number) => {
         const minutes = Math.floor(time / 60);
@@ -68,7 +70,7 @@ const PlayerResults: React.FC<PlayerResultsProps> = ({ gameId, playerId }) => {
             const averages: { [eventType: string]: { [year: number]: number, overall: number } } = {};
             results.forEach(result => {
                 if (!averages[result.eventType]) {
-                    averages[result.eventType] = { overall: 0 };
+                    averages[result.eventType] = {overall: 0};
                 }
                 if (!averages[result.eventType][result.meetYear]) {
                     averages[result.eventType][result.meetYear] = 0;
@@ -102,25 +104,29 @@ const PlayerResults: React.FC<PlayerResultsProps> = ({ gameId, playerId }) => {
             setPlayerResults(updatedResults);
             setAverageTimes(averages);
         }
+
         fetchData();
     }, [gameId, playerId]);
 
     const filteredResults = selectedYear === "all" ? playerResults : playerResults.filter(result => result.meetYear === selectedYear);
 
-    const columns: { key: "timeFromAverage" | "meetWeek" | "meetYear" | "meetType" | "eventType" | "formattedTime" | "points"; label: string }[] = [
-        { key: 'meetWeek', label: 'Meet Week' },
-        { key: 'meetYear', label: 'Meet Year' },
-        { key: 'meetType', label: 'Meet Type' },
-        { key: 'eventType', label: 'Event Type' },
-        { key: 'formattedTime', label: 'Time' },
-        { key: 'points', label: 'Points' },
-        { key: 'timeFromAverage', label: 'Time from Average' },
+    const columns: {
+        key: "timeFromAverage" | "meetWeek" | "meetYear" | "meetType" | "eventType" | "formattedTime" | "points";
+        label: string
+    }[] = [
+        {key: 'meetWeek', label: 'Meet Week'},
+        {key: 'meetYear', label: 'Meet Year'},
+        {key: 'meetType', label: 'Meet Type'},
+        {key: 'eventType', label: 'Event Type'},
+        {key: 'formattedTime', label: 'Time'},
+        {key: 'points', label: 'Points'},
+        {key: 'timeFromAverage', label: 'Time from Average'},
     ];
 
     const averageTimesColumns: { key: "eventType" | "year" | "averageTime"; label: string }[] = [
-        { key: 'eventType', label: 'Event Type' },
-        { key: 'year', label: 'Year' },
-        { key: 'averageTime', label: 'Average Time' },
+        {key: 'eventType', label: 'Event Type'},
+        {key: 'year', label: 'Year'},
+        {key: 'averageTime', label: 'Average Time'},
     ];
 
     const averageTimesData = Object.keys(averageTimes).flatMap(eventType => {
@@ -135,7 +141,7 @@ const PlayerResults: React.FC<PlayerResultsProps> = ({ gameId, playerId }) => {
         <div>
             <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg mt-4 transition-colors">
                 <h2 className="text-xl font-semibold text-accent mb-2">Average Times</h2>
-                <Table data={averageTimesData} columns={averageTimesColumns} />
+                <Table data={averageTimesData} columns={averageTimesColumns}/>
             </div>
             <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg mt-4 transition-colors">
                 <h2 className="text-xl font-semibold text-accent mb-2">Player Results</h2>
@@ -145,7 +151,7 @@ const PlayerResults: React.FC<PlayerResultsProps> = ({ gameId, playerId }) => {
                     selectedYear={selectedYear}
                     onYearChangeAction={setSelectedYear}
                 />
-                <Table data={filteredResults} columns={columns} />
+                <Table data={filteredResults} columns={columns}/>
             </div>
         </div>
     );

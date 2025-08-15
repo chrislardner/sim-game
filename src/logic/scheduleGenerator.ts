@@ -5,7 +5,10 @@ import {createMeet, mapWeekToGamePhase} from './meetGenerator';
 import {Player} from '@/types/player';
 
 // Generate League Schedule
-export async function generateYearlyLeagueSchedule(gameId: number, teams: Team[], players: Player[], year: number): Promise<{ meets: Meet[], races: Race[] }> {
+export async function generateYearlyLeagueSchedule(gameId: number, teams: Team[], players: Player[], year: number): Promise<{
+    meets: Meet[],
+    races: Race[]
+}> {
     const meets: Meet[] = [];
     const races: Race[] = [];
     const regularSeasonPhase = mappedSeasonPhases.regularCrossCountry;
@@ -44,16 +47,19 @@ export async function generateYearlyLeagueSchedule(gameId: number, teams: Team[]
         meets.push(...meetsForWeek.meets);
         races.push(...meetsForWeek.races);
     }
-    return { meets, races };
+    return {meets, races};
 }
 
 // Generate Meets for a Given Week
-export async function createMeetsForWeek(gameId: number, teams: Team[], players: Player[], week: number, year: number): Promise<{ meets: Meet[], races: Race[] }> {
+export async function createMeetsForWeek(gameId: number, teams: Team[], players: Player[], week: number, year: number): Promise<{
+    meets: Meet[],
+    races: Race[]
+}> {
     const teamGroups = groupTeams(teams, week);
     const results = await Promise.all(teamGroups.map(async group => await createMeet(group, players, week, year, gameId)));
     const meets = results.flatMap(result => result.meet);
     const races = results.flatMap(result => result.races);
-    return { meets, races };
+    return {meets, races};
 }
 
 // Group Teams for Meets depending on the week and number of teams

@@ -5,7 +5,10 @@ import {SeasonGamePhase, SeasonType} from '@/constants/seasons';
 import {getNextMeetId, getNextRaceId} from '@/data/storage';
 import {Player} from '@/types/player';
 
-export async function createMeet(teams: Team[], players: Player[], week: number, year: number, gameId: number): Promise<{meet: Meet, races: Race[]}> {
+export async function createMeet(teams: Team[], players: Player[], week: number, year: number, gameId: number): Promise<{
+    meet: Meet,
+    races: Race[]
+}> {
     const map = mapWeekToGamePhase(week);
     const meetId = await getNextMeetId(gameId);
     const races = await createRacesForMeet(teams, players, gameId, map.season, meetId, year)
@@ -14,13 +17,13 @@ export async function createMeet(teams: Team[], players: Player[], week: number,
         meetId,
         date: map.type === 'playoffs' ? 'Playoff Round' : 'Regular Season Meet',
         year,
-        teams: teams.map(team => ({ teamId: team.teamId, points: 0, has_five_racers: false })),
+        teams: teams.map(team => ({teamId: team.teamId, points: 0, has_five_racers: false})),
         races: races.map(r => r.raceId),
         season: map.season,
         type: map.type,
         gameId,
     };
-    return { meet, races };
+    return {meet, races};
 }
 
 export async function createRacesForMeet(teams: Team[], players: Player[], gameId: number, seasonType: 'cross_country' | 'track_field', meetId: number, year: number): Promise<Race[]> {
@@ -65,15 +68,15 @@ export async function createRacesForMeet(teams: Team[], players: Player[], gameI
 }
 
 export function mapWeekToGamePhase(gameWeek: number): { season: SeasonType, type: SeasonGamePhase } {
-    if (gameWeek >= 1 && gameWeek <= 9) return { season: 'cross_country', type: 'regular' };
-    if (gameWeek >= 10 && gameWeek <= 11) return { season: 'cross_country', type: 'playoffs' };
-    if (gameWeek >= 12 && gameWeek <= 14) return { season: 'cross_country', type: 'offseason' };
-    if (gameWeek >= 15 && gameWeek <= 24) return { season: 'track_field', type: 'regular' };
-    if (gameWeek >= 25 && gameWeek <= 26) return { season: 'track_field', type: 'playoffs' };
-    if (gameWeek >= 27 && gameWeek <= 29) return { season: 'track_field', type: 'offseason' };
-    if (gameWeek >= 30 && gameWeek <= 39) return { season: 'track_field', type: 'regular' };
-    if (gameWeek >= 40 && gameWeek <= 41) return { season: 'track_field', type: 'playoffs' };
-    if (gameWeek >= 42 && gameWeek <= 52) return { season: 'track_field', type: 'offseason' };
+    if (gameWeek >= 1 && gameWeek <= 9) return {season: 'cross_country', type: 'regular'};
+    if (gameWeek >= 10 && gameWeek <= 11) return {season: 'cross_country', type: 'playoffs'};
+    if (gameWeek >= 12 && gameWeek <= 14) return {season: 'cross_country', type: 'offseason'};
+    if (gameWeek >= 15 && gameWeek <= 24) return {season: 'track_field', type: 'regular'};
+    if (gameWeek >= 25 && gameWeek <= 26) return {season: 'track_field', type: 'playoffs'};
+    if (gameWeek >= 27 && gameWeek <= 29) return {season: 'track_field', type: 'offseason'};
+    if (gameWeek >= 30 && gameWeek <= 39) return {season: 'track_field', type: 'regular'};
+    if (gameWeek >= 40 && gameWeek <= 41) return {season: 'track_field', type: 'playoffs'};
+    if (gameWeek >= 42 && gameWeek <= 52) return {season: 'track_field', type: 'offseason'};
 
     throw new Error('Invalid week number');
 }

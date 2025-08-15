@@ -1,5 +1,5 @@
-import { generate } from "facesjs";
-import { SubArchetype } from "@/constants/subArchetypes";
+import {generate} from "facesjs";
+import {SubArchetype} from "@/constants/subArchetypes";
 
 // Player Stats
 export interface PlayerRatings {
@@ -68,16 +68,16 @@ export interface Player {
     lastName: string;
     playerArch: PlayerArch;
     eventTypes: { cross_country: string[]; track_field: string[] };
-    seasons: ('track_field' | 'cross_country')[]; 
+    seasons: ('track_field' | 'cross_country')[];
     year: number;
-    face: ReturnType<typeof generate>; 
+    face: ReturnType<typeof generate>;
     playerRatings: PlayerRatings;
     playerSubArchetype: SubArchetype;
     retiredYear: number;
     startYear: number;
     interactions: PlayerInteractions;
 }
-    
+
 
 export interface PlayerInteractions {
     moodWithTeam: { [key: number]: number };

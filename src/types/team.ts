@@ -20,7 +20,6 @@ export interface Team {
     player_control: boolean
 }
 
-// Schedule for individual teams
 export interface TeamSchedule {
     teamId: number;
     year: number;                 // Year associated with the league schedule

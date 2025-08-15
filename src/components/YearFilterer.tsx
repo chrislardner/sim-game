@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import {useEffect, useState} from "react";
 
 interface YearFilterProps {
     availableYears: number[];
@@ -9,7 +9,12 @@ interface YearFilterProps {
     onYearChangeAction: (year: number | "all") => void;
 }
 
-export default function YearFilter({ availableYears, currentYear, selectedYear, onYearChangeAction }: Readonly<YearFilterProps>) {
+export default function YearFilter({
+                                       availableYears,
+                                       currentYear,
+                                       selectedYear,
+                                       onYearChangeAction
+                                   }: Readonly<YearFilterProps>) {
     const [years, setYears] = useState<number[]>([]);
 
     useEffect(() => {
@@ -23,7 +28,7 @@ export default function YearFilter({ availableYears, currentYear, selectedYear, 
             </label>
             <select
                 id="year-select"
-                className="border rounded px-3 py-2 bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark"
+                className="border rounded-sm px-3 py-2 bg-surface-light dark:bg-surface-dark text-text-light dark:text-text-dark"
                 value={selectedYear}
                 onChange={(e) => onYearChangeAction(e.target.value === "all" ? "all" : Number(e.target.value))}
             >

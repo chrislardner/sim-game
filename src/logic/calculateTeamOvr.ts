@@ -1,5 +1,6 @@
-import { Player } from "@/types/player";
-import { Team } from "@/types/team";
+import {Player} from "@/types/player";
+import {Team} from "@/types/team";
+
 export function calculateTeamOvr(team: Team) {
     return Math.round((team.sprint_ovr + team.middle_ovr + team.long_ovr) / 3);
 }
@@ -35,4 +36,3 @@ export function calculateTeamCrossCountryOvr(players: Player[]) {
     const totalCrossCountryOvr = crossCountryRunners.reduce((sum, player) => sum + player.playerRatings.typeRatings.longDistanceOvr, 0);
     return Math.round(totalCrossCountryOvr / crossCountryRunners.length);
 }
-

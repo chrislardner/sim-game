@@ -1,14 +1,14 @@
 "use client";
 
-import { use, useEffect, useState } from 'react';
-import { loadGameData, loadTeams } from '@/data/storage';
-import { Game } from '@/types/game';
-import { simulateWeek } from '@/logic/simulation';
-import { Team } from '@/types/team';
-import { useRouter } from 'next/navigation';
+import {use, useEffect, useState} from 'react';
+import {loadGameData, loadTeams} from '@/data/storage';
+import {Game} from '@/types/game';
+import {simulateWeek} from '@/logic/simulation';
+import {Team} from '@/types/team';
+import {useRouter} from 'next/navigation';
 
-export default function GameDashboard({ params }: Readonly<{ params: Promise<{ gameId: string }> }>) {
-    const { gameId } = use(params);
+export default function GameDashboard({params}: Readonly<{ params: Promise<{ gameId: string }> }>) {
+    const {gameId} = use(params);
     const [gameData, setGameData] = useState<Game>();
     const [teams, setTeamsData] = useState<Team[]>();
     const router = useRouter();
@@ -20,6 +20,7 @@ export default function GameDashboard({ params }: Readonly<{ params: Promise<{ g
             const teamsData = await loadTeams(Number(gameId));
             setTeamsData(teamsData);
         }
+
         fetchData();
     }, [gameId]);
 
@@ -35,7 +36,7 @@ export default function GameDashboard({ params }: Readonly<{ params: Promise<{ g
                 const updatedGame = await loadGameData(gameData.gameId);
                 const updatedTeams = await loadTeams(gameData.gameId);
 
-                setGameData({ ...updatedGame });
+                setGameData({...updatedGame});
                 setTeamsData([...updatedTeams]);
 
             } catch (error) {
@@ -54,7 +55,7 @@ export default function GameDashboard({ params }: Readonly<{ params: Promise<{ g
 
             <button
                 onClick={handleSimulateWeek}
-                className="px-4 py-2 bg-accent-dark hover:bg-accent-light font-semibold text-white rounded"
+                className="px-4 py-2 bg-accent-dark hover:bg-accent-light font-semibold text-white rounded-sm"
                 disabled={isSimulating}
             >
                 {isSimulating ? 'Simulating...' : 'Simulate Next Week'}
@@ -64,7 +65,7 @@ export default function GameDashboard({ params }: Readonly<{ params: Promise<{ g
                 <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                     <h2 className="text-lg font-semibold">Current Team</h2>
                     <p className="text-blue-500 hover:underline cursor-pointer"
-                        onClick={() => router.push(`/games/${gameData.gameId}/teams/${gameData.selectedTeamId}`)}>{teams && teams[gameData.selectedTeamId - 1]?.college}</p>
+                       onClick={() => router.push(`/games/${gameData.gameId}/teams/${gameData.selectedTeamId}`)}>{teams && teams[gameData.selectedTeamId - 1]?.college}</p>
                 </div>
                 <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                     <h2 className="text-lg font-semibold">Current Week</h2>

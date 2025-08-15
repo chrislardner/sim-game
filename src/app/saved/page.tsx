@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { loadAllGames, deleteGameData, deleteAllGames } from '@/data/storage';
-import { Game } from '@/types/game';
+import {useEffect, useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {deleteAllGames, deleteGameData, loadAllGames} from '@/data/storage';
+import {Game} from '@/types/game';
 
 export default function GamesPage() {
     const [games, setGames] = useState<Game[]>([]);
@@ -15,6 +15,7 @@ export default function GamesPage() {
             const savedGames = await loadAllGames();
             setGames(savedGames || []);
         }
+
         fetchData();
     }, []);
 
@@ -56,9 +57,12 @@ export default function GamesPage() {
                         onClick={() => handleGameClick(game.gameId)}
                     >
                         <h2 className="text-xl font-bold mb-2 text-accent">Game {game.gameId}</h2>
-                        <p className="text-gray-700 dark:text-gray-300">Current Year: <span className="font-semibold">{game.currentYear}</span></p>
-                        <p className="text-gray-700 dark:text-gray-300">Current Week: <span className="font-semibold">{game.currentWeek}</span></p>
-                        <p className="text-gray-700 dark:text-gray-300">Game Phase: <span className="font-semibold">{game.gamePhase}</span></p>
+                        <p className="text-gray-700 dark:text-gray-300">Current Year: <span
+                            className="font-semibold">{game.currentYear}</span></p>
+                        <p className="text-gray-700 dark:text-gray-300">Current Week: <span
+                            className="font-semibold">{game.currentWeek}</span></p>
+                        <p className="text-gray-700 dark:text-gray-300">Game Phase: <span
+                            className="font-semibold">{game.gamePhase}</span></p>
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -84,7 +88,8 @@ export default function GamesPage() {
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
                         <h2 className="text-xl font-bold mb-4">Are you sure?</h2>
-                        <p className="mb-4">This action will delete all saved games. Are you sure you want to proceed?</p>
+                        <p className="mb-4">This action will delete all saved games. Are you sure you want to
+                            proceed?</p>
                         <div className="flex justify-end">
                             <button
                                 onClick={() => setShowModal(false)}

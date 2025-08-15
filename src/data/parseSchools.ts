@@ -1,4 +1,4 @@
-import { Conference, School } from "@/types/regionals";
+import {Conference, School} from "@/types/regionals";
 
 type CollegeEntry = School;
 
@@ -8,7 +8,6 @@ let colleges: CollegeEntry[] = [];
 let conferences: ConferenceEntry[] = [];
 let isDataLoaded = false;
 
-// Preload the matched.json file
 async function preloadMatchedData(): Promise<void> {
     try {
         const response = await fetch("divisions/DIII/d3_matched.json");
@@ -39,17 +38,14 @@ export async function getAllConferences(): Promise<ConferenceEntry[]> {
     return conferences;
 }
 
-// Get a conference by its ID
 export function getConferenceById(conferenceId: number): ConferenceEntry | null {
     return conferences.find((conf) => conf.conferenceId === conferenceId) || null;
 }
 
-// Get a college by its ID
 function getCollegeById(collegeId: number): CollegeEntry | null {
     return colleges.find((college) => college.collegeId === collegeId) || null;
 }
 
-// Generate colleges based on conference Id
 export async function getCollegesByConferenceId(conferenceId: number): Promise<CollegeEntry[]> {
     try {
         if (!isDataLoaded) {

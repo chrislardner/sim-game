@@ -1,18 +1,26 @@
-import { getNextGameId, initializeGameCounter, initializeIDTracker, saveGame, saveMeets, savePlayers, saveRaces, saveTeams } from '@/data/storage';
-import { generateYearlyLeagueSchedule, generateTeamSchedules } from '@/logic/scheduleGenerator';
-import { Team, TeamSchedule } from '@/types/team';
-import { Game } from '@/types/game';
-import { createPlayer } from './generatePlayer';
-import { createTeamsForConference } from './generateTeam';
-import { Conference } from '@/types/regionals';
-import { Player } from '@/types/player';
-import { Meet, Race } from '@/types/schedule';
-import { SubArchetype } from '@/constants/subArchetypes';
-import { calculateSubArchetype } from './calculateSubArchetype';
-import { calculateTeamOvrs } from './calculateTeamOvr';
+import {
+    getNextGameId,
+    initializeGameCounter,
+    initializeIDTracker,
+    saveGame,
+    saveMeets,
+    savePlayers,
+    saveRaces,
+    saveTeams
+} from '@/data/storage';
+import {generateTeamSchedules, generateYearlyLeagueSchedule} from '@/logic/scheduleGenerator';
+import {Team, TeamSchedule} from '@/types/team';
+import {Game} from '@/types/game';
+import {createPlayer} from './generatePlayer';
+import {createTeamsForConference} from './generateTeam';
+import {Conference} from '@/types/regionals';
+import {Player} from '@/types/player';
+import {Meet, Race} from '@/types/schedule';
+import {SubArchetype} from '@/constants/subArchetypes';
+import {calculateSubArchetype} from './calculateSubArchetype';
+import {calculateTeamOvrs} from './calculateTeamOvr';
 
-
-export async function initializeNewGame(conferences: Conference[], numPlayersPerTeam: number, selectedSchoolId: number ): Promise<Game> {
+export async function initializeNewGame(conferences: Conference[], numPlayersPerTeam: number, selectedSchoolId: number): Promise<Game> {
     const teams: Team[] = [];
     const players: Player[] = [];
     const currentYear = 2024;
@@ -20,7 +28,7 @@ export async function initializeNewGame(conferences: Conference[], numPlayersPer
     await initializeGameCounter();
     const gameId = await getNextGameId();
     await initializeIDTracker(gameId);
-    
+
     for (const conference of conferences) {
         const conferenceTeams = await createTeamsForConference(gameId, currentYear, conference, selectedSchoolId);
         for (const team of conferenceTeams) {
@@ -38,7 +46,10 @@ export async function initializeNewGame(conferences: Conference[], numPlayersPer
     const selectedTeamId = teams.find(team => team.schoolId === selectedSchoolId)?.teamId;
     if (!selectedTeamId) throw new Error('Selected team not found');
 
-    const scheduleObject: {meets: Meet[], races: Race[]} = await generateYearlyLeagueSchedule(gameId, teams, players, currentYear);
+    const scheduleObject: {
+        meets: Meet[],
+        races: Race[]
+    } = await generateYearlyLeagueSchedule(gameId, teams, players, currentYear);
 
     const leagueSchedule = {
         year: currentYear,
@@ -48,7 +59,7 @@ export async function initializeNewGame(conferences: Conference[], numPlayersPer
     const teamSchedules = generateTeamSchedules(scheduleObject.meets, teams, currentYear);
 
     assignTeamSchedules(teams, teamSchedules);
-    
+
     const game: Game = {
         gameId,
         teams: teams.map(team => team.teamId),
@@ -81,11 +92,11 @@ export async function initializeNewGame(conferences: Conference[], numPlayersPer
 export function assignTeamSchedules(teams: Team[], teamSchedules: TeamSchedule[]): void {
     teams.forEach(team => {
         try {
-                const s= teamSchedules.find(schedule => schedule.teamId === team.teamId)
-                if(!s) throw new Error(`No schedule found for team ${team.teamId}`);
-                team.teamSchedule = s;
-            } catch (error) {
-                console.error(`Error assigning schedule to team ${team.teamId}`, error);
-            }
-        });
+            const s = teamSchedules.find(schedule => schedule.teamId === team.teamId)
+            if (!s) throw new Error(`No schedule found for team ${team.teamId}`);
+            team.teamSchedule = s;
+        } catch (error) {
+            console.error(`Error assigning schedule to team ${team.teamId}`, error);
+        }
+    });
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from 'next/navigation';
+import {useRouter} from 'next/navigation';
 
 export default function MainNav() {
     const router = useRouter();
@@ -10,7 +10,8 @@ export default function MainNav() {
             <nav className="space-x-4">
                 <span className="hover:underline cursor-pointer" onClick={() => router.push('/saved')}>Games</span>
                 <span className="hover:underline cursor-pointer" onClick={() => router.push('/')}>About</span>
-                <span className="hover:underline cursor-pointer" onClick={() => router.push('/settings')}>Settings</span>
+                <span className="hover:underline cursor-pointer"
+                      onClick={() => router.push('/settings')}>Settings</span>
             </nav>
         </header>
     );
