@@ -1,9 +1,9 @@
-import { Team } from '@/types/team';
-import { Heat, Meet, Race } from '@/types/schedule';
-import { raceTypes } from '@/constants/raceTypes';
-import { SeasonGamePhase, SeasonType } from '@/constants/seasons';
-import { getNextMeetId, getNextRaceId } from '@/data/storage';
-import { Player } from '@/types/player';
+import {Team} from '@/types/team';
+import {Heat, Meet, Race} from '@/types/schedule';
+import {raceTypes} from '@/constants/raceTypes';
+import {SeasonGamePhase, SeasonType} from '@/constants/seasons';
+import {getNextMeetId, getNextRaceId} from '@/data/storage';
+import {Player} from '@/types/player';
 
 export async function createMeet(teams: Team[], players: Player[], week: number, year: number, gameId: number): Promise<{meet: Meet, races: Race[]}> {
     const map = mapWeekToGamePhase(week);
@@ -25,12 +25,16 @@ export async function createMeet(teams: Team[], players: Player[], week: number,
 
 export async function createRacesForMeet(teams: Team[], players: Player[], gameId: number, seasonType: 'cross_country' | 'track_field', meetId: number, year: number): Promise<Race[]> {
     const playerMap = new Map(players.map(player => [player.playerId, player]));
-    const races = await Promise.all(raceTypes[seasonType].map(async eventType => {
-        const participants = teams.flatMap(team => 
+    return await Promise.all(raceTypes[seasonType].map(async eventType => {
+        const participants = teams.flatMap(team =>
             team.players.map(playerId => playerMap.get(playerId))
-                .filter(player => 
+                .filter(player =>
                     player && player.seasons.includes(seasonType) && player.eventTypes[seasonType].includes(eventType)
-                ).map(player => ({ playerId: player!.playerId, playerTime: 0, scoring: { points: 0, team_top_five: false, team_top_seven: false } }))
+                ).map(player => ({
+                playerId: player!.playerId,
+                playerTime: 0,
+                scoring: {points: 0, team_top_five: false, team_top_seven: false}
+            }))
         );
 
         let heats = 1;
@@ -41,24 +45,23 @@ export async function createRacesForMeet(teams: Team[], players: Player[], gameI
                 heats = Math.ceil(participants.length / 16);
             }
         }
-        const newHeats: Heat[] = Array.from({ length: heats }, () => ({ playerTimes: {}, players: [] }))
+        const newHeats: Heat[] = Array.from({length: heats}, () => ({playerTimes: {}, players: []}))
         participants.forEach((participant, index) => {
             const heatIndex = index % heats;
             newHeats[heatIndex].players.push(participant.playerId);
         });
-        
+
         return {
             participants,
             eventType,
             heats: newHeats,
             raceId: await getNextRaceId(gameId),
-            teams: teams.map(team => ({ teamId: team.teamId, points: 0, })),
+            teams: teams.map(team => ({teamId: team.teamId, points: 0,})),
             meetId,
             gameId,
             year,
         };
     }));
-    return races;
 }
 
 export function mapWeekToGamePhase(gameWeek: number): { season: SeasonType, type: SeasonGamePhase } {

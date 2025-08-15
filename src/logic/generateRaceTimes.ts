@@ -21,7 +21,7 @@ const variability = {
     '3000m': 0.14,
     '5000m': 0.16,
     '10000m': 0.20,
-    '8000m': 0.18 // Cross country
+    '8000m': 0.18 // Cross-country
 };
 
 function getBaseTimeForEvent(eventType: string): number {
@@ -161,17 +161,6 @@ function getPlayerSkill(player: Player, eventType: string): number {
     skill = Math.max(1, Math.min(10, skill));
 
     return skill;
-}
-
-export function generateRaceTimes(player: Player): { [eventType: string]: number } {
-    const events = Object.keys(minMax);
-    const raceTimes: { [eventType: string]: number } = {};
-
-    events.forEach(eventType => {
-        raceTimes[eventType] = generateRaceTime(eventType, player);
-    });
-
-    return raceTimes;
 }
 
 function getEnvironmentalFactor(eventType: string): number {

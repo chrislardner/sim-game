@@ -33,7 +33,7 @@ export async function handleNewYear(game: Game, teams: Team[], players: Player[]
                 else if (player.year == 1) player.year = 2;
             });
 
-            // Add recruits as new freshmen
+            // Add recruits as new first-year students
             for (let i = 0; i < graduatingSeniors.length; i++) {
                 const player = await createPlayer(game.gameId, team.teamId, 1, teamGraduatedPlayersSubArchetype[i], game.currentYear + 1, game.currentYear);
                 team.players.push(player.playerId);

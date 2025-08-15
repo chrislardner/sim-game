@@ -1,13 +1,26 @@
-import { Game } from '@/types/game';
-import { saveGame, loadGameData, loadMeets, loadPlayers, loadRaces, loadTeams, saveTeams, saveMeets, savePlayers, saveRaces, deleteMeet, deleteRace } from '@/data/storage';
-import { handleNewYear } from './newYear';
-import { createRacesForMeet, mapWeekToGamePhase } from '@/logic/meetGenerator';
-import { Meet, Race } from '@/types/schedule';
-import { Team } from '@/types/team';
-import { SeasonGamePhase } from '@/constants/seasons';
-import { generateRaceTime, } from './generateRaceTimes';
-import { Player } from '@/types/player';
-import { updateTeamAndPlayerPoints } from './scoring';
+import {Game} from '@/types/game';
+import {
+    deleteMeet,
+    deleteRace,
+    loadGameData,
+    loadMeets,
+    loadPlayers,
+    loadRaces,
+    loadTeams,
+    saveGame,
+    saveMeets,
+    savePlayers,
+    saveRaces,
+    saveTeams
+} from '@/data/storage';
+import {handleNewYear} from './newYear';
+import {createRacesForMeet, mapWeekToGamePhase} from '@/logic/meetGenerator';
+import {Meet, Race} from '@/types/schedule';
+import {Team} from '@/types/team';
+import {SeasonGamePhase} from '@/constants/seasons';
+import {generateRaceTime} from './generateRaceTimes';
+import {Player} from '@/types/player';
+import {updateTeamAndPlayerPoints} from './scoring';
 
 export async function simulateWeek(gameId: number): Promise<boolean> {
     let game: Game;
@@ -107,8 +120,7 @@ async function prepareForNextRound(game: Game, teams: Team[], players: Player[],
         const racesForWeek = races.filter(race => meetsForWeek.some(meet => meet.week === game.currentWeek && meet.year == game.currentYear && meet.races.includes(race.raceId)));
 
         try {
-            const remainTeams = await determineWinnersByPoints(meetsForWeek, racesForWeek, players);
-            game.remainingTeams = remainTeams;
+            game.remainingTeams = await determineWinnersByPoints(meetsForWeek, racesForWeek, players);
         } catch (error) {
             console.error("Error determining winners by points", error);
             return Promise.reject(false);
@@ -157,7 +169,6 @@ async function enterNextWeek(game: Game, teams: Team[], players: Player[], meets
 
 export async function determineWinnersByPoints(matches: Meet[], races: Race[], players: Player[]): Promise<number[]> {
     let winners: number[] = [];
-
     try {
         for (const meet of matches) {
             const teamScores: { [teamId: number]: number } = {};
@@ -184,9 +195,7 @@ export async function determineWinnersByPoints(matches: Meet[], races: Race[], p
                 const teamsToPush = sortedTeams.slice(0, numberOfTeamsToPush)
                 if (meet.week === 11 || meet.week === 26 || meet.week === 41) { /* empty */
                 }
-                const teamsToPushIds: number[] = teamsToPush.map(([teamId]) => Number(teamId));
-
-                winners = teamsToPushIds;
+                winners = teamsToPush.map(([teamId]) => Number(teamId));
 
             } else if (meet && meet.season === 'track_field') {
                 // Track & field scoring
@@ -203,9 +212,7 @@ export async function determineWinnersByPoints(matches: Meet[], races: Race[], p
 
                 const sortedTeams = Object.entries(teamScores).sort(([, a], [, b]) => b - a);
                 const numberOfTeamsToPush = Math.max(Math.ceil(sortedTeams.length * 0.25), 2);
-                const teamsToPush = sortedTeams.slice(0, numberOfTeamsToPush).map(([teamId]) => Number(teamId));
-
-                winners = teamsToPush;
+                winners = sortedTeams.slice(0, numberOfTeamsToPush).map(([teamId]) => Number(teamId));
             }
         }
     } catch (error) {
@@ -292,7 +299,6 @@ async function simulateMeetsForWeek(game: Game, meets: Meet[], races: Race[], pl
                 }
             }
         }
-
     }
     return Promise.resolve(true);
 }

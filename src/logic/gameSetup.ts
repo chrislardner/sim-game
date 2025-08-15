@@ -17,9 +17,9 @@ export async function initializeNewGame(conferences: Conference[], numPlayersPer
     const players: Player[] = [];
     const currentYear = 2024;
 
-    initializeGameCounter();
+    await initializeGameCounter();
     const gameId = await getNextGameId();
-    initializeIDTracker(gameId);
+    await initializeIDTracker(gameId);
     
     for (const conference of conferences) {
         const conferenceTeams = await createTeamsForConference(gameId, currentYear, conference, selectedSchoolId);

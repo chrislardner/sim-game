@@ -1,7 +1,7 @@
-import { Game } from "@/types/game";
-import { Player } from "@/types/player";
-import { Meet, RaceParticipant, Race } from "@/types/schedule";
-import { Team } from "@/types/team";
+import {Game} from "@/types/game";
+import {Player} from "@/types/player";
+import {Meet, Race, RaceParticipant} from "@/types/schedule";
+import {Team} from "@/types/team";
 
 export async function updateTeamAndPlayerPoints(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
     try {
@@ -91,8 +91,7 @@ export function handleCrossCountryScoring(race: Race, teams: Team[], players: Pl
 
         // Assign points based on position in the filtered list
         validParticipants.forEach((participant, index) => {
-            const points = index + 1; // Position in the race (1st place = 1 point)
-            participant.scoring.points = points;
+            participant.scoring.points = index + 1; // Position in the race (1st place = 1 point)
         });
 
         // Add points to meet teams for teams with at least 5 participants
