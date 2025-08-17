@@ -1,10 +1,10 @@
 "use client";
 
 import {usePathname} from 'next/navigation';
-import GameSidebar from '@/components/GameSidebar';
+import GameSidebar from '@/components/nav/GameSidebar';
 import '@/styles/globals.css';
 import {ThemeProvider} from '@/context/ThemeContext';
-import MainNav from '@/components/MainNav';
+import MainNav from '@/components/nav/MainNav';
 import {Analytics} from "@vercel/analytics/react"
 import React from "react";
 
