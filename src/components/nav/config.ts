@@ -1,7 +1,7 @@
 import type { NavItem } from "@/types/nav";
 
 export const NAV_CONFIG: NavItem[] = [
-    { type: "page", label: "Switch Leagues", hrefTemplate: "/saved" },
+    { type: "page", label: "Switch Leagues", hrefTemplate: "/leagues" },
     { type: "page", label: "Dashboard",      hrefTemplate: "/games/{id}" },
     {
         type: "section",
