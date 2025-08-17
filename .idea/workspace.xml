@@ -5,29 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e28de870-d56b-4166-941d-22f71990bd83" name="Changes" comment="Refactor navigation links and components; add new game types. new tableAPI, legacyTable exists for backwards compatability, new new-game page for UI/UX">
-      <change afterPath="$PROJECT_DIR$/src/components/LegacyTable.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/new-game/Section.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/new-game/columns.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/new-game/useNewGameSetup.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/types/new-game.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/project.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/about/FinePrint.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/about/Hero.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/about/InfoBar.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/about/SectionDivider.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/players/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/players/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/races/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/races/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/schedule/[meetId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/schedule/[meetId]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/schedule/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/schedule/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/teams/[teamId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/teams/[teamId]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/teams/[teamId]/schedule/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/teams/[teamId]/schedule/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/teams/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/teams/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/leagues/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/new-game/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/new-game/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/PlayerResults.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PlayerResults.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Table.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Table.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/icons/ChevronRight.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/icons/ChevronRight.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/nav/MainNav.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/nav/MainNav.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/nav/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/nav/config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/game.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/game.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/regionals.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/regionals.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -182,7 +165,7 @@
       <workItem from="1755455908653" duration="108000" />
       <workItem from="1755456025796" duration="128000" />
       <workItem from="1755456359610" duration="122000" />
-      <workItem from="1755456491647" duration="9094000" />
+      <workItem from="1755456491647" duration="12449000" />
     </task>
     <task id="LOCAL-00001" summary="update README.md">
       <option name="closed" value="true" />
@@ -312,7 +295,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755461411406</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Refactor navigation links and components; add new game types. new tableAPI, legacyTable exists for backwards compatability, new new-game page for UI/UX">
+      <option name="closed" value="true" />
+      <created>1755465680797</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1755465680797</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
