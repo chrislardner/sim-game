@@ -5,7 +5,7 @@ import {use, useEffect, useState} from 'react';
 import {loadActivePlayers, loadGameData, loadTeams} from '@/data/storage';
 import {Team} from '@/types/team';
 import {Player} from '@/types/player';
-import Table from '@/components/Table';
+import Table from '@/components/LegacyTable';
 import {Conference} from '@/types/regionals';
 
 export default function TeamPage({params}: Readonly<{ params: Promise<{ gameId: string, teamId: string }> }>) {

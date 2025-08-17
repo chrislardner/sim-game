@@ -3,7 +3,7 @@ import {Game} from '@/types/game';
 import {Meet, Race} from '@/types/schedule';
 import {loadGameData, loadMeets, loadRaces} from '@/data/storage';
 import YearFilter from './YearFilterer';
-import Table from './Table';
+import Table from './LegacyTable';
 
 interface PlayerResultsProps {
     gameId: number;

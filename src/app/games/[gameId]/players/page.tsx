@@ -3,7 +3,7 @@
 import {use, useEffect, useState} from 'react';
 import {loadActivePlayers, loadTeams} from '@/data/storage';
 import {Player} from '@/types/player';
-import Table from '@/components/Table';
+import Table from '@/components/LegacyTable';
 import {Team} from '@/types/team';
 
 export default function PlayersPage({params}: Readonly<{ params: Promise<{ gameId: string }> }>) {

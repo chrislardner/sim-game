@@ -4,7 +4,7 @@ import {use, useEffect, useState} from "react";
 import {loadGameData, loadMeets, loadTeams} from "@/data/storage";
 import {Meet} from "@/types/schedule";
 import {Team} from "@/types/team";
-import Table from "@/components/Table";
+import Table from "@/components/LegacyTable";
 import YearFilter from "@/components/YearFilterer";
 import {Game} from "@/types/game";
 

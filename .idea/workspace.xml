@@ -4,18 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e28de870-d56b-4166-941d-22f71990bd83" name="Changes" comment="add .idea to gitignore">
-      <change afterPath="$PROJECT_DIR$/src/components/icons/ChevronRight.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/nav/GameSidebar.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/nav/config.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/nav/resolve.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/cn.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/types/nav.ts" afterDir="false" />
+    <list default="true" id="e28de870-d56b-4166-941d-22f71990bd83" name="Changes" comment="Refactor navigation links and components; add new game types. new tableAPI, legacyTable exists for backwards compatability, new new-game page for UI/UX">
+      <change afterPath="$PROJECT_DIR$/src/components/LegacyTable.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/new-game/Section.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/new-game/columns.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/new-game/useNewGameSetup.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/types/new-game.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/GameSidebar.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/MainNav.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/nav/MainNav.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/players/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/players/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/races/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/races/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/schedule/[meetId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/schedule/[meetId]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/schedule/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/schedule/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/teams/[teamId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/teams/[teamId]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/teams/[teamId]/schedule/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/teams/[teamId]/schedule/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/teams/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/teams/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/leagues/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/new-game/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/new-game/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PlayerResults.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PlayerResults.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Table.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Table.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/icons/ChevronRight.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/icons/ChevronRight.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/nav/MainNav.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/nav/MainNav.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/nav/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/nav/config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/game.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/game.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/regionals.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/regionals.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,12 +54,12 @@
     &quot;assignee&quot;: &quot;chrislardner&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/chrislardner/sim-game.git&quot;,
-    &quot;accountId&quot;: &quot;5f516e4b-40b2-4bb6-9d3a-c83f22b7f7c3&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/chrislardner/sim-game.git",
+    "accountId": "4fcd80bf-d3fe-44ae-b72d-d8e92d9ba324"
   }
-}</component>
+}]]></component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -100,6 +112,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/app/games" />
       <recent name="$PROJECT_DIR$/src/types" />
       <recent name="$PROJECT_DIR$/src/components/nav" />
     </key>
@@ -169,7 +182,7 @@
       <workItem from="1755455908653" duration="108000" />
       <workItem from="1755456025796" duration="128000" />
       <workItem from="1755456359610" duration="122000" />
-      <workItem from="1755456491647" duration="4588000" />
+      <workItem from="1755456491647" duration="9094000" />
     </task>
     <task id="LOCAL-00001" summary="update README.md">
       <option name="closed" value="true" />
@@ -283,7 +296,23 @@
       <option name="project" value="LOCAL" />
       <updated>1755288349461</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Add navigation components and utility functions, refactor game sidebar">
+      <option name="closed" value="true" />
+      <created>1755461250468</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1755461250468</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Update navigation links to point to the leagues page">
+      <option name="closed" value="true" />
+      <created>1755461411406</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1755461411406</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -340,7 +369,10 @@
     <MESSAGE value="rename onyear" />
     <MESSAGE value="Change to inline functions" />
     <MESSAGE value="add .idea to gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="add .idea to gitignore" />
+    <MESSAGE value="Add navigation components and utility functions, refactor game sidebar" />
+    <MESSAGE value="Update navigation links to point to the leagues page" />
+    <MESSAGE value="Refactor navigation links and components; add new game types. new tableAPI, legacyTable exists for backwards compatability, new new-game page for UI/UX" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor navigation links and components; add new game types. new tableAPI, legacyTable exists for backwards compatability, new new-game page for UI/UX" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

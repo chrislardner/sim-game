@@ -3,7 +3,7 @@
 import {use, useEffect, useState} from 'react';
 import {loadGameData, loadTeams} from '@/data/storage';
 import {Team} from '@/types/team';
-import Table from '@/components/Table';
+import Table from '@/components/LegacyTable';
 import {Game} from '@/types/game';
 
 export default function TeamsPage({params}: Readonly<{ params: Promise<{ gameId: string }> }>) {

@@ -1,6 +1,6 @@
 import {YearlyLeagueSchedule} from './schedule';
 import {SeasonGamePhase} from '@/constants/seasons';
-import {Conference, School} from './regionals';
+import {Conference} from './regionals';
 
 export interface Game {
     gamePhase: SeasonGamePhase;
@@ -12,12 +12,5 @@ export interface Game {
     leagueSchedule: YearlyLeagueSchedule;    // Full season schedule
     remainingTeams: number[]; // TeamIds still in the playoffs
     selectedTeamId: number
-    conferences: Conference[];
-}
-
-export interface GameSetup {
-    conferenceIds: number[];
-    numPlayersPerTeam: number;
-    schools: School[];
     conferences: Conference[];
 }

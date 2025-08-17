@@ -1,9 +1,3 @@
-// export interface Region {
-//     regionId: number;
-//     regionName: string;
-//     conferenceIds: number[];
-// } implement later when needed -- need to clean data
-
 export interface Conference {
     conferenceId: number;
     conferenceName: string;

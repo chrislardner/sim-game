@@ -1,7 +1,7 @@
 import type { NavItem } from "@/types/nav";
 
 export const NAV_CONFIG: NavItem[] = [
-    { type: "page", label: "Switch Leagues", hrefTemplate: "/leagues" },
+    { type: "page", label: "Switch Leagues", hrefTemplate: "/games" },
     { type: "page", label: "Dashboard",      hrefTemplate: "/games/{id}" },
     {
         type: "section",
@@ -9,7 +9,7 @@ export const NAV_CONFIG: NavItem[] = [
         children: [
             { type: "page", label: "Teams",     hrefTemplate: "/games/{id}/teams" },
             { type: "page", label: "Standings", hrefTemplate: "/games/{id}/standings" },
-            { type: "page", label: "Meets",     hrefTemplate: "/games/{id}/meets" },
+            { type: "page", label: "Schedule",     hrefTemplate: "/games/{id}/schedule" },
             { type: "page", label: "Races",     hrefTemplate: "/games/{id}/races" },
         ],
     },

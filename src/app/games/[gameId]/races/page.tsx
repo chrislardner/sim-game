@@ -5,7 +5,7 @@ import {loadGameData, loadMeets, loadPlayers, loadRaces, loadTeams} from '@/data
 import {Meet, Race} from '@/types/schedule';
 import {Player} from '@/types/player';
 import {Team} from '@/types/team';
-import Table from '@/components/Table';
+import Table from '@/components/LegacyTable';
 import YearFilter from '@/components/YearFilterer';
 import {Game} from '@/types/game';
 

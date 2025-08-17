@@ -6,7 +6,7 @@ import {loadMeets, loadPlayers, loadRaces, loadTeams} from '@/data/storage';
 import {Meet, Race, RaceParticipant} from '@/types/schedule';
 import {Team} from '@/types/team';
 import {Player} from '@/types/player';
-import Table from '@/components/Table';
+import Table from '@/components/LegacyTable';
 
 export default function MeetPage() {
     const router = useRouter();
