@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import Table, { ColumnDef } from "@/components/Table";
-import { deleteAllGames, deleteGameData, loadAllGames } from "@/data/storage";
-import type { Game } from "@/types/game";
-import { FaPlay, FaTrashAlt } from "react-icons/fa";
+import {useEffect, useMemo, useState} from "react";
+import {useRouter} from "next/navigation";
+import Table, {ColumnDef} from "@/components/Table";
+import {deleteAllGames, deleteGameData, loadAllGames} from "@/data/storage";
+import type {Game} from "@/types/game";
+import {FaPlay, FaTrashAlt} from "react-icons/fa";
 
 type GameMeta = {
     createdAt?: string;
@@ -38,9 +38,47 @@ function fmtDate(iso?: string) {
     }).format(d);
 }
 
+function useFooterAwareBottom(base = 16, gap = 12, footerSelector = "#site-footer, footer") {
+    const [bottom, setBottom] = useState(base);
+
+    useEffect(() => {
+        const footer = document.querySelector(footerSelector) as HTMLElement | null;
+
+        const update = () => {
+            if (!footer) {
+                setBottom(base);
+                return;
+            }
+            const rect = footer.getBoundingClientRect();
+            const overlap = Math.max(0, window.innerHeight - rect.top);
+            const maxLift = rect.height + gap;
+            const lift = Math.min(overlap, maxLift);
+            setBottom(base + lift);
+        };
+
+        const onScroll = () => update();
+        const onResize = () => update();
+        window.addEventListener("scroll", onScroll, {passive: true});
+        window.addEventListener("resize", onResize);
+        const ro = new ResizeObserver(update);
+        if (footer) ro.observe(footer);
+
+        update();
+
+        return () => {
+            window.removeEventListener("scroll", onScroll);
+            window.removeEventListener("resize", onResize);
+            ro.disconnect();
+        };
+    }, [base, gap, footerSelector]);
+
+    return bottom;
+}
+
 export default function GamesPage() {
     const [games, setGames] = useState<(Game & GameMeta)[]>([]);
     const [showModal, setShowModal] = useState(false);
+    const bottom = useFooterAwareBottom(16, 12);
     const router = useRouter();
 
     useEffect(() => {
@@ -94,7 +132,7 @@ export default function GamesPage() {
                     aria-label={`Play game ${r.id}`}
                     title="Play"
                 >
-                    <FaPlay />
+                    <FaPlay/>
                     <span>#{r.id}</span>
                 </button>
             ),
@@ -105,17 +143,18 @@ export default function GamesPage() {
             label: "Phase",
             className: "w-32",
             render: (r) => (
-                <span className="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
+                <span
+                    className="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
           {r.phase}
         </span>
             ),
         },
-        { id: "year", field: "year", label: "Year", className: "w-20" },
-        { id: "week", field: "week", label: "Week", className: "w-20" },
-        { id: "teams", field: "teamsCount", label: "Teams", className: "w-20" },
-        { id: "players", field: "playersCount", label: "Players", className: "w-24" },
-        { id: "in-playoffs", field: "playoffsTeams", label: "In Playoffs", className: "w-28" },
-        { id: "selected-team", field: "selectedTeamId", label: "Selected Team", className: "w-36" },
+        {id: "year", field: "year", label: "Year", className: "w-20"},
+        {id: "week", field: "week", label: "Week", className: "w-20"},
+        {id: "teams", field: "teamsCount", label: "Teams", className: "w-20"},
+        {id: "players", field: "playersCount", label: "Players", className: "w-24"},
+        {id: "in-playoffs", field: "playoffsTeams", label: "In Playoffs", className: "w-28"},
+        {id: "selected-team", field: "selectedTeamId", label: "Selected Team", className: "w-36"},
         {
             id: "last-played",
             field: "lastPlayedAt",
@@ -145,7 +184,7 @@ export default function GamesPage() {
                     aria-label={`Delete game ${r.id}`}
                     title="Delete"
                 >
-                    <FaTrashAlt />
+                    <FaTrashAlt/>
                     <span>Delete</span>
                 </button>
             ),
@@ -167,16 +206,21 @@ export default function GamesPage() {
             </div>
 
             <div className="bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
-                <Table<LeagueRow> data={rows} columns={columns} />
+                <Table<LeagueRow> data={rows} columns={columns}/>
             </div>
 
             {games.length > 0 && (
-                <button
-                    onClick={() => setShowModal(true)}
-                    className="fixed bottom-4 right-4 px-4 py-2 bg-red-600 text-white rounded-lg transition hover:bg-red-700"
+                <div
+                    className="fixed right-4 z-30"
+                    style={{bottom}}
                 >
-                    Delete All Games
-                </button>
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg transition hover:bg-red-700 shadow"
+                    >
+                        Delete All Games
+                    </button>
+                </div>
             )}
 
             {showModal && (

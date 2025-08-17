@@ -1,0 +1,64 @@
+// server component (no "use client" needed)
+import Link from "next/link";
+
+type LinkItem = { label: string; href: string; external?: boolean };
+
+const LINKS: LinkItem[] = [
+    { label: "About",   href: "/" },
+    { label: "Blog",    href: "/blog" },
+    { label: "Contact", href: "mailto:me@example.com" }, // <- change me
+    { label: "Privacy", href: "/privacy" },
+    { label: "GitHub",  href: "https://github.com/chrislardner/sim-game", external: true }, // <- change me
+];
+
+export default function Footer({
+                                       build = process.env.NEXT_PUBLIC_BUILD ?? "dev",
+                                   }: {
+    build?: string;
+}) {
+    return (
+        <footer className="relative">
+            <div className="container mx-auto px-4">
+                <div
+                    aria-hidden
+                    className="h-px w-full bg-gradient-to-r from-transparent via-neutral-900/15 dark:via-white/15 to-transparent"
+                />
+            </div>
+
+            <div className="container mx-auto px-4">
+                <div className="py-4 md:py-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <nav className="text-xs text-neutral-600 dark:text-neutral-400">
+                        {LINKS.map((l, i) => (
+                            <span key={l.label} className="inline-flex items-center">
+                {l.external ? (
+                    <a
+                        href={l.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-neutral-900 dark:hover:text-neutral-100 transition"
+                    >
+                        {l.label}
+                    </a>
+                ) : (
+                    <Link
+                        href={l.href}
+                        className="hover:text-neutral-900 dark:hover:text-neutral-100 transition"
+                    >
+                        {l.label}
+                    </Link>
+                )}
+                                {i < LINKS.length - 1 && (
+                                    <span aria-hidden className="mx-2 text-neutral-400 dark:text-neutral-600">·</span>
+                                )}
+              </span>
+                        ))}
+                    </nav>
+
+                    <div className="text-[11px] tracking-wide text-neutral-500 dark:text-neutral-400">
+                        Build&nbsp;<code className="font-mono">{build}</code>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    );
+}

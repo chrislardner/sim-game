@@ -151,17 +151,16 @@ export default function NewGamePage() {
                     <div className="h-2" aria-hidden="true"/>
                 </form>
             </div>
-            <div
-                className="
-    fixed inset-x-0 bottom-0 z-40
-    border-t border-neutral-200 dark:border-neutral-800
-    bg-surface-light/90 dark:bg-surface-dark/90
-    backdrop-blur supports-[backdrop-filter]:bg-surface-light/60
-    dark:supports-[backdrop-filter]:bg-surface-dark/60
-  "
-            >
-                <div className="container mx-auto px-4">
-                    <div className="py-3 flex items-center justify-end gap-3">
+            <div className="sticky bottom-0 z-30">
+                <div
+                    className="
+                      border-t border-neutral-200 dark:border-neutral-800
+                      bg-surface-light/90 dark:bg-surface-dark/90
+                      backdrop-blur supports-[backdrop-filter]:bg-surface-light/60
+                      dark:supports-[backdrop-filter]:bg-surface-dark/60
+        "
+                >
+                    <div className="py-3 px-6 flex items-center justify-end gap-3">
                         <button
                             type="button"
                             onClick={resetForm}
@@ -169,7 +168,6 @@ export default function NewGamePage() {
                         >
                             Reset
                         </button>
-
                         <button
                             type="button"
                             onClick={handleCreateGame}

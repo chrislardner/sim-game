@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e28de870-d56b-4166-941d-22f71990bd83" name="Changes" comment="Refactor navigation links and components; add new game types. new tableAPI, legacyTable exists for backwards compatability, new new-game page for UI/UX">
-      <change afterPath="$PROJECT_DIR$/src/components/about/FinePrint.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/about/Hero.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/about/InfoBar.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/about/SectionDivider.tsx" afterDir="false" />
+    <list default="true" id="e28de870-d56b-4166-941d-22f71990bd83" name="Changes" comment="Add new components for About">
+      <change afterPath="$PROJECT_DIR$/src/components/Footer.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/new-game/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/new-game/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -165,7 +164,7 @@
       <workItem from="1755455908653" duration="108000" />
       <workItem from="1755456025796" duration="128000" />
       <workItem from="1755456359610" duration="122000" />
-      <workItem from="1755456491647" duration="12449000" />
+      <workItem from="1755456491647" duration="14372000" />
     </task>
     <task id="LOCAL-00001" summary="update README.md">
       <option name="closed" value="true" />
@@ -303,7 +302,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755465680797</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Add new components for About">
+      <option name="closed" value="true" />
+      <created>1755469692856</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1755469692856</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -363,7 +370,8 @@
     <MESSAGE value="Add navigation components and utility functions, refactor game sidebar" />
     <MESSAGE value="Update navigation links to point to the leagues page" />
     <MESSAGE value="Refactor navigation links and components; add new game types. new tableAPI, legacyTable exists for backwards compatability, new new-game page for UI/UX" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor navigation links and components; add new game types. new tableAPI, legacyTable exists for backwards compatability, new new-game page for UI/UX" />
+    <MESSAGE value="Add new components for About" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add new components for About" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

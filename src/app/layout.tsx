@@ -1,37 +1,49 @@
 "use client";
 
-import {usePathname} from 'next/navigation';
-import GameSidebar from '@/components/nav/GameSidebar';
-import '@/styles/globals.css';
-import {ThemeProvider} from '@/context/ThemeContext';
-import MainNav from '@/components/nav/MainNav';
-import {Analytics} from "@vercel/analytics/react"
 import React from "react";
+import { usePathname } from "next/navigation";
+import { ThemeProvider } from "@/context/ThemeContext";
+import MainNav from "@/components/nav/MainNav";
+import GameSidebar from "@/components/nav/GameSidebar";
+import Footer from "@/components/Footer";
+import "@/styles/globals.css";
+import { Analytics } from "@vercel/analytics/react";
 
-export default function RootLayout({children}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const gameId = pathname.split('/games/')[1]?.split('/')[0] || '';
 
-    const isInGameRoute = pathname.includes(`/games/${gameId}`);
+    const match = pathname.match(/^\/games\/([^/]+)/);
+    const gameId = match?.[1] ?? "";
+    const hasSidebar = Boolean(match);
 
     return (
         <html lang="en">
-        <body
-            className="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors">
+        <body className="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors">
         <ThemeProvider>
-            <div className="flex min-h-screen">
-                {isInGameRoute && (
-                    <div className="w-48 fixed">
-                        <GameSidebar params={Promise.resolve({gameId})}/>
-                    </div>
+            <div className={`${hasSidebar ? "md:grid md:grid-cols-[12rem_1fr]" : ""} min-h-screen`}>
+                {hasSidebar && (
+                    <aside
+                        className="
+                  hidden md:block
+                  sticky top-0 h-screen
+                  border-r border-neutral-200 dark:border-neutral-800
+                  bg-surface-light dark:bg-surface-dark
+                  overflow-y-auto
+                "
+                    >
+                        <GameSidebar params={Promise.resolve({ gameId })} />
+                    </aside>
                 )}
-                <main className={`${isInGameRoute ? 'ml-48' : ''} flex-1`}>
-                    <MainNav/>
-                    {children}
-                </main>
+
+                <div className="flex min-h-screen flex-col">
+                    <MainNav />
+                    <main className="flex-1">{children}</main>
+                    <Footer />
+                </div>
             </div>
+
+            <Analytics />
         </ThemeProvider>
-        <Analytics/>
         </body>
         </html>
     );
