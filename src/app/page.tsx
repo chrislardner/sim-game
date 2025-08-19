@@ -12,7 +12,7 @@ export default function AboutPage() {
             <SectionDivider className="my-8 md:my-10" />
             <InfoBar />
             <SectionDivider className="my-8 md:my-10" />
-            <FinePrint email="me@example.com" />
+            <FinePrint email="dev@xctracksim.com" />
         </main>
     );
 }

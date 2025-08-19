@@ -1,7 +1,7 @@
 "use client";
 
 export default function FinePrint({
-                                          email = "you@example.com",
+                                          email = "dev@xctracksim.com",
                                       }: { email?: string }) {
     return (
         <section className="container mx-auto px-4 py-6 md:py-8">
