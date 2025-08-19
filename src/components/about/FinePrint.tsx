@@ -10,7 +10,7 @@ export default function FinePrint({
                     <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-600 dark:text-neutral-300">
                         Contact
                     </h2>
-                    <p className="mt-2 text-sm text-neutral-200/90 dark:text-neutral-200">
+                    <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-200">
                         Feedback or bugs:{" "}
                         <a
                             href={`mailto:${email}`}

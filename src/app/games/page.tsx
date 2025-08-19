@@ -19,7 +19,6 @@ type LeagueRow = {
     week: number;
     teamsCount: number;
     playersCount: number;
-    playoffsTeams: number;
     selectedTeamId: number | string;
     createdAt?: string;
     lastPlayedAt?: string;
@@ -97,7 +96,6 @@ export default function GamesPage() {
                 week: g.currentWeek,
                 teamsCount: g.teams?.length ?? 0,
                 playersCount: g.players?.length ?? 0,
-                playoffsTeams: g.remainingTeams?.length ?? 0,
                 selectedTeamId: g.selectedTeamId ?? "—",
                 createdAt: g.createdAt,
                 lastPlayedAt: g.lastPlayedAt,
@@ -153,7 +151,6 @@ export default function GamesPage() {
         {id: "week", field: "week", label: "Week", className: "w-20"},
         {id: "teams", field: "teamsCount", label: "Teams", className: "w-20"},
         {id: "players", field: "playersCount", label: "Players", className: "w-24"},
-        {id: "in-playoffs", field: "playoffsTeams", label: "In Playoffs", className: "w-28"},
         {id: "selected-team", field: "selectedTeamId", label: "Selected Team", className: "w-36"},
         {
             id: "last-played",
