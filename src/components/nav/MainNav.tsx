@@ -29,7 +29,7 @@ export default function MainNav() {
             <div className="container mx-auto px-4">
                 <div className="flex h-12 items-center justify-between">
                     <Link href="/" className="select-none text-sm font-semibold tracking-wide">
-                        XC·TF&nbsp;GM
+                        XC Track Sim
                     </Link>
 
                     <nav className="flex items-center gap-2">

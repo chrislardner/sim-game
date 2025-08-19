@@ -1,6 +1,6 @@
 import React from "react";
 
-export const metadata = { title: "Manual • XC/TF GM" };
+export const metadata = { title: "Manual • XC Track Sim" };
 const fmt = new Intl.DateTimeFormat(undefined, {
     year: "numeric",
     month: "short",
@@ -28,7 +28,7 @@ export default function ManualPage() {
                 <div className="container mx-auto px-4 pt-10">
                     <div className="max-w-3xl">
                         <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
-                            XC/TF GM Manual
+                            XC Track Sim Manual
                         </h1>
                         <p className="mt-3 text-neutral-700 dark:text-neutral-300">
                             Run a college cross country & track program. Build rosters, simulate meets, and chase championships.
@@ -89,7 +89,7 @@ export default function ManualPage() {
 
                         <Section id="overview" title="Overview">
                             <p>
-                                XC/TF GM is a browser-based management sim for collegiate cross country and track.
+                                XC Track Sim is a browser-based management sim for collegiate cross country and track.
                                 Compete through a regular season of meets culminating in championships, with fictional athletes and real schools.
                             </p>
                         </Section>
