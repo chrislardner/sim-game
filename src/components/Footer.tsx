@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BuildStamp from "@/components/BuildStamp";
 
 type LinkItem = { label: string; href: string; external?: boolean };
 
@@ -9,11 +10,7 @@ const LINKS: LinkItem[] = [
     { label: "GitHub",  href: "https://github.com/chrislardner/sim-game", external: true },
 ];
 
-export default function Footer({
-                                       build = process.env.NEXT_PUBLIC_BUILD ?? "dev",
-                                   }: {
-    build?: string;
-}) {
+export default function Footer(){
     return (
         <footer className="relative">
             <div className="container mx-auto px-4">
@@ -51,10 +48,7 @@ export default function Footer({
               </span>
                         ))}
                     </nav>
-
-                    <div className="text-[11px] tracking-wide text-neutral-500 dark:text-neutral-400">
-                        Build&nbsp;<code className="font-mono">{build}</code>
-                    </div>
+                    <BuildStamp />
                 </div>
             </div>
         </footer>
