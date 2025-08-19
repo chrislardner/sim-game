@@ -6,4 +6,4 @@ The current version and all future versions of this project will be secure unles
 
 ## Reporting a Vulnerability
 
-contact rhit-lardnece at lardnece@rose-hulman.edu
+Contact me at dev@xctracksim.com

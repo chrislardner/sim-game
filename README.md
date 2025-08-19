@@ -82,4 +82,4 @@ The game operates on a **yearly cycle**, broken into the following phases:
 
 ---
 
-Let me know if you have ideas to improve the game! Contact me at lardnece@rose-hulman.edu
+Let me know if you have ideas to improve the game! Contact me at dev@xctracksim.com
