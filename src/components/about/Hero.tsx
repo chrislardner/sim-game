@@ -1,18 +1,8 @@
-"use client";
-
 import Link from "next/link";
+import BuildStamp from "@/components/BuildStamp";
+import {LAST_UPDATED} from "@/constants/lastUpdated";
 
-export default function Hero({
-                                      build = process.env.NEXT_PUBLIC_BUILD ?? "dev",
-                                      lastUpdated = process.env.NEXT_PUBLIC_LAST_UPDATED ?? "",
-                                  }: {
-    build?: string;
-    lastUpdated?: string;
-}) {
-    const stamp = lastUpdated
-        ? new Date(lastUpdated).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" })
-        : null;
-
+export default function Hero() {
     return (
         <section className="relative overflow-hidden">
             <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -45,8 +35,8 @@ export default function Hero({
                     </div>
 
                     <div className="mt-4 text-xs text-neutral-500 dark:text-neutral-400">
-                        {stamp ? <>Updated {stamp} • </> : null}
-                        Build <code className="font-mono">{build}</code>
+                        {LAST_UPDATED ? <>Updated {LAST_UPDATED} • </> : null}
+                        <BuildStamp />
                     </div>
                 </div>
             </div>

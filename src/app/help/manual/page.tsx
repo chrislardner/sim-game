@@ -1,4 +1,5 @@
 import React from "react";
+import {LAST_UPDATED} from "@/constants/lastUpdated";
 
 export const metadata = { title: "Manual • XC/TF GM" };
 const fmt = new Intl.DateTimeFormat(undefined, {
@@ -6,8 +7,6 @@ const fmt = new Intl.DateTimeFormat(undefined, {
     month: "short",
     day: "2-digit",
 });
-
-const LAST_UPDATED = "2025-08-17"; // ISO
 
 const sections = [
     { id: "overview",  label: "Overview" },
