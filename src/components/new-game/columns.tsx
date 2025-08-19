@@ -80,7 +80,7 @@ export function buildSchoolColumns(opts: {
         {
             id: "conf",
             label: "Conference",
-            field: "conferenceName", // enables sort by name
+            field: "conferenceName",
             className: "min-w-[14rem]",
             render: (r) => (
                 <span className="inline-flex items-center gap-2">

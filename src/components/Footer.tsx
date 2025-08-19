@@ -1,14 +1,12 @@
-// server component (no "use client" needed)
 import Link from "next/link";
 
 type LinkItem = { label: string; href: string; external?: boolean };
 
 const LINKS: LinkItem[] = [
     { label: "About",   href: "/" },
-    { label: "Blog",    href: "/blog" },
-    { label: "Contact", href: "mailto:me@example.com" }, // <- change me
-    { label: "Privacy", href: "/privacy" },
-    { label: "GitHub",  href: "https://github.com/chrislardner/sim-game", external: true }, // <- change me
+    { label: "Manual",    href: "/help/manual" },
+    { label: "Contact", href: "mailto:me@example.com" },
+    { label: "GitHub",  href: "https://github.com/chrislardner/sim-game", external: true },
 ];
 
 export default function Footer({

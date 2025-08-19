@@ -14,11 +14,10 @@ export type LegacyColumnDef<T> = {
 export type LegacyTableProps<T> = {
     data: T[];
     columns: LegacyColumnDef<T>[];
-    linkColumns?: (keyof T)[];     // old prop name
+    linkColumns?: (keyof T)[];
     getRowLink?: (item: T) => string;
 };
 
-/** Map legacy props -> new core props */
 export default function LegacyTable<T>({
                                            data,
                                            columns,
