@@ -6,7 +6,7 @@ type LinkItem = { label: string; href: string; external?: boolean };
 const LINKS: LinkItem[] = [
     { label: "About",   href: "/" },
     { label: "Manual",    href: "/help/manual" },
-    { label: "Contact", href: "mailto:me@example.com" },
+    { label: "Contact", href: "mailto:dev@xctracksim.com" },
     { label: "GitHub",  href: "https://github.com/chrislardner/sim-game", external: true },
 ];
 
