@@ -40,5 +40,4 @@ package-lock.json
 # notes
 *.txt
 
-/.idea
-
+.idea/
