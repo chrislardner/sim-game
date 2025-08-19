@@ -1,6 +1,5 @@
 import Link from "next/link";
 import BuildStamp from "@/components/BuildStamp";
-import {LAST_UPDATED} from "@/constants/lastUpdated";
 
 export default function Hero() {
     return (
@@ -35,7 +34,6 @@ export default function Hero() {
                     </div>
 
                     <div className="mt-4 text-xs text-neutral-500 dark:text-neutral-400">
-                        {LAST_UPDATED ? <>Updated {LAST_UPDATED} • </> : null}
                         <BuildStamp />
                     </div>
                 </div>
