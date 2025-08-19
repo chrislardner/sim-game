@@ -1,1 +1,1 @@
-Contact me at lardnece@rose-hulman.edu to find out about contributing to this project
+Contact me at dev@xctracksim.com to find out about contributing to this project

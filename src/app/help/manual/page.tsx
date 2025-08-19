@@ -161,7 +161,7 @@ export default function ManualPage() {
 
                         <Section id="support" title="Support & Debugging">
                             <p>
-                                Found a bug? Reach out to me at lardnece@rose-hulman.edu with details.
+                                Found a bug? Reach out to me at dev@xctracksim.com with details.
                             </p>
                         </Section>
 
