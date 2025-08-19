@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     const hasSidebar = Boolean(match);
 
     return (
-        <html lang="en">
+        <html lang="en" className="dark">
         <body className="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors">
         <ThemeProvider>
             <div className={cn(hasSidebar ? "md:grid md:grid-cols-[12rem_1fr]" : "", "min-h-screen")}>
