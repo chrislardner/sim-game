@@ -31,16 +31,16 @@ export default function Hero({
 
                     <div className="mt-8 flex flex-wrap gap-3">
                         <Link
-                            href="/new-game"
+                            href="/games"
                             className="inline-flex items-center rounded-md px-5 py-2.5 text-white bg-neutral-900 dark:bg-neutral-100 dark:text-neutral-900 hover:opacity-90 transition"
                         >
                             Play Now
                         </Link>
                         <Link
-                            href="/games"
+                            href="/new-game"
                             className="inline-flex items-center rounded-md px-5 py-2.5 border border-neutral-300 dark:border-neutral-700 text-neutral-800 dark:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition"
                         >
-                            Saved Leagues
+                            New Game
                         </Link>
                     </div>
 

@@ -69,7 +69,7 @@ export default function TeamSchedulePage({params}: Readonly<{ params: Promise<{ 
 
     }));
 
-    const getRowLink = (meet: TransformedMeet) => `/games/${gameId}/schedule/${meet.meetId}`;
+    const getRowLink = (meet: TransformedMeet) => `/games/${gameId}/league/schedule/${meet.meetId}`;
 
     return (
         <div className="p-4">

@@ -34,7 +34,7 @@ export default function TeamPage({params}: Readonly<{ params: Promise<{ gameId: 
     if (!team) return <div>Loading...</div>;
 
     const handleScheduleClick = () => {
-        router.push(`/games/${gameId}/teams/${teamId}/schedule`);
+        router.push(`/games/${gameId}/league/teams/${teamId}/schedule`);
     };
 
     const columns: {

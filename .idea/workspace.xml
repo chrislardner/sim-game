@@ -4,12 +4,34 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e28de870-d56b-4166-941d-22f71990bd83" name="Changes" comment="Add new components for About">
-      <change afterPath="$PROJECT_DIR$/src/components/Footer.tsx" afterDir="false" />
+    <list default="true" id="e28de870-d56b-4166-941d-22f71990bd83" name="Changes" comment="Add Footer component">
+      <change afterPath="$PROJECT_DIR$/src/app/games/[gameId]/league/ratings/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/[gameId]/league/standings/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/[gameId]/stats/playerStats/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/games/[gameId]/tools/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/help/manual/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/games/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/next.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/players/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/players/ratings/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/races/[raceId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/league/races/[raceId]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/races/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/league/races/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/recruiting/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/team/recruiting/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/schedule/[meetId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/league/schedule/[meetId]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/schedule/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/league/schedule/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/teams/[teamId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/league/teams/[teamId]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/teams/[teamId]/schedule/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/league/teams/[teamId]/schedule/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/games/[gameId]/teams/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/games/[gameId]/league/teams/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/new-game/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/new-game/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Table.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Table.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/about/Hero.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/about/Hero.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/nav/GameSidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/nav/GameSidebar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/nav/MainNav.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/nav/MainNav.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/nav/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/nav/config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/nav.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/nav.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,9 +116,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/app/games" />
-      <recent name="$PROJECT_DIR$/src/types" />
-      <recent name="$PROJECT_DIR$/src/components/nav" />
+      <recent name="$PROJECT_DIR$/src/app" />
+      <recent name="$PROJECT_DIR$/src/app/games/[gameId]" />
+      <recent name="$PROJECT_DIR$/src/app/games/[gameId]/help/manual" />
+      <recent name="$PROJECT_DIR$/src/app/games/[gameId]/help" />
+      <recent name="$PROJECT_DIR$/src/app/games/[gameId]/players/ratings" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -164,7 +188,7 @@
       <workItem from="1755455908653" duration="108000" />
       <workItem from="1755456025796" duration="128000" />
       <workItem from="1755456359610" duration="122000" />
-      <workItem from="1755456491647" duration="14372000" />
+      <workItem from="1755456491647" duration="24738000" />
     </task>
     <task id="LOCAL-00001" summary="update README.md">
       <option name="closed" value="true" />
@@ -310,7 +334,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755469692856</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Add Footer component">
+      <option name="closed" value="true" />
+      <created>1755471617862</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1755471617862</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -371,7 +403,8 @@
     <MESSAGE value="Update navigation links to point to the leagues page" />
     <MESSAGE value="Refactor navigation links and components; add new game types. new tableAPI, legacyTable exists for backwards compatability, new new-game page for UI/UX" />
     <MESSAGE value="Add new components for About" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add new components for About" />
+    <MESSAGE value="Add Footer component" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Footer component" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -381,7 +414,7 @@
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/app/games/[gameId]/races/[raceId]/page.tsx</url>
+          <url>file://$PROJECT_DIR$/src/app/games/[gameId]/league/races/[raceId]/page.tsx</url>
           <line>2</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>

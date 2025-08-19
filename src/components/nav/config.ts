@@ -7,19 +7,19 @@ export const NAV_CONFIG: NavItem[] = [
         type: "section",
         label: "LEAGUE",
         children: [
-            { type: "page", label: "Teams",     hrefTemplate: "/games/{id}/teams" },
-            { type: "page", label: "Standings", hrefTemplate: "/games/{id}/standings" },
-            { type: "page", label: "Schedule",     hrefTemplate: "/games/{id}/schedule" },
-            { type: "page", label: "Races",     hrefTemplate: "/games/{id}/races" },
+            { type: "page", label: "Teams",     hrefTemplate: "/games/{id}/league/teams" },
+            // { type: "page", label: "Standings", hrefTemplate: "/games/{id}/standings" },
+            { type: "page", label: "Schedule",     hrefTemplate: "/games/{id}/league/schedule" },
+            { type: "page", label: "Races",     hrefTemplate: "/games/{id}/league/races" },
         ],
     },
-    {
-        type: "section",
-        label: "TEAM",
-        children: [
-            { type: "page", label: "Roster", hrefTemplate: "/games/{id}/team/roster" },
-        ],
-    },
+    // {
+    //     type: "section",
+    //     label: "TEAM",
+    //     children: [
+    //         { type: "page", label: "Roster", hrefTemplate: "/games/{id}/team/roster" },
+    //     ],
+    // },
     {
         type: "section",
         label: "PLAYERS",
@@ -27,18 +27,25 @@ export const NAV_CONFIG: NavItem[] = [
             { type: "page", label: "Player Ratings", hrefTemplate: "/games/{id}/players/ratings" },
         ],
     },
+    // {
+    //     type: "section",
+    //     label: "STATS",
+    //     children: [
+    //         { type: "page", label: "Player Stats", hrefTemplate: "/games/{id}/stats/playerStats" },
+    //     ],
+    // },
+    // {
+    //     type: "section",
+    //     label: "TOOLS",
+    //     children: [
+    //         { type: "page", label: "Settings", hrefTemplate: "/games/{id}/tools/settings" },
+    //     ],
+    // },
     {
         type: "section",
-        label: "STATS",
+        label: "Help",
         children: [
-            { type: "page", label: "Stats", hrefTemplate: "/games/{id}/stats" },
-        ],
-    },
-    {
-        type: "section",
-        label: "TOOLS",
-        children: [
-            { type: "page", label: "Tools", hrefTemplate: "/games/{id}/tools" },
+            { type: "page", label: "Manual", hrefTemplate: "/help/manual", newTab: true }
         ],
     },
 ];

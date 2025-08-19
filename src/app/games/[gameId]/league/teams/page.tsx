@@ -74,7 +74,7 @@ export default function TeamsPage({params}: Readonly<{ params: Promise<{ gameId:
         xc_rank: xcRanks[team.teamId],
     }));
 
-    const getRowLink = (team: Team) => `/games/${gameId}/teams/${team.teamId}`;
+    const getRowLink = (team: Team) => `/games/${gameId}/league/teams/${team.teamId}`;
 
     return (
         <div className="p-4">

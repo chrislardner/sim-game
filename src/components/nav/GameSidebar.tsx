@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_CONFIG } from "@/components/nav/config";
@@ -9,16 +9,13 @@ import type { NavItem, NavPage, NavSection } from "@/types/nav";
 import { cn } from "@/lib/cn";
 import { ChevronRight } from "@/components/icons/ChevronRight";
 
-type Params = { gameId: string };
+type Props = { gameId: string };
 
 function isActiveExact(pathname: string, target: string) {
     return pathname === target;
 }
 
-export default function Sidebar({
-                                    params,
-                                }: Readonly<{ params: Promise<Params> }>) {
-    const { gameId } = use(params);
+export default function Sidebar({ gameId }: Props) {
     const pathname = usePathname();
 
     const items: NavItem[] = useMemo(
@@ -68,10 +65,14 @@ export default function Sidebar({
                         const p = it as NavPage;
                         const href = p.hrefTemplate;
                         const active = isActiveExact(pathname, href);
+                        const linkProps = p.newTab
+                            ? { target: "_blank", rel: "noopener noreferrer" }
+                            : {};
                         return (
                             <li key={p.label}>
                                 <Link
                                     href={href}
+                                    {...linkProps}
                                     aria-current={active ? "page" : undefined}
                                     className={cn(
                                         "group flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
@@ -103,7 +104,7 @@ export default function Sidebar({
                             >
                 <span
                     className={cn(
-                        "text-neutral-400 group-hover:text-neutral-600 dark:text-neutral-500 dark:group-hover:text-neutral-300",
+                        "text-neutral-400 group-hover:text-neutral-600 dark:text-neutral-500 dark:group-hover:text-neutral-300 transition-transform",
                         isOpen && "rotate-90"
                     )}
                     aria-hidden="true"
@@ -117,10 +118,14 @@ export default function Sidebar({
                                 sec.children.map((c) => {
                                     const href = c.hrefTemplate;
                                     const active = isActiveExact(pathname, href);
+                                    const linkProps = (c as NavPage).newTab
+                                        ? { target: "_blank", rel: "noopener noreferrer" }
+                                        : {};
                                     return (
                                         <Link
                                             key={c.label}
                                             href={href}
+                                            {...linkProps}
                                             aria-current={active ? "page" : undefined}
                                             className={cn(
                                                 "group flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors mt-0.5",

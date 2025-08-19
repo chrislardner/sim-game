@@ -102,7 +102,7 @@ export default function RaceResultsPage({params}: Readonly<{ params: Promise<{ g
         <div className="p-4">
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">Race Results</h1>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 cursor-pointer"
-               onClick={() => router.push(`/games/${unwrappedParams?.gameId}/schedule/${meet?.meetId}`)}>
+               onClick={() => router.push(`/games/${unwrappedParams?.gameId}/league/schedule/${meet?.meetId}`)}>
                 Meet: <span className="font-semibold">{meet?.week} - {meet?.season}</span>
             </p>
             <p className="text-gray-700 dark:text-gray-300">Teams: {meet?.teams.map(team => teamsMap[team.teamId].abbr).join(', ')}</p>

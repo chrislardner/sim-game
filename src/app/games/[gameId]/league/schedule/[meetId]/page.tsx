@@ -157,7 +157,7 @@ export default function MeetPage() {
                             )}
                             <button
                                 className="px-4 py-2 bg-accent bg-accent-dark text-white rounded-lg transition hover:bg-accent-light mt-4"
-                                onClick={() => router.push(`/games/${gameId}/races/${raceId}`)}
+                                onClick={() => router.push(`/games/${gameId}/league/races/${raceId}`)}
                             >
                                 View Race Details
                             </button>

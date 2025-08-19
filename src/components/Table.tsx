@@ -41,11 +41,11 @@ function getVal<T>(item: T, field?: keyof T) {
 }
 
 export default function Table<T>({
-                                         data,
-                                         columns,
-                                         linkFields = [],
-                                         getRowLink,
-                                     }: TableProps<T>) {
+                                     data,
+                                     columns,
+                                     linkFields = [],
+                                     getRowLink,
+                                 }: TableProps<T>) {
     const [sort, setSort] = useState<SortConfig<T>>(null);
     const router = useRouter();
     const linkSet = new Set(linkFields.map(String));
@@ -74,9 +74,9 @@ export default function Table<T>({
 
     return (
         <div className="p-2">
-            <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead className="bg-gray-50 dark:bg-gray-700">
+            <div className="block w-full max-w-full overflow-x-auto overscroll-x-contain">
+                <table className="w-full min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead className="bg-gray-50 dark:bg-gray-700 sticky top-0 z-10">
                     <tr>
                         {columns.map((c) => {
                             const canSort = c.sortable ?? Boolean(c.field);
@@ -85,10 +85,10 @@ export default function Table<T>({
                                     key={`h:${c.id}`}
                                     onClick={() => toggleSort(c.field, canSort)}
                                     className={`px-2 py-2 text-left text-xs font-small uppercase tracking-wider text-gray-500 ${c.className ?? ""} ${
-                                        canSort ? "cursor-pointer" : "cursor-default"
+                                        canSort ? "cursor-pointer select-none" : "cursor-default"
                                     }`}
                                 >
-                                    <div className="flex items-center select-none">
+                                    <div className="flex items-center">
                                         {c.label}
                                         {canSort && <span className="ml-2">{sortIcon(c.field)}</span>}
                                     </div>
@@ -117,7 +117,7 @@ export default function Table<T>({
                                     return (
                                         <td
                                             key={`c:${c.id}:${colIdx}`}
-                                            className={`px-2 py-2 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 ${c.className ?? ""}`}
+                                            className={`px-2 py-2 text-sm text-gray-700 dark:text-gray-300 whitespace-normal break-words ${c.className ?? ""}`}
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             {c.render(item)}
@@ -129,7 +129,7 @@ export default function Table<T>({
                                 return (
                                     <td
                                         key={`c:${c.id}:${colIdx}`}
-                                        className={`px-2 py-2 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 ${c.className ?? ""}`}
+                                        className={`px-2 py-2 text-sm text-gray-700 dark:text-gray-300 whitespace-normal break-words ${c.className ?? ""}`}
                                         onClick={(e) => {
                                             if (isLink && getRowLink) {
                                                 e.stopPropagation();

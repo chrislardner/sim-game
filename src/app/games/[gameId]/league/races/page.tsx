@@ -145,7 +145,7 @@ export default function RacesOverviewPage({params}: Readonly<{ params: Promise<{
         {key: 'topTeam', label: 'Top Team', className: 'table-column-topTeam'},
     ];
 
-    const getRowLink = (race: TransformedRace) => `/games/${gameId}/races/${race.raceId}`;
+    const getRowLink = (race: TransformedRace) => `/games/${gameId}/league/races/${race.raceId}`;
 
     return (
         <div className="p-4">

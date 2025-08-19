@@ -8,6 +8,7 @@ import GameSidebar from "@/components/nav/GameSidebar";
 import Footer from "@/components/Footer";
 import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/react";
+import { cn } from "@/lib/cn";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -20,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="en">
         <body className="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors">
         <ThemeProvider>
-            <div className={`${hasSidebar ? "md:grid md:grid-cols-[12rem_1fr]" : ""} min-h-screen`}>
+            <div className={cn(hasSidebar ? "md:grid md:grid-cols-[12rem_1fr]" : "", "min-h-screen")}>
                 {hasSidebar && (
                     <aside
                         className="
@@ -31,14 +32,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   overflow-y-auto
                 "
                     >
-                        <GameSidebar params={Promise.resolve({ gameId })} />
+                        <GameSidebar gameId={gameId} />
                     </aside>
                 )}
 
                 <div className="flex min-h-screen flex-col">
                     <MainNav />
                     <main className="flex-1">{children}</main>
-                    <Footer />
+                    <footer id="site-footer">
+                        <Footer />
+                    </footer>
                 </div>
             </div>
 
