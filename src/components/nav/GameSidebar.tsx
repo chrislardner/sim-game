@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { NAV_CONFIG } from "@/components/nav/config";
-import { resolveNav } from "@/components/nav/resolve";
-import type { NavItem, NavPage, NavSection } from "@/types/nav";
-import { cn } from "@/lib/cn";
-import { ChevronRight } from "@/components/icons/ChevronRight";
+import {usePathname} from "next/navigation";
+import {NAV_CONFIG} from "@/components/nav/config";
+import {resolveNav} from "@/components/nav/resolve";
+import type {NavItem, NavPage, NavSection} from "@/types/nav";
+import {cn} from "@/lib/cn";
+import {ChevronRight} from "@/components/icons/ChevronRight";
 
 type Props = { gameId: string };
 

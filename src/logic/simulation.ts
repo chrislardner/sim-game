@@ -152,7 +152,6 @@ async function enterNextWeek(game: Game, teams: Team[], players: Player[], meets
             return Promise.resolve(true);
         }
 
-        // Check if the playoffs are over
         if (game.currentWeek == 11 || game.currentWeek == 26 || game.currentWeek == 41) {
             return Promise.resolve(true);
         }
@@ -169,7 +168,6 @@ export async function determineWinnersByPoints(matches: Meet[], races: Race[], p
         for (const meet of matches) {
             const teamScores: { [teamId: number]: number } = {};
             if (meet && meet.season === 'cross_country') {
-                // Cross-country scoring
                 meet.races.forEach(race => {
                     races.filter(r => r.raceId === race).forEach(r => {
                             if (!r.teams) {
@@ -193,7 +191,6 @@ export async function determineWinnersByPoints(matches: Meet[], races: Race[], p
                 winners = teamsToPush.map(([teamId]) => Number(teamId));
 
             } else if (meet && meet.season === 'track_field') {
-                // Track & field scoring
                 meet.races.forEach(race => {
                     races.filter(r => r.raceId === race).forEach(r => {
                             r.teams.forEach(team => {
@@ -266,12 +263,11 @@ async function incrementWeek(game: Game): Promise<Array<boolean>> {
 
 async function handleOffseason(game: Game): Promise<boolean> {
 
-    game.remainingTeams = game.teams; // Reset for the next season
+    game.remainingTeams = game.teams;
     return Promise.resolve(true);
 }
 
 async function simulateMeetsForWeek(game: Game, meets: Meet[], races: Race[], players: Player[]): Promise<boolean> {
-    // Simulate all meets for the current week
     const week = game.currentWeek;
     const year = game.currentYear
     const weekMeets = meets.filter(meet => meet.week === week && meet.year === year);

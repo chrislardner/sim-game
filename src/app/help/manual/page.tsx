@@ -81,7 +81,7 @@ export default function ManualPage() {
                             <ol className="px-4 py-4 space-y-2 text-sm text-neutral-800 dark:text-neutral-200 list-decimal list-inside">
                                 <li>Go to <span className="font-medium">Games</span> → <span className="font-medium">New Game</span>.</li>
                                 <li>Select one or more conferences, then pick your school.</li>
-                                <li>Choose players per team and create the league.</li>
+                                <li>Create the league.</li>
                                 <li>Use <span className="font-medium">Dashboard</span> to simulate weeks and view results.</li>
                             </ol>
                         </div>

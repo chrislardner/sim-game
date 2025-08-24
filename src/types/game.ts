@@ -9,8 +9,8 @@ export interface Game {
     players: number[];
     currentYear: number;
     currentWeek: number;
-    leagueSchedule: YearlyLeagueSchedule;    // Full season schedule
-    remainingTeams: number[]; // TeamIds still in the playoffs
+    leagueSchedule: YearlyLeagueSchedule;
+    remainingTeams: number[];
     selectedTeamId: number
     conferences: Conference[];
 }

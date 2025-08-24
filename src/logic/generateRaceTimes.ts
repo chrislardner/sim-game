@@ -21,7 +21,7 @@ const variability = {
     '3000m': 0.14,
     '5000m': 0.16,
     '10000m': 0.20,
-    '8000m': 0.18 // Cross-country
+    '8000m': 0.18
 };
 
 function getBaseTimeForEvent(eventType: string): number {
@@ -47,7 +47,7 @@ export function generateRaceTime(eventType: string, player: Player): number {
     const baseTime = getBaseTimeForEvent(eventType);
     const skillFactor = getPlayerSkill(player, eventType) / 10;
 
-    const mean = baseTime * (1 - skillFactor * 0.2); // Increased skill factor influence
+    const mean = baseTime * (1 - skillFactor * 0.2);
     const stdDev = getEventVariability(eventType as keyof typeof variability);
 
     const randomFactor1 = Math.random();
@@ -69,46 +69,46 @@ function getPlayerSkill(player: Player, eventType: string): number {
     switch (eventType) {
         case '100m': {
             const attributeSum =
-                (playerRatings.acceleration * 0.35) +
-                (playerRatings.explosiveness * 0.25) +
-                (playerRatings.topSpeed * 0.25) +
-                (playerRatings.stamina * 0.05);
+                (playerRatings.acceleration * 0.25) +
+                (playerRatings.explosiveness * 0.40) +
+                (playerRatings.topSpeed * 0.35);
             skill = 0.5 * typeRatings.shortDistanceOvr + 0.5 * attributeSum;
             break;
         }
         case '200m': {
             const attributeSum =
-                (playerRatings.acceleration * 0.3) +
-                (playerRatings.explosiveness * 0.25) +
-                (playerRatings.topSpeed * 0.3) +
-                (playerRatings.stamina * 0.15);
+                (playerRatings.acceleration * 0.30) +
+                (playerRatings.explosiveness * 0.35) +
+                (playerRatings.topSpeed * 0.34) +
+                (playerRatings.speedStamina * 0.01);
             skill = 0.5 * typeRatings.shortDistanceOvr + 0.5 * attributeSum;
             break;
         }
         case '400m': {
             const attributeSum =
-                (playerRatings.acceleration * 0.25) +
-                (playerRatings.explosiveness * 0.2) +
-                (playerRatings.topSpeed * 0.35) +
-                (playerRatings.stamina * 0.2);
+                (playerRatings.acceleration * 0.15) +
+                (playerRatings.explosiveness * 0.05) +
+                (playerRatings.topSpeed * 0.25) +
+                (playerRatings.speedStamina * 0.55);
             skill = 0.5 * typeRatings.shortDistanceOvr + 0.5 * attributeSum;
             break;
         }
         case '800m': {
             const attributeSum =
-                (playerRatings.pacing * 0.2) +
+                (playerRatings.pacing * 0.10) +
+                (playerRatings.topSpeed * 0.10) +
                 (playerRatings.stamina * 0.25) +
                 (playerRatings.mentalToughness * 0.25) +
-                (playerRatings.endurance * 0.3);
+                (playerRatings.speedStamina * 0.30);
             skill = 0.5 * typeRatings.middleDistanceOvr + 0.5 * attributeSum;
             break;
         }
         case '1500m': {
             const attributeSum =
-                (playerRatings.pacing * 0.2) +
-                (playerRatings.stamina * 0.3) +
-                (playerRatings.mentalToughness * 0.25) +
-                (playerRatings.endurance * 0.25);
+                (playerRatings.pacing * 0.15) +
+                (playerRatings.stamina * 0.30) +
+                (playerRatings.mentalToughness * 0.30) +
+                (playerRatings.speedStamina * 0.25);
             skill = 0.5 * typeRatings.middleDistanceOvr + 0.5 * attributeSum;
             break;
         }
@@ -117,7 +117,7 @@ function getPlayerSkill(player: Player, eventType: string): number {
                 (playerRatings.pacing * 0.2) +
                 (playerRatings.stamina * 0.3) +
                 (playerRatings.mentalToughness * 0.25) +
-                (playerRatings.endurance * 0.25);
+                (playerRatings.speedStamina * 0.25);
             skill = 0.5 * typeRatings.longDistanceOvr + 0.5 * attributeSum;
             break;
         }
@@ -125,9 +125,7 @@ function getPlayerSkill(player: Player, eventType: string): number {
             const attributeSum =
                 (playerRatings.pacing * 0.2) +
                 (playerRatings.stamina * 0.25) +
-                (playerRatings.acceleration * 0.05) +
-                (playerRatings.mentalToughness * 0.20) +
-                (playerRatings.endurance * 0.3);
+                (playerRatings.mentalToughness * 0.20);
             skill = 0.5 * typeRatings.longDistanceOvr + 0.5 * attributeSum;
             break;
         }
@@ -135,8 +133,7 @@ function getPlayerSkill(player: Player, eventType: string): number {
             const attributeSum =
                 (playerRatings.pacing * 0.25) +
                 (playerRatings.stamina * 0.25) +
-                (playerRatings.mentalToughness * 0.25) +
-                (playerRatings.endurance * 0.25);
+                (playerRatings.mentalToughness * 0.25);
             skill = 0.5 * typeRatings.longDistanceOvr + 0.5 * attributeSum;
             break;
         }
@@ -144,8 +141,7 @@ function getPlayerSkill(player: Player, eventType: string): number {
             const attributeSum =
                 (playerRatings.pacing * 0.2) +
                 (playerRatings.stamina * 0.25) +
-                (playerRatings.mentalToughness * 0.25) +
-                (playerRatings.endurance * 0.3);
+                (playerRatings.mentalToughness * 0.25);
             skill = 0.5 * typeRatings.longDistanceOvr + 0.5 * attributeSum;
             break;
         }
@@ -156,7 +152,6 @@ function getPlayerSkill(player: Player, eventType: string): number {
     // Add a small random factor
     skill *= (0.9 + 0.1 * Math.random());
 
-    // Clamp to 1–100, then scale to 1–10
     skill = Math.max(1, Math.min(100, skill)) / 10;
     skill = Math.max(1, Math.min(10, skill));
 

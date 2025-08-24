@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { getAllConferences, getCollegesByConferenceId } from "@/data/parseSchools";
-import type { Conference, School } from "@/types/regionals";
-import type { ConferenceRow, SchoolRow } from "@/types/new-game";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {getAllConferences, getCollegesByConferenceId} from "@/data/parseSchools";
+import type {Conference, School} from "@/types/regionals";
+import type {ConferenceRow, SchoolRow} from "@/types/new-game";
 
 function setSignature(s: Set<number>) {
     return Array.from(s).sort((a, b) => a - b).join(",");

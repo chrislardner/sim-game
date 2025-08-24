@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/cn";
+import {usePathname} from "next/navigation";
+import {cn} from "@/lib/cn";
 
 const LINKS = [
     { label: "Games", href: "/games" },
