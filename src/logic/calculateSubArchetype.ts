@@ -1,17 +1,32 @@
 import {SubArchetype, subArchetypeList} from "@/constants/subArchetypes";
 
-export function calculateSubArchetype(): SubArchetype {
-    const subArchetype = Math.random();
-    if (subArchetype < subArchetypeList[0].chance) return subArchetypeList[0];
-    else if (subArchetype < subArchetypeList[1].chance) return subArchetypeList[1];
-    else if (subArchetype < subArchetypeList[2].chance) return subArchetypeList[2];
-    else if (subArchetype < subArchetypeList[3].chance) return subArchetypeList[3];
-    else if (subArchetype < subArchetypeList[4].chance) return subArchetypeList[4];
-    else if (subArchetype < subArchetypeList[5].chance) return subArchetypeList[5];
-    else if (subArchetype < subArchetypeList[6].chance) return subArchetypeList[6];
-    else if (subArchetype < subArchetypeList[7].chance) return subArchetypeList[7];
-    else if (subArchetype < subArchetypeList[8].chance) return subArchetypeList[8];
-    else if (subArchetype < subArchetypeList[9].chance) return subArchetypeList[9];
-    else if (subArchetype < subArchetypeList[10].chance) return subArchetypeList[10];
-    else return subArchetypeList[11];
+export function calculateSubArchetype(seasons: ("cross_country" | "track_field")[]): SubArchetype {
+    const hasXC = seasons.includes("cross_country");
+    const hasTF = seasons.includes("track_field");
+
+    const startIndex = hasXC && hasTF ? 6 : 0;
+    const endIndex = hasXC && hasTF
+        ? subArchetypeList.length - 1
+        : Math.min(5, subArchetypeList.length - 1);
+
+    if (startIndex > endIndex) {
+        return subArchetypeList[subArchetypeList.length - 1];
+    }
+
+    const candidates = subArchetypeList.slice(startIndex, endIndex + 1);
+    const totalWeight = candidates.reduce((sum, item) => sum + (item.chance ?? 0), 0);
+
+    if (totalWeight <= 0) {
+        return candidates[0];
+    }
+
+    let r = Math.random() * totalWeight;
+    for (const item of candidates) {
+        r -= (item.chance ?? 0);
+        if (r <= 0) {
+            return item;
+        }
+    }
+
+    return candidates[candidates.length - 1];
 }

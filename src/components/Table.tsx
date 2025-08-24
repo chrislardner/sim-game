@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+import React, {useState} from "react";
+import {FaSort, FaSortDown, FaSortUp} from "react-icons/fa";
+import {useRouter} from "next/navigation";
 
 type SortDir = "ascending" | "descending";
 type SortConfig<T> = { field: keyof T; direction: SortDir } | null;

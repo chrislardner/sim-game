@@ -19,16 +19,9 @@ export default function FinePrint({
                             {email}
                         </a>
                     </p>
-                </div>
-
-                <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
-                    <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-600 dark:text-neutral-300">
-                        Notes
-                    </h2>
-                    <ul className="mt-2 space-y-1.5 text-[11px] leading-snug text-neutral-600 dark:text-neutral-400">
-                        <li>Not affiliated with or endorsed by the NCAA or any institution.</li>
-                        <li>Analytics may be cookieless and aggregated.</li>
-                    </ul>
+                    <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-200">
+                        © 2025 XC Track Sim
+                    </p>
                 </div>
             </div>
         </section>

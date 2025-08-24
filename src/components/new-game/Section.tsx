@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import { ChevronRight } from "@/components/icons/ChevronRight";
+import React, {useMemo, useState} from "react";
+import {ChevronRight} from "@/components/icons/ChevronRight";
 
 type Props = {
     title: string;

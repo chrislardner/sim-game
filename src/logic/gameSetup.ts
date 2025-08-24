@@ -20,7 +20,7 @@ import {SubArchetype} from '@/constants/subArchetypes';
 import {calculateSubArchetype} from './calculateSubArchetype';
 import {calculateTeamOvrs} from './calculateTeamOvr';
 
-export async function initializeNewGame(conferences: Conference[], numPlayersPerTeam: number, selectedSchoolId: number): Promise<Game> {
+export async function initializeNewGame(conferences: Conference[], selectedSchoolId: number): Promise<Game> {
     const teams: Team[] = [];
     const players: Player[] = [];
     const currentYear = 2024;
@@ -32,8 +32,15 @@ export async function initializeNewGame(conferences: Conference[], numPlayersPer
     for (const conference of conferences) {
         const conferenceTeams = await createTeamsForConference(gameId, currentYear, conference, selectedSchoolId);
         for (const team of conferenceTeams) {
-            for (let j = 0; j < numPlayersPerTeam; j++) {
-                const playerSubArchetypes: SubArchetype = calculateSubArchetype();
+            for (let j = 0; j < team.XCTFPlayers; j++) {
+                const playerSubArchetypes: SubArchetype = calculateSubArchetype(["cross_country", "track_field"]);
+
+                const player = await createPlayer(gameId, team.teamId, -1, playerSubArchetypes, currentYear, currentYear);
+                players.push(player);
+                team.players.push(player.playerId);
+            }
+            for (let j = 0; j < team.TFPlayers; j++) {
+                const playerSubArchetypes: SubArchetype = calculateSubArchetype(["track_field"]);
 
                 const player = await createPlayer(gameId, team.teamId, -1, playerSubArchetypes, currentYear, currentYear);
                 players.push(player);

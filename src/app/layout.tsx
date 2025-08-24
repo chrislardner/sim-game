@@ -1,14 +1,14 @@
 "use client";
 
 import React from "react";
-import { usePathname } from "next/navigation";
-import { ThemeProvider } from "@/context/ThemeContext";
+import {usePathname} from "next/navigation";
+import {ThemeProvider} from "@/context/ThemeContext";
 import MainNav from "@/components/nav/MainNav";
 import GameSidebar from "@/components/nav/GameSidebar";
 import Footer from "@/components/Footer";
 import "@/styles/globals.css";
-import { Analytics } from "@vercel/analytics/react";
-import { cn } from "@/lib/cn";
+import { Analytics } from "@vercel/analytics/next"
+import {cn} from "@/lib/cn";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();

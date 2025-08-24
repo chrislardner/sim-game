@@ -104,7 +104,6 @@ function groupTeams(teams: Team[], week: number): Team[][] {
     return groups;
 }
 
-// Generate Individual Team Schedules from League Schedule
 export function generateTeamSchedules(meets: Meet[], teams: Team[], year: number): TeamSchedule[] {
 
     return teams.map(team => ({

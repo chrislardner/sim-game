@@ -13,5 +13,10 @@ export interface School {
     nickname: string;
     city: string;
     collegeAbbr: string;
+    latitude?: number;
+    longitude?: number;
     // regionId: number;
+    XCPlayers?: number;
+    XCTFPlayers?: number;
+    TFPlayers?: number;
 }

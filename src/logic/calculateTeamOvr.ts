@@ -2,6 +2,7 @@ import {Player} from "@/types/player";
 import {Team} from "@/types/team";
 
 export function calculateTeamOvr(team: Team) {
+    console.log(Math.round((team.sprint_ovr + team.middle_ovr + team.long_ovr) / 3));
     return Math.round((team.sprint_ovr + team.middle_ovr + team.long_ovr) / 3);
 }
 
@@ -21,18 +22,23 @@ export function calculateTeamLongOvr(players: Player[]) {
 }
 
 export function calculateTeamOvrs(team: Team, players: Player[]) {
-    team.sprint_ovr = calculateTeamSprintOvr(players);
-    team.middle_ovr = calculateTeamMiddleOvr(players);
-    team.long_ovr = calculateTeamLongOvr(players);
-    team.xc_ovr = calculateTeamCrossCountryOvr(players);
+    const teamPlayers = players.filter(player => player.teamId === team.teamId);
+    team.sprint_ovr = calculateTeamSprintOvr(teamPlayers);
+    team.middle_ovr = calculateTeamMiddleOvr(teamPlayers);
+    team.long_ovr = calculateTeamLongOvr(teamPlayers);
+    team.xc_ovr = calculateTeamCrossCountryOvr(teamPlayers);
     team.ovr = calculateTeamOvr(team);
 }
 
 export function calculateTeamCrossCountryOvr(players: Player[]) {
-    const crossCountryRunners = players.filter(player => player.seasons.includes('cross_country'));
-    if (crossCountryRunners.length < 5) {
+    const crossCountryAthletes = players.filter(isCrossCountryParticipant);
+    if (crossCountryAthletes.length < 5) {
         return 0;
     }
-    const totalCrossCountryOvr = crossCountryRunners.reduce((sum, player) => sum + player.playerRatings.typeRatings.longDistanceOvr, 0);
-    return Math.round(totalCrossCountryOvr / crossCountryRunners.length);
+    const totalCrossCountryOvr = crossCountryAthletes.reduce((sum, player) => sum + player.playerRatings.typeRatings.longDistanceOvr, 0);
+    return Math.round(totalCrossCountryOvr / crossCountryAthletes.length);
 }
+
+const isCrossCountryParticipant = (player: Player): boolean => {
+    return player.seasons.includes('cross_country');
+};

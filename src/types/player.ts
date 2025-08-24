@@ -1,7 +1,6 @@
 import {generate} from "facesjs";
 import {SubArchetype} from "@/constants/subArchetypes";
 
-// Player Stats
 export interface PlayerRatings {
     playerId: number;
     overall: number;
@@ -76,6 +75,7 @@ export interface Player {
     retiredYear: number;
     startYear: number;
     interactions: PlayerInteractions;
+    activeForRace: boolean;
 }
 
 
