@@ -1,7 +1,7 @@
 "use client";
 
-import type { ColumnDef } from "@/components/Table";
-import type { ConferenceRow, SchoolRow } from "@/types/new-game";
+import type {ColumnDef} from "@/components/Table";
+import type {ConferenceRow, SchoolRow} from "@/types/new-game";
 
 export function buildConferenceColumns(opts: {
     selectedConferenceIds: Set<number>;

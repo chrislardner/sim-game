@@ -1,4 +1,4 @@
-import type { NavItem } from "@/types/nav";
+import type {NavItem} from "@/types/nav";
 
 export const NAV_CONFIG: NavItem[] = [
     { type: "page", label: "Switch Leagues", hrefTemplate: "/games" },

@@ -1,4 +1,4 @@
-import type { NavItem, NavPage, NavSection } from "@/types/nav";
+import type {NavItem, NavPage, NavSection} from "@/types/nav";
 
 export function resolveHref(template: string, gameId: string) {
     return template.replace("{id}", gameId);

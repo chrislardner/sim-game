@@ -17,8 +17,6 @@ export default function NewGamePage() {
         schoolRows,
         selectedConferenceIds,
         selectedSchoolId,
-        numPlayers,
-        setNumPlayers,
         confSearch,
         setConfSearch,
         schoolSearch,
@@ -37,12 +35,12 @@ export default function NewGamePage() {
         setSubmitting(true);
         try {
             const selectedConfs = conferences.filter((c) => selectedConferenceIds.has(c.conferenceId));
-            const newGame = await initializeNewGame(selectedConfs, numPlayers, selectedSchoolId!);
+            const newGame = await initializeNewGame(selectedConfs, selectedSchoolId!);
             router.push(`/games/${newGame.gameId}`);
         } finally {
             setSubmitting(false);
         }
-    }, [canSubmit, conferences, numPlayers, router, selectedConferenceIds, selectedSchoolId]);
+    }, [canSubmit, conferences, router, selectedConferenceIds, selectedSchoolId]);
 
     const conferenceColumns = buildConferenceColumns({selectedConferenceIds, toggleConference});
     const schoolColumns = buildSchoolColumns({selectedSchoolId, selectSchool});
@@ -121,29 +119,6 @@ export default function NewGamePage() {
                                 ) : (
                                     <Table data={schoolRows} columns={schoolColumns}/>
                                 )}
-                            </div>
-                        </div>
-                    </Section>
-
-                    <Section title="Step 3 • Game Settings" defaultOpen>
-                        <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="flex items-center gap-3">
-                                <label htmlFor="numPlayers" className="text-sm text-neutral-700 dark:text-neutral-200">
-                                    Players per Team
-                                </label>
-                                <input
-                                    id="numPlayers"
-                                    type="number"
-                                    inputMode="numeric"
-                                    min={1}
-                                    value={numPlayers}
-                                    onChange={(e) => {
-                                        const n = Math.max(1, Number(e.target.value || 0));
-                                        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                                        isFinite(n) ? setNumPlayers(n) : setNumPlayers(1);
-                                    }}
-                                    className="w-28 rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 outline-none focus:ring-2 focus:ring-accent"
-                                />
                             </div>
                         </div>
                     </Section>

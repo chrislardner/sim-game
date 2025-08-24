@@ -12,10 +12,10 @@ export default function Hero() {
             <div className="container mx-auto px-4 pt-16 md:pt-20 pb-6 md:pb-8">
                 <div className="max-w-4xl">
                     <h1 className="text-5xl md:text-6xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
-                        College XC & Track. Simulated.
+                        College XC & Track.
                     </h1>
                     <p className="mt-4 text-lg md:text-xl text-neutral-600 dark:text-neutral-300">
-                        Build a program. Run the season. All in your browser.
+                        Build a program. Run the season.
                     </p>
 
                     <div className="mt-8 flex flex-wrap gap-3">

@@ -7,7 +7,6 @@ export interface Team {
     points: number;
     teamSchedule: TeamSchedule;
     conferenceId: number;
-    // region: string; // implement later when needed -- need to clean data
     schoolId: number;
     state: string;
     city: string;
@@ -18,10 +17,15 @@ export interface Team {
     xc_ovr: number;
     abbr: string;
     player_control: boolean
+    latitude?: number;
+    longitude?: number;
+    XCPlayers: number;
+    XCTFPlayers: number;
+    TFPlayers: number;
 }
 
 export interface TeamSchedule {
     teamId: number;
-    year: number;                 // Year associated with the league schedule
-    meets: number[];            // List of meetIds in which the team participates
+    year: number;
+    meets: number[];
 }
