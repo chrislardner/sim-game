@@ -1,11 +1,41 @@
 import {mainArchetypes as ma} from "./mainArchetypes"
 
-const a1 = {main: [ma.s], events: ['100m', '200m', '400m'], chance: 0.1, num: 1, seasons: ['track_field']};
-const a2 = {main: [ma.s], events: ['100m', '200m'], chance: 0.1, num: 2, seasons: ['track_field']};
-const a3 = {main: [ma.md, ma.s], events: ['400m', '800m', '1500m'], chance: 0.1, num: 3, seasons: ['track_field']};
-const a4 = {main: [ma.md, ma.s], events: ['400m', '800m'], chance: 0.1, num: 4, seasons: ['track_field']};
-const a5 = {main: [ma.md], events: ['800m', '1500m'], chance: 0.05, num: 5, seasons: ['track_field']};
-const a6 = {main: [ma.ld, ma.md], events: ['1500m', '3000m'], chance: 0.1, num: 6, seasons: ['track_field']};
+const a1 = {
+    main: [ma.s],
+    events: ['100m', '200m', '400m'],
+    chance: 0.20,
+    num: 1,
+    seasons: ['track_field']};
+const a2 = {
+    main: [ma.s],
+    events: ['100m', '200m'],
+    chance: 0.20,
+    num: 2,
+    seasons: ['track_field']};
+const a3 = {
+    main: [ma.md, ma.s],
+    events: ['400m', '800m', '1500m'],
+    chance: 0.1,
+    num: 3,
+    seasons: ['track_field']};
+const a4 = {
+    main: [ma.md, ma.s],
+    events: ['400m', '800m'],
+    chance: 0.1,
+    num: 4,
+    seasons: ['track_field']};
+const a5 = {
+    main: [ma.md],
+    events: ['800m', '1500m'],
+    chance: 0.075,
+    num: 5,
+    seasons: ['track_field']};
+const a6 = {
+    main: [ma.ld, ma.md],
+    events: ['1500m', '3000m'],
+    chance: 0.075,
+    num: 6,
+    seasons: ['track_field']};
 const a7 = {
     main: [ma.ld, ma.md],
     events: ['1500m', '3000m', '5000m', '10000m', '8000m'],
@@ -16,26 +46,30 @@ const a7 = {
 const a8 = {
     main: [ma.ld, ma.md],
     events: ['3000m', '5000m', '8000m'],
-    chance: 0.1,
+    chance: 0.05,
     num: 8,
     seasons: ['cross_country', 'track_field']
 };
 const a9 = {
     main: [ma.ld, ma.md],
     events: ['1500m', '3000m', '8000m'],
-    chance: 0.1,
+    chance: 0.05,
     num: 9,
     seasons: ['cross_country', 'track_field']
 };
 const a10 = {
     main: [ma.ld, ma.md],
     events: ['3000m', '5000m', '8000m', '10000m'],
-    chance: 0.1,
+    chance: 0.05,
     num: 10,
     seasons: ['cross_country', 'track_field']
 };
 const a11 = {
-    main: [ma.ld], events: ['5000m', '8000m', '10000m'], chance: 0.1, num: 11, seasons: ['cross_country', 'track_field']
+    main: [ma.ld],
+    events: ['5000m', '8000m', '10000m'],
+    chance: 0.05,
+    num: 11,
+    seasons: ['cross_country', 'track_field']
 };
 const a12 = {
     main: [ma.md, ma.s, ma.ld],

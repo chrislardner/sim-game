@@ -1,240 +1,130 @@
-import {SubArchetype} from "@/constants/subArchetypes";
-import {PlayerArch, PlayerRatings, TypeRatings} from "@/types/player";
+import seedRandom from "seedrandom";
+import { randomNormal } from "d3-random";
+import { clamp } from "lodash";
+import { ATTR_PARAMS, ATTR_NAMES, BLENDS, RARITY, AGE_SETS, type AttrName, type RoleKey } from "@/constants/curves";
+import { sprintOvr, middleOvr, longOvr, playerOverall, potentialFromYear } from "@/logic/generatePlayerOverall";
+import type { Attributes, PlayerArch, PlayerRatings, TypeRatings } from "@/types/player";
+import { SubArchetype } from "@/constants/subArchetypes";
 
-interface Attributes {
-    topSpeed: number;
-    strength: number;
-    explosiveness: number;
-    acceleration: number;
-    pacing: number;
-    stamina: number;
-    mentalToughness: number;
-    endurance: number;
-    speedStamina: number;
-}
+const Z = 1.6448536269514722; // 5th/95th percentile
 
-export function generatePlayerRatings(playerId: number, playerSubArchetype: SubArchetype, playerYear: number): {
-    pr: PlayerRatings,
-    pa: PlayerArch
-} {
+const flags = (sub: SubArchetype) => {
+    let spr = false, mid = false, lon = false;
+    if (sub.num <= 2) spr = true;
+    else if (sub.num >= 3 && sub.num <= 4) { spr = true; mid = true; }
+    else if (sub.num === 5) mid = true;
+    else if (sub.num >= 6 && sub.num <= 10) { mid = true; lon = true; }
+    else if (sub.num === 11) lon = true;
+    else if (sub.num >= 12) { spr = true; mid = true; lon = true; }
+    return { spr, mid, lon } as const;
+};
 
-    const injuryResistance = Math.floor(Math.random() * 100);
-    const consistency = Math.floor(Math.random() * 100);
-    const athleticism = Math.floor(Math.random() * 100);
+const roles = (f: ReturnType<typeof flags>): RoleKey[] => [
+    ...(f.spr ? ["sprinter"] as const : []),
+    ...(f.mid ? ["middle"] as const : []),
+    ...(f.lon ? ["long"]   as const : []),
+];
 
-    let isSprinter = false;
-    let isMiddleDistance = false;
-    let isLongDistance = false;
+const blendKey = (rs: RoleKey[]) => (["sprinter","middle","long"] as const).filter(r => rs.includes(r)).join("+") as keyof typeof BLENDS;
 
-    if (playerSubArchetype.num <= 1) {
-        isSprinter = true;
-    } else if (playerSubArchetype.num >= 2 && playerSubArchetype.num <= 3) {
-        isSprinter = true;
-        isMiddleDistance = true;
-    } else if (playerSubArchetype.num == 4) {
-        isMiddleDistance = true;
-    } else if (playerSubArchetype.num >= 5 && playerSubArchetype.num <= 9) {
-        isMiddleDistance = true;
-        isLongDistance = true;
-    } else if (playerSubArchetype.num == 10) {
-        isLongDistance = true;
-    } else if (playerSubArchetype.num >= 11) {
-        isSprinter = true;
-        isMiddleDistance = true;
-        isLongDistance = true;
+const pickRarity = (rng: () => number) => {
+    const r = rng(); let acc = 0;
+    for (const tier of RARITY) { acc += tier.p; if (r <= acc) return tier }
+    return RARITY[RARITY.length - 1];
+};
+
+export const ageFactor = (year: number, k: AttrName): number => {
+    if (AGE_SETS.sprint.has(k)) {
+        return year <= 1 ? 1.10 : year === 2 ? 1.18 : year === 3 ? 1.15 : 1.08;
+    }
+    if (AGE_SETS.middle.has(k)) {
+        return year <= 1 ? 1.02 : year === 2 ? 1.10 : year === 3 ? 1.18 : 1.20;
+    }
+    if (AGE_SETS.long.has(k)) {
+        return year <= 1 ? 1.00 : year === 2 ? 1.10 : year === 3 ? 1.20 : 1.25;
+    }
+    // basic (injuryResistance, consistency, recovery, athleticism)
+    return year <= 1 ? 1.00 : year === 2 ? 1.05 : year === 3 ? 1.08 : 1.10;
+};
+
+
+const sigmaFromBounds = (low: number, high: number) => (high - low) / (2 * Z);
+
+const sampleAttr = (rng: () => number, mean: number, sd: number, low: number, high: number) => {
+    const normal = randomNormal.source(rng)(mean, sd);
+    for (let i = 0; i < 12; i++) {
+        const v = normal();
+        if (v >= low && v <= high) return clamp(v, 0, 100);
+    }
+    return clamp(mean, 0, 100);
+};
+
+const genForRole = (rng: () => number, k: AttrName, role: RoleKey, rarity: {stdevScale:number; medianShift:number}, year: number) => {
+    const p = ATTR_PARAMS[k][role];
+    const mean = clamp(p.median + rarity.medianShift, p.low, p.high);
+    const sd = (p.stdev ?? sigmaFromBounds(p.low, p.high)) * rarity.stdevScale;
+    const raw = sampleAttr(rng, mean, sd, p.low, p.high);
+    return clamp(raw * ageFactor(year, k), 0, 100);
+};
+
+const blendRoles = (vals: Partial<Record<RoleKey, number>>, weights: Record<RoleKey, number>) => {
+    let num = 0, den = 0;
+    (Object.keys(weights) as RoleKey[]).forEach(r => { if (weights[r] && vals[r] !== undefined) { num += (vals[r] as number) * weights[r]; den += weights[r]; } });
+    return den ? num / den : 0;
+};
+
+export function generatePlayerRatings(
+    playerId: number,
+    playerSubArchetype: SubArchetype,
+    playerYear: number
+): { pr: PlayerRatings; pa: PlayerArch } {
+    const f = flags(playerSubArchetype);
+    const rs = roles(f);
+    const w = BLENDS[blendKey(rs)];
+    const rng = seedRandom.alea(`${playerId}-${playerSubArchetype.num}-${playerYear}`);
+    const rarity = pickRarity(rng);
+
+    const a = {} as Attributes;
+    for (const k of ATTR_NAMES) {
+        const byRole: Partial<Record<RoleKey, number>> = {};
+        for (const r of rs) byRole[r] = genForRole(rng, k, r, rarity, playerYear);
+        (a)[k] = blendRoles(byRole, w as Record<RoleKey, number>);
     }
 
-    const generateAttribute = (values: { sprinter: number, middleDistance: number, longDistance: number }, floors: {
-        sprinter: number,
-        middleDistance: number,
-        longDistance: number
-    }) => {
-        const potentialValues = [];
-        if (isSprinter) potentialValues.push(Math.min(Math.max(Math.floor(Math.random() * values.sprinter), floors.sprinter), values.sprinter));
-        if (isMiddleDistance) potentialValues.push(Math.min(Math.max(Math.floor(Math.random() * values.middleDistance), floors.middleDistance), values.middleDistance));
-        if (isLongDistance) potentialValues.push(Math.min(Math.max(Math.floor(Math.random() * values.longDistance), floors.longDistance), values.longDistance));
-        return potentialValues.length > 0 ? Math.max(...potentialValues) : 0;
+    const typeRatings: TypeRatings = {
+        shortDistanceOvr: sprintOvr(a),
+        middleDistanceOvr: middleOvr(a),
+        longDistanceOvr: longOvr(a),
     };
 
-    const attributes = {
-        topSpeed: generateAttribute({sprinter: 100, middleDistance: 75, longDistance: 50}, {
-            sprinter: 50,
-            middleDistance: 30,
-            longDistance: 20
-        }),
-        strength: generateAttribute({sprinter: 100, middleDistance: 75, longDistance: 50}, {
-            sprinter: 50,
-            middleDistance: 30,
-            longDistance: 20
-        }),
-        explosiveness: generateAttribute({sprinter: 100, middleDistance: 75, longDistance: 50}, {
-            sprinter: 50,
-            middleDistance: 30,
-            longDistance: 20
-        }),
-        acceleration: generateAttribute({sprinter: 100, middleDistance: 75, longDistance: 50}, {
-            sprinter: 50,
-            middleDistance: 30,
-            longDistance: 20
-        }),
-        speedStamina: generateAttribute({sprinter: 50, middleDistance: 100, longDistance: 50}, {
-            sprinter: 20,
-            middleDistance: 50,
-            longDistance: 20
-        }),
-        pacing: generateAttribute({sprinter: 50, middleDistance: 75, longDistance: 100}, {
-            sprinter: 20,
-            middleDistance: 30,
-            longDistance: 50
-        }),
-        stamina: generateAttribute({sprinter: 50, middleDistance: 75, longDistance: 100}, {
-            sprinter: 20,
-            middleDistance: 30,
-            longDistance: 50
-        }),
-        mentalToughness: generateAttribute({sprinter: 50, middleDistance: 75, longDistance: 100}, {
-            sprinter: 20,
-            middleDistance: 30,
-            longDistance: 50
-        }),
-        endurance: generateAttribute({sprinter: 50, middleDistance: 75, longDistance: 100}, {
-            sprinter: 20,
-            middleDistance: 30,
-            longDistance: 50
-        }),
+    const pa: PlayerArch = { isSprinter: f.spr, isMiddleDistance: f.mid, isLongDistance: f.lon };
+    const overall = playerOverall(pa, typeRatings);
+    const potential = potentialFromYear(playerYear, overall);
+
+    const pr: PlayerRatings = {
+        playerId,
+        overall,
+        potential,
+        typeRatings,
+        injuryResistance: a.injuryResistance,
+        consistency: a.consistency,
+        recovery: a.recovery,
+        athleticism: a.athleticism,
+        pacing: a.pacing,
+        stamina: a.stamina,
+        mentalToughness: a.mentalToughness,
+        runningEconomy: a.runningEconomy,
+        terrainAdaptability: a.terrainAdaptability,
+        speedEndurance: a.speedEndurance,
+        speedRecovery: a.speedRecovery,
+        kickSpeed: a.kickSpeed,
+        tactics: a.tactics,
+        acceleration: a.acceleration,
+        explosiveness: a.explosiveness,
+        topSpeed: a.topSpeed,
+        strength: a.strength,
+        strideFrequency: a.strideFrequency,
     };
 
-    const {
-        topSpeed,
-        strength,
-        explosiveness,
-        acceleration,
-        speedStamina,
-        pacing,
-        stamina,
-        mentalToughness,
-        endurance
-    } = attributes;
-
-    const longDistanceOvr = calculateLongDistanceOvr(attributes, athleticism);
-    const middleDistanceOvr = calculateMiddleDistanceOvr(attributes, athleticism);
-    const shortDistanceOvr = calculateSprintingOvr(attributes, athleticism);
-
-    const playerArch: PlayerArch = {isLongDistance, isMiddleDistance, isSprinter};
-
-    const typeRatings = {longDistanceOvr, middleDistanceOvr, shortDistanceOvr};
-
-    const overall = calculatePlayerOverall(playerArch, typeRatings);
-    const potential = calculatePlayerPotential(playerYear, overall);
-
-    const overall_clean = overall > 100 ? 100 : overall;
-    const potential_clean = potential > 100 ? 100 : potential;
-
-    return {
-        pr: {
-            playerId,
-            strength,
-            injuryResistance,
-            potential: potential_clean,
-            overall: overall_clean,
-            consistency,
-            endurance,
-            athleticism,
-            pacing,
-            acceleration,
-            explosiveness,
-            speedStamina,
-            stamina,
-            mentalToughness,
-            topSpeed,
-            typeRatings,
-            // flexibility,
-            // coordination,
-        },
-        pa: playerArch,
-    };
-}
-
-function calculatePlayerOverall(pa: PlayerArch, t: TypeRatings): number {
-    let overall = 0;
-    let typeCount = 0;
-
-    if (pa.isLongDistance) typeCount++;
-    if (pa.isMiddleDistance) typeCount++;
-    if (pa.isSprinter) typeCount++;
-
-    const typeWeight = typeCount > 0 ? 0.95 / typeCount : 0;
-    const otherWeight = 0.05;
-
-    if (pa.isLongDistance) {
-        overall += t.longDistanceOvr * typeWeight;
-    }
-    if (pa.isMiddleDistance) {
-        overall += t.middleDistanceOvr * typeWeight;
-    }
-    if (pa.isSprinter) {
-        overall += t.shortDistanceOvr * typeWeight;
-    }
-
-    overall += (t.longDistanceOvr + t.middleDistanceOvr + t.shortDistanceOvr) * otherWeight / 3;
-
-    return Math.floor(overall);
-}
-
-function calculatePlayerPotential(playerYear: number, overall: number): number {
-    let ageModifier = 1;
-    if (playerYear < 2) {
-        ageModifier = 1.5;
-    } else if (playerYear < 3) {
-        ageModifier = 1.25;
-    } else if (playerYear < 4) {
-        ageModifier = 1.1;
-    }
-    return Math.floor(overall * ageModifier);
-}
-
-function calculateLongDistanceOvr(attributes: Attributes, athleticism: number): number {
-    return Math.floor(
-        (attributes.pacing * 0.15) +
-        (attributes.stamina * 0.43) +
-        (attributes.mentalToughness * 0.30) +
-        (attributes.endurance * 0.01) +
-        (attributes.topSpeed * 0.0) +
-        (attributes.strength * 0.00) +
-        (attributes.strength * 0.00) +
-        (attributes.explosiveness * 0.00) +
-        (attributes.acceleration * 0.05) +
-        (athleticism * 0.01) +
-        (attributes.speedStamina * 0.05)
-    );
-}
-
-function calculateMiddleDistanceOvr(attributes: Attributes, athleticism: number): number {
-    return Math.floor(
-        (attributes.pacing * 0.15) +
-        (attributes.stamina * 0.10) +
-        (attributes.speedStamina * 0.40) +
-        (attributes.mentalToughness * 0.05) +
-        (attributes.endurance * 0.01) +
-        (attributes.topSpeed * 0.10) +
-        (attributes.strength * 0.02) +
-        (attributes.explosiveness * 0.00) +
-        (attributes.acceleration * 0.10) +
-        (athleticism * 0.07)
-    );
-}
-
-function calculateSprintingOvr(attributes: Attributes, athleticism: number): number {
-    return Math.floor(
-        (attributes.topSpeed * 0.43) +
-        (attributes.strength * 0.05) +
-        (attributes.explosiveness * 0.23) +
-        (attributes.acceleration * 0.16) +
-        (attributes.endurance * 0.01) +
-        (attributes.pacing * 0.00) +
-        (attributes.stamina * 0.00) +
-        (attributes.mentalToughness * 0.00) +
-        (athleticism * 0.11) +
-        (attributes.speedStamina * 0.01)
-    );
+    return { pr, pa };
 }

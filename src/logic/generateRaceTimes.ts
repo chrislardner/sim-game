@@ -79,8 +79,7 @@ function getPlayerSkill(player: Player, eventType: string): number {
             const attributeSum =
                 (playerRatings.acceleration * 0.30) +
                 (playerRatings.explosiveness * 0.35) +
-                (playerRatings.topSpeed * 0.34) +
-                (playerRatings.speedStamina * 0.01);
+                (playerRatings.topSpeed * 0.34);
             skill = 0.5 * typeRatings.shortDistanceOvr + 0.5 * attributeSum;
             break;
         }
@@ -88,8 +87,7 @@ function getPlayerSkill(player: Player, eventType: string): number {
             const attributeSum =
                 (playerRatings.acceleration * 0.15) +
                 (playerRatings.explosiveness * 0.05) +
-                (playerRatings.topSpeed * 0.25) +
-                (playerRatings.speedStamina * 0.55);
+                (playerRatings.topSpeed * 0.25);
             skill = 0.5 * typeRatings.shortDistanceOvr + 0.5 * attributeSum;
             break;
         }
@@ -98,8 +96,7 @@ function getPlayerSkill(player: Player, eventType: string): number {
                 (playerRatings.pacing * 0.10) +
                 (playerRatings.topSpeed * 0.10) +
                 (playerRatings.stamina * 0.25) +
-                (playerRatings.mentalToughness * 0.25) +
-                (playerRatings.speedStamina * 0.30);
+                (playerRatings.mentalToughness * 0.25);
             skill = 0.5 * typeRatings.middleDistanceOvr + 0.5 * attributeSum;
             break;
         }
@@ -107,8 +104,7 @@ function getPlayerSkill(player: Player, eventType: string): number {
             const attributeSum =
                 (playerRatings.pacing * 0.15) +
                 (playerRatings.stamina * 0.30) +
-                (playerRatings.mentalToughness * 0.30) +
-                (playerRatings.speedStamina * 0.25);
+                (playerRatings.mentalToughness * 0.30);
             skill = 0.5 * typeRatings.middleDistanceOvr + 0.5 * attributeSum;
             break;
         }
@@ -116,8 +112,7 @@ function getPlayerSkill(player: Player, eventType: string): number {
             const attributeSum =
                 (playerRatings.pacing * 0.2) +
                 (playerRatings.stamina * 0.3) +
-                (playerRatings.mentalToughness * 0.25) +
-                (playerRatings.speedStamina * 0.25);
+                (playerRatings.mentalToughness * 0.25);
             skill = 0.5 * typeRatings.longDistanceOvr + 0.5 * attributeSum;
             break;
         }
@@ -149,7 +144,6 @@ function getPlayerSkill(player: Player, eventType: string): number {
             skill = 1;
     }
 
-    // Add a small random factor
     skill *= (0.9 + 0.1 * Math.random());
 
     skill = Math.max(1, Math.min(100, skill)) / 10;
