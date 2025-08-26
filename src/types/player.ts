@@ -1,5 +1,6 @@
 import {generate} from "facesjs";
 import {SubArchetype} from "@/constants/subArchetypes";
+import type { AttrName } from "@/constants/curves";
 
 export interface PlayerRatings {
     playerId: number;
@@ -7,30 +8,33 @@ export interface PlayerRatings {
     potential: number;
     injuryResistance: number;
     consistency: number;
-    endurance: number;
+    recovery: number;
     typeRatings: TypeRatings
     athleticism: number;
-
     // Important for Long Distance Runner
     pacing: number;
     stamina: number;
     mentalToughness: number;
+    runningEconomy: number;
+    terrainAdaptability: number;
     // Important for Middle Distance Runner
-    speedStamina: number;
+    speedEndurance: number;
+    speedRecovery: number;
+    kickSpeed: number;
+    tactics: number;
     // Important for Sprinter
     acceleration: number;
     explosiveness: number;
     topSpeed: number;
     strength: number;
-    // Important for Hurdler
-    // flexibility: number;
-    // coordination: number;
-    // // Important for Jumper
-    // jumping: number;
-    // balance: number;
-    // // Important for Thrower
-    // throwing: number;
-    // power: number;
+    strideFrequency: number;
+    // // Important for Hurdler
+    // hurdleClearance: number;
+    // hurdleRhythm: number;
+    // leadTrailBalance: number;
+    // // Important for relays
+    // batonExchangeTiming: number;
+    // batonExchangePrecision: number;
 }
 
 export interface TypeRatings {
@@ -88,3 +92,6 @@ export interface Interaction {
     type: string;
     effect: number;
 }
+
+export type Attributes = Record<AttrName, number>;
+

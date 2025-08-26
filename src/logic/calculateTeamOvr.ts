@@ -2,7 +2,6 @@ import {Player} from "@/types/player";
 import {Team} from "@/types/team";
 
 export function calculateTeamOvr(team: Team) {
-    console.log(Math.round((team.sprint_ovr + team.middle_ovr + team.long_ovr) / 3));
     return Math.round((team.sprint_ovr + team.middle_ovr + team.long_ovr) / 3);
 }
 
