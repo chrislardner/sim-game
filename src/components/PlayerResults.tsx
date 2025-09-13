@@ -30,11 +30,11 @@ const PlayerResults: React.FC<PlayerResultsProps> = ({gameId, playerId}) => {
         [eventType: string]: { [year: number]: number, overall: number }
     }>({});
 
-    const formatTime = (time: number) => {
-        const minutes = Math.floor(time / 60);
-        const seconds = Math.floor(time % 60);
-        const milliseconds = Math.floor(time * 100) % 100;
-        return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
+    const formatTime = (secs: number) => {
+        const minutes = Math.floor(secs / 60);
+        const seconds = Math.floor(secs % 60);
+        const hundredths = Math.floor((secs % 1) * 100);
+        return `${minutes}:${String(seconds).padStart(2, "0")}.${String(hundredths).padStart(2, "0")}`;
     };
 
     useEffect(() => {

@@ -31,7 +31,7 @@ export default function PlayerPage({params}: Readonly<{ params: Promise<{ gameId
     if (!player) return <div>Loading...</div>;
 
     return (
-        <div className="p-4">
+        <div className="py-4">
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">{player.firstName} {player.lastName}</h1>
             <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                 <h2 className="text-xl font-semibold text-accent mb-2">Player Details</h2>

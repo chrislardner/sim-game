@@ -50,7 +50,7 @@ export default function GameDashboard({params}: Readonly<{ params: Promise<{ gam
     if (!gameData) return <div>Loading...</div>;
 
     return (
-        <div className="p-4 transition-colors">
+        <div className="py-4 transition-colors">
             <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">Dashboard</h1>
 
             <button

@@ -72,7 +72,7 @@ export default function TeamSchedulePage({params}: Readonly<{ params: Promise<{ 
     const getRowLink = (meet: TransformedMeet) => `/games/${gameId}/league/schedule/${meet.meetId}`;
 
     return (
-        <div className="p-4">
+        <div className="py-4">
             <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">Team Schedule</h1>
             <h2 className="text-2xl font-semibold mb-4 text-primary-light dark:text-primary-dark">{team?.college + ' (' + team?.abbr + ')'}</h2>
 

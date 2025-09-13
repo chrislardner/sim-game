@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import {usePathname} from "next/navigation";
-import {cn} from "@/lib/cn";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/cn";
+import Container from "@/components/Container";
 
 const LINKS = [
     { label: "Games", href: "/games" },
-    { label: "About", href: "/" },
+    { label: "About", href: "/about" },
     { label: "Settings", href: "/settings" },
 ];
 
@@ -26,10 +27,10 @@ export default function MainNav() {
                 "backdrop-blur"
             )}
         >
-            <div className="container mx-auto px-4">
+            <Container>
                 <div className="flex h-12 items-center justify-between">
                     <Link href="/" className="select-none text-sm font-semibold tracking-wide">
-                        XC Track Sim
+                        XC·TF&nbsp;GM
                     </Link>
 
                     <nav className="flex items-center gap-2">
@@ -51,7 +52,7 @@ export default function MainNav() {
                         })}
                     </nav>
                 </div>
-            </div>
+            </Container>
         </header>
     );
 }

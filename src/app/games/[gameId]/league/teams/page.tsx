@@ -77,7 +77,7 @@ export default function TeamsPage({params}: Readonly<{ params: Promise<{ gameId:
     const getRowLink = (team: Team) => `/games/${gameId}/league/teams/${team.teamId}`;
 
     return (
-        <div className="p-4">
+        <div className="py-4">
             <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">Teams</h1>
             {game && <Table data={data} columns={columns} getRowLink={getRowLink} linkColumns={['college']}/>}
         </div>

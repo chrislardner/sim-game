@@ -62,7 +62,7 @@ export default function TeamPage({params}: Readonly<{ params: Promise<{ gameId: 
     const getRowLink = (player: Player) => `/games/${gameId}/players/${player.playerId}`;
 
     return (
-        <div className="p-4">
+        <div className="py-4">
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">{team.college + ' (' + team.abbr + ')'}</h1>
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Team Name: <span
                 className="font-semibold">{team.teamName}</span></p>

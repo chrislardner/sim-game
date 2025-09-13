@@ -1,170 +1,317 @@
 "use client";
 
-import {useParams, useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {loadMeets, loadPlayers, loadRaces, loadTeams} from '@/data/storage';
-import {Meet, Race, RaceParticipant} from '@/types/schedule';
-import {Team} from '@/types/team';
-import {Player} from '@/types/player';
-import Table from '@/components/LegacyTable';
+import React, {use, useEffect, useMemo, useState} from "react";
+import Link from "next/link";
+import {useRouter} from "next/navigation";
+import Table, {type ColumnDef} from "@/components/Table";
+import {loadMeets, loadPlayers, loadRaces, loadTeams} from "@/data/storage";
+import type {Meet, Race, RaceParticipant} from "@/types/schedule";
+import type {Team} from "@/types/team";
+import type {Player} from "@/types/player";
 
-export default function MeetPage() {
+type RouteParams = { gameId: string; meetId: string };
+
+type TeamPointsRow = {
+    teamId: number; teamLabel: string; points: number;
+};
+
+type RaceTeamRow = {
+    teamId: number; teamLabel: string; points: number;
+};
+
+type RaceParticipantRow = {
+    playerId: number; playerName: string; teamId?: number; teamLabel: string; timeStr: string; points: number;
+};
+
+export default function MeetPage({params}: { params: Promise<RouteParams> }) {
+    const {gameId, meetId} = use(params);
     const router = useRouter();
-    const {gameId, meetId} = useParams();
-    const [meet, setMeet] = useState<Meet>();
-    const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
-    const [teamPoints, setTeamPoints] = useState<{ [key: number]: number }>({});
-    const [racesMap, setRacesMap] = useState<{ [key: number]: Race }>({});
-    const [playersMap, setPlayersMap] = useState<{ [key: number]: Player }>({});
-    const [viewMode, setViewMode] = useState<'teamPoints' | 'playerPerformance'>('teamPoints');
+
+    const [meet, setMeet] = useState<Meet | null>(null);
+    const [teamsById, setTeamsById] = useState<Record<number, Team>>({});
+    const [racesById, setRacesById] = useState<Record<number, Race>>({});
+    const [playersById, setPlayersById] = useState<Record<number, Player>>({});
+    const [metaOpen, setMetaOpen] = useState(false);
+    const [viewMode, setViewMode] = useState<"teamPoints" | "playerPerformance">("teamPoints");
 
     useEffect(() => {
-        async function fetchData() {
-            const meets = await loadMeets(Number(gameId));
-            const selectedMeet = meets.find(meet => meet.meetId === Number(meetId));
-            if (!selectedMeet) throw new Error('Meet not found');
-            setMeet(selectedMeet);
+        let mounted = true;
+        (async () => {
+            const [meets, teams, races, players] = await Promise.all([loadMeets(Number(gameId)), loadTeams(Number(gameId)), loadRaces(Number(gameId)), loadPlayers(Number(gameId)),]);
 
-            const teamsData = await loadTeams(Number(gameId));
-            const racesData = await loadRaces(Number(gameId));
-            const playersData = await loadPlayers(Number(gameId));
+            const m = meets.find((mm) => mm.meetId === Number(meetId)) ?? null;
+            if (!mounted) return;
 
-            const teamsMapping: { [key: number]: Team } = {};
-            teamsData.forEach(t => teamsMapping[t.teamId] = t);
-            setTeamsMap(teamsMapping);
+            setMeet(m);
 
-            const pointsMapping = selectedMeet.teams.reduce((accumulated: { [key: number]: number }, team) => {
-                if (team.points > 0) {
-                    accumulated[team.teamId] = team.points;
-                }
-                return accumulated;
-            }, {});
-            setTeamPoints(pointsMapping);
+            const tMap: Record<number, Team> = {};
+            for (const t of teams) tMap[t.teamId] = t;
+            setTeamsById(tMap);
 
-            const racesMapping: { [key: number]: Race } = {};
-            racesData.forEach(r => {
-                racesMapping[r.raceId] = r;
-            });
-            setRacesMap(racesMapping);
+            const rMap: Record<number, Race> = {};
+            for (const r of races) rMap[r.raceId] = r;
+            setRacesById(rMap);
 
-            const playersMapping: { [key: number]: Player } = {};
-            playersData.forEach(p => {
-                playersMapping[p.playerId] = p;
-            });
-            setPlayersMap(playersMapping);
-        }
-
-        fetchData();
+            const pMap: Record<number, Player> = {};
+            for (const p of players) pMap[p.playerId] = p;
+            setPlayersById(pMap);
+        })();
+        return () => {
+            mounted = false;
+        };
     }, [gameId, meetId]);
 
-    if (!meet) return <div>Loading...</div>;
+    const formatTime = (secs: number) => {
+        const minutes = Math.floor(secs / 60);
+        const seconds = Math.floor(secs % 60);
+        const hundredths = Math.floor((secs % 1) * 100);
+        return `${minutes}:${String(seconds).padStart(2, "0")}.${String(hundredths).padStart(2, "0")}`;
+    };
 
-    const sortedTeamPoints = Object.entries(teamPoints).sort(([, pointsA], [, pointsB]) => {
-        if (meet.season === 'track_field') {
-            return pointsB - pointsA;
-        } else if (meet.season === 'cross_country') {
-            if (pointsA === 0) return 1;
-            if (pointsB === 0) return -1;
-            return pointsA - pointsB;
+    const isXC = meet?.season === "cross_country";
+
+    const teamPointsRows: TeamPointsRow[] = useMemo(() => {
+        if (!meet) return [];
+        const rows = (meet.teams ?? []).map((t) => {
+            const team = teamsById[t.teamId];
+            return {
+                teamId: t.teamId,
+                teamLabel: team ? `${team.college} (${team.abbr})` : `Team #${t.teamId}`,
+                points: t.points ?? 0,
+            };
+        });
+        rows.sort((a, b) => (isXC ? a.points - b.points : b.points - a.points));
+        return rows;
+    }, [meet, teamsById, isXC]);
+
+    const teamPointsColumns: ColumnDef<TeamPointsRow>[] = [{
+        id: "team", label: "Team", render: (r) => (<Link
+            href={`/games/${gameId}/teams/${r.teamId}`}
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+        >
+            {r.teamLabel}
+        </Link>),
+    }, {id: "points", field: "points", label: "Points", className: "w-24", sortable: true},];
+
+    const raceCards = useMemo(() => {
+        if (!meet) return [];
+        return (meet.races ?? [])
+            .map((rid) => racesById[rid])
+            .filter(Boolean) as Race[];
+    }, [meet, racesById]);
+
+    const buildRaceTeamRows = (race: Race): RaceTeamRow[] => {
+        const rows = (race.teams ?? []).map((t) => {
+            const team = teamsById[t.teamId];
+            return {
+                teamId: t.teamId, teamLabel: team ? `${team.abbr}` : `#${t.teamId}`, points: t.points ?? 0,
+            };
+        });
+        rows.sort((a, b) => (isXC ? a.points - b.points : b.points - a.points));
+        return rows;
+    };
+
+    const raceTeamColumns: ColumnDef<RaceTeamRow>[] = [{
+        id: "team", label: "Team", render: (r) => (<Link
+            href={`/games/${gameId}/teams/${r.teamId}`}
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+        >
+            {r.teamLabel}
+        </Link>),
+    }, {id: "points", field: "points", label: "Points", className: "w-24", sortable: true},];
+
+    const teamIdByPlayerId: Record<number, number> = useMemo(() => {
+        const map: Record<number, number> = {};
+        for (const k in teamsById) {
+            const team = teamsById[Number(k)];
+            for (const pid of team.players ?? []) map[pid] = team.teamId;
         }
-        return 0;
-    });
+        return map;
+    }, [teamsById]);
 
-    const toggleViewMode = () => {
-        setViewMode(viewMode === 'teamPoints' ? 'playerPerformance' : 'teamPoints');
+    const buildRaceParticipantRows = (race: Race): RaceParticipantRow[] => {
+        const sorted = [...(race.participants ?? [])].sort((a, b) => a.playerTime - b.playerTime);
+        return sorted.map((p: RaceParticipant) => {
+            const player = playersById[p.playerId];
+            const tId = teamIdByPlayerId[p.playerId];
+            const team = tId ? teamsById[tId] : undefined;
+            return {
+                playerId: p.playerId,
+                playerName: player ? `${player.firstName} ${player.lastName}` : `Player #${p.playerId}`,
+                teamId: team?.teamId,
+                teamLabel: team ? team.abbr : "—",
+                timeStr: formatTime(p.playerTime),
+                points: p.scoring?.points ?? 0,
+            };
+        });
     };
 
-    const formatTime = (time: number) => {
-        const minutes = Math.floor(time / 60);
-        const seconds = Math.floor(time % 60);
-        const milliseconds = Math.floor((time % 1) * 100);
-        return `${minutes}:${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
-    };
+    const raceParticipantColumns: ColumnDef<RaceParticipantRow>[] = [{
+        id: "player", label: "Player", sortable: true, render: (r) => (<Link
+            href={`/games/${gameId}/players/${r.playerId}`}
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+        >
+            {r.playerName}
+        </Link>),
+    }, {
+        id: "team", label: "Team", render: (r) => r.teamId ? (<Link
+            href={`/games/${gameId}/teams/${r.teamId}`}
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+        >
+            {r.teamLabel}
+        </Link>) : (<span>—</span>),
+    }, {id: "points", field: "points", label: "Pts", className: "w-16", sortable: true}, {
+        id: "time", field: "timeStr", label: "Time", className: "w-28", sortable: true
+    },];
 
-    return (
-        <div className="p-4">
-            <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">Meet
-                on {meet.date}</h1>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Season: <span
-                className="font-semibold">{meet.season === 'track_field' ? 'Track & Field (TF)' : 'Cross Country (XC)'}</span>
-            </p>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Type: <span
-                className="font-semibold">{meet.type}</span></p>
+    if (!meet) {
+        return <div className="p-6 text-sm text-neutral-500 dark:text-neutral-400">Loading…</div>;
+    }
 
-            <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Team Points</h2>
-            <Table
-                data={sortedTeamPoints.map(([teamId, points]) => ({
-                    team: teamsMap[Number(teamId)]?.college + " (" + teamsMap[Number(teamId)]?.abbr + ")",
-                    points
-                }))}
-                columns={[
-                    {key: 'team', label: 'Team'},
-                    {key: 'points', label: 'Points'}
-                ]}
-            />
+    return (<div className="py-4 md:p-6">
+        <header className="mb-4">
+            <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-2xl md:text-3xl font-semibold text-primary-light dark:text-primary-dark">
+                    Meet • {meet.week} • {meet.season === "track_field" ? "Track & Field" : "Cross Country"}
+                </h1>
+            </div>
 
-            <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Races</h2>
-            <button
-                className="px-4 py-2 bg-accent bg-accent-dark text-white rounded-lg transition hover:bg-accent-light mb-4"
-                onClick={toggleViewMode}
-            >
-                Toggle View: {viewMode === 'teamPoints' ? 'Player Performance' : 'Team Points'}
-            </button>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {meet.races.map((raceId, index) => {
-                    const race = racesMap[raceId];
-                    if (!race) return null;
+            <section
+                className="mt-3 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/60 px-4 py-3">
+                <div className="mb-2 flex items-center justify-between">
+                    <div className="text-sm font-semibold">Meet Info</div>
+                    <button
+                        type="button"
+                        aria-expanded={metaOpen}
+                        onClick={() => setMetaOpen((v) => !v)}
+                        className="text-xs rounded-md border border-neutral-300 dark:border-neutral-700 px-2 py-1 hover:bg-neutral-50 dark:hover:bg-neutral-800"
+                    >
+                        {metaOpen ? "Hide details" : "Show details"}
+                    </button>
+                </div>
+                <div className="ml-auto flex items-center gap-2">
 
-                    return (
-                        <div key={index}
-                             className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
-                            <h3 className="text-xl font-semibold text-accent">{race.eventType}</h3>
-                            {viewMode === 'teamPoints' ? (
-                                <Table
-                                    data={race.teams.toSorted((a, b) => {
-                                        if (meet.season === 'track_field') {
-                                            return b.points - a.points;
-                                        } else if (meet.season === 'cross_country') {
-                                            if (a.points === 0) return 1;
-                                            if (b.points === 0) return -1;
-                                            return a.points - b.points;
-                                        }
-                                        return 0;
-                                    }).map(team => ({
-                                        team: teamsMap[team.teamId]?.abbr,
-                                        points: team.points
-                                    }))}
-                                    columns={[
-                                        {key: 'team', label: 'Team'},
-                                        {key: 'points', label: 'Points'}
-                                    ]}
-                                />
-                            ) : (
-                                <Table
-                                    data={race.participants.toSorted((a, b) => a.playerTime - b.playerTime).map((participant: RaceParticipant) => ({
-                                        player: `${playersMap[participant.playerId]?.firstName} ${playersMap[participant.playerId]?.lastName}`,
-                                        team: teamsMap[playersMap[participant.playerId]?.teamId]?.abbr,
-                                        points: participant.scoring.points,
-                                        time: formatTime(participant.playerTime)
-                                    }))}
-                                    columns={[
-                                        {key: 'player', label: 'Player'},
-                                        {key: 'team', label: 'Team'},
-                                        {key: 'points', label: 'Points'},
-                                        {key: 'time', label: 'Time'}
-                                    ]}
-                                />
-                            )}
-                            <button
-                                className="px-4 py-2 bg-accent bg-accent-dark text-white rounded-lg transition hover:bg-accent-light mt-4"
-                                onClick={() => router.push(`/games/${gameId}/league/races/${raceId}`)}
-                            >
-                                View Race Details
-                            </button>
+                </div>
+                <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                    <div>
+                        <span className="text-neutral-500 dark:text-neutral-400">Meet:</span>{" "}
+                        <span className="font-medium"> {meet?.week} • {meet?.season} </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="text-neutral-500 dark:text-neutral-400">Teams:</span>
+                        <div className="flex flex-wrap gap-1">
+                            {(meet.teams ?? []).map((t) => {
+                                const team = teamsById[t.teamId];
+                                return team ? (<Link
+                                    key={t.teamId}
+                                    href={`/games/${gameId}/teams/${t.teamId}`}
+                                    className="rounded-md bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 text-xs hover:bg-neutral-200 dark:hover:bg-neutral-700"
+                                >
+                                    {team.abbr}
+                                </Link>) : (<span
+                                    key={t.teamId}
+                                    className="rounded-md bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 text-xs"
+                                >
+                      #{t.teamId}
+                    </span>);
+                            })}
                         </div>
-                    );
-                })}
+                    </div>
+
+                    <div>
+                        <span className="text-neutral-500 dark:text-neutral-400">Events:</span>{" "}
+                        <span className="font-medium">{(meet.races ?? []).length}</span>
+                    </div>
+                </div>
+
+                {metaOpen && (<div className="mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-800">
+                    <div
+                        className="text-xs uppercase tracking-wide text-neutral-500 dark:text-neutral-400 mb-1">
+                        Teams (full names)
+                    </div>
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1 text-sm">
+                        {(meet.teams ?? []).map((t) => {
+                            const team = teamsById[t.teamId];
+                            return team ? (<li key={t.teamId}>
+                                <Link
+                                    href={`/games/${gameId}/teams/${t.teamId}`}
+                                    className="text-blue-600 dark:text-blue-400 hover:underline"
+                                >
+                                    {team.college} ({team.abbr})
+                                </Link>
+                            </li>) : (<li key={t.teamId}>Team #{t.teamId}</li>);
+                        })}
+                    </ul>
+                </div>)}
+            </section>
+        </header>
+
+        <section
+            className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/60">
+            <header className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+                <h2 className="text-lg font-semibold">Team Points</h2>
+            </header>
+            <div className="px-2 py-3">
+                <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 overflow-x-auto">
+                    <Table<TeamPointsRow> data={teamPointsRows} columns={teamPointsColumns}/>
+                </div>
+            </div>
+        </section>
+
+        <div className="mt-6 mb-3 flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Races</h2>
+            <div
+                className="inline-flex rounded-md border border-neutral-300 dark:border-neutral-700 overflow-hidden">
+                <button
+                    type="button"
+                    onClick={() => setViewMode("teamPoints")}
+                    className={`px-3 py-1 text-sm ${viewMode === "teamPoints" ? "bg-neutral-200 dark:bg-neutral-700" : "bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800"}`}
+                >
+                    Team Points
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setViewMode("playerPerformance")}
+                    className={`px-3 py-1 text-sm ${viewMode === "playerPerformance" ? "bg-neutral-200 dark:bg-neutral-700" : "bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800"}`}
+                >
+                    Player Performance
+                </button>
             </div>
         </div>
-    );
+
+        <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {raceCards.map((race) => {
+                const raceHref = `/games/${gameId}/league/races/${race.raceId}`;
+
+                return (<div
+                    key={race.raceId}
+                    className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/60"
+                >
+                    <header
+                        className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
+                        <h3 className="text-base font-semibold">{race.eventType}</h3>
+                        <button
+                            onClick={() => router.push(raceHref)}
+                            className="text-xs rounded-md border border-neutral-300 dark:border-neutral-700 px-2 py-1 hover:bg-neutral-50 dark:hover:bg-neutral-800"
+                        >
+                            Open race
+                        </button>
+                    </header>
+
+                    <div className="px-2 py-3">
+                        {viewMode === "teamPoints" ? (<div
+                            className="rounded-lg border border-neutral-200 dark:border-neutral-800 overflow-x-auto">
+                            <Table<RaceTeamRow> data={buildRaceTeamRows(race)} columns={raceTeamColumns}/>
+                        </div>) : (<div
+                            className="rounded-lg border border-neutral-200 dark:border-neutral-800 overflow-x-auto">
+                            <Table<RaceParticipantRow>
+                                data={buildRaceParticipantRows(race)}
+                                columns={raceParticipantColumns}
+                            />
+                        </div>)}
+                    </div>
+                </div>);
+            })}
+        </section>
+    </div>);
 }

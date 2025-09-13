@@ -1,26 +1,15 @@
 import {Game} from '@/types/game';
-import {
-    deleteMeet,
-    deleteRace,
-    loadGameData,
-    loadMeets,
-    loadPlayers,
-    loadRaces,
-    loadTeams,
-    saveGame,
-    saveMeets,
-    savePlayers,
-    saveRaces,
-    saveTeams
-} from '@/data/storage';
+import {deleteMeet, deleteRace, loadGameData, loadMeets, loadPlayers, loadRaces, loadTeams, saveGame, saveMeets,
+    savePlayers, saveRaces, saveTeams} from '@/data/storage';
 import {handleNewYear} from './newYear';
-import {createRacesForMeet, mapWeekToGamePhase} from '@/logic/meetGenerator';
+import {createRacesForMeet, fillHeatsForRace, mapWeekToGamePhase} from '@/logic/meetGenerator';
 import {Meet, Race} from '@/types/schedule';
 import {Team} from '@/types/team';
 import {SeasonGamePhase} from '@/constants/seasons';
 import {generateRaceTime} from './generateRaceTimes';
 import {Player} from '@/types/player';
 import {updateTeamAndPlayerPoints} from './scoring';
+import {populateRaceWithParticipants} from "@/logic/populateRaces";
 
 export async function simulateWeek(gameId: number): Promise<boolean> {
     let game: Game;
@@ -30,13 +19,8 @@ export async function simulateWeek(gameId: number): Promise<boolean> {
     let races: Race[];
 
     try {
-        [game, teams, players, meets, races] = await Promise.all([
-            loadGameData(gameId),
-            loadTeams(gameId),
-            loadPlayers(gameId),
-            loadMeets(gameId),
-            loadRaces(gameId)
-        ]);
+        [game, teams, players, meets, races] = await Promise.all(
+            [loadGameData(gameId), loadTeams(gameId), loadPlayers(gameId), loadMeets(gameId), loadRaces(gameId)]);
     } catch (error) {
         console.error("Error loading game data", error);
         return Promise.reject(false);
@@ -46,7 +30,6 @@ export async function simulateWeek(gameId: number): Promise<boolean> {
     game.gamePhase = phase;
 
     let success = false;
-
 
     if (phase === 'regular') {
         success = await simulateRegularSeason(game, teams, players, meets, races);
@@ -61,15 +44,14 @@ export async function simulateWeek(gameId: number): Promise<boolean> {
         return Promise.reject(false);
     }
 
-    const incrementSuccess = await incrementWeek(game);
-    if (incrementSuccess[1]) {
-        await handleNewYear(game, teams, players, meets, races);
-        return Promise.resolve(true);
-    }
-
-    if (!success) {
+    const [incOk, newYear] = await incrementWeek(game);
+    if (!incOk) {
         console.error("Increment week failed");
         return Promise.reject(false);
+    }
+    if (newYear) {
+        await handleNewYear(game, teams, players, meets, races);
+        return Promise.resolve(true);
     }
 
     if (game.currentWeek == 11 || game.currentWeek == 26 || game.currentWeek == 41) {
@@ -88,7 +70,27 @@ export async function simulateWeek(gameId: number): Promise<boolean> {
     }
 }
 
+async function populateNextWeeksRacesWithParticipants(
+    game: Game, meets: Meet[], races: Race[], teams: Team[], players: Player[]
+): Promise<void> {
+    const week = game.currentWeek + 1;
+    const year = game.currentYear
+    const weekMeets = meets.filter(meet => meet.week === week && meet.year === year);
+    for (const meet of weekMeets) {
+        const meetRaces = races.filter(race => meet.races.includes(race.raceId));
+        for (const race of meetRaces) {
+            const shedObj = mapWeekToGamePhase(week);
+            const validTeamsOnMeet = teams.filter(team => meet.teams.some(mt => mt.teamId === team.teamId));
+            const validPlayersOnTeams = players.filter(player => validTeamsOnMeet.some(team => team.players.includes(player.playerId)));
+            const participants = await populateRaceWithParticipants(validTeamsOnMeet, validPlayersOnTeams, shedObj.season, race.eventType);
+            race.heats = fillHeatsForRace(shedObj.season, race.eventType, participants);
+            race.participants = participants;
+        }
+    }
+}
+
 async function simulateRegularSeason(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
+    await populateNextWeeksRacesWithParticipants(game, meets, races, teams, players);
     await simulateMeetsForWeek(game, meets, races, players);
     await updateTeamAndPlayerPoints(game, teams, players, meets, races);
     return Promise.resolve(true);
@@ -96,16 +98,10 @@ async function simulateRegularSeason(game: Game, teams: Team[], players: Player[
 
 export async function simulatePlayoffs(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
     try {
-        const p1 = await simulateMeetsForWeek(game, meets, races, players);
-        const p2 = await updateTeamAndPlayerPoints(game, teams, players, meets, races);
-
-        const p5 = await prepareForNextRound(game, teams, players, meets, races);
-        if (p1 && p2 && p5) {
-            return Promise.resolve(true);
-        } else {
-            console.error(p1, p2, p5, "p1 p2 p5");
-            return Promise.reject(false);
-        }
+        await simulateMeetsForWeek(game, meets, races, players);
+        await updateTeamAndPlayerPoints(game, teams, players, meets, races);
+        const ok = await prepareForNextRound(game, teams, players, meets, races);
+        return ok ? Promise.resolve(true) : Promise.reject(false);
     } catch (error) {
         console.error("Error simulating playoffs", error);
         return Promise.reject(false);
@@ -114,28 +110,18 @@ export async function simulatePlayoffs(game: Game, teams: Team[], players: Playe
 
 async function prepareForNextRound(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
     try {
-        const meetsForWeek = meets.filter(meet => meet.week === game.currentWeek && meet.year === game.currentYear);
-        const racesForWeek = races.filter(race => meetsForWeek.some(meet => meet.week === game.currentWeek && meet.year == game.currentYear && meet.races.includes(race.raceId)));
+        const meetsForWeek = meets.filter(m => m.week === game.currentWeek && m.year === game.currentYear);
+        const meetIds = new Set(meetsForWeek.map(m => m.meetId));
+        const racesForWeek = races.filter(r => meetIds.has(r.meetId));
 
-        try {
-            game.remainingTeams = await determineWinnersByPoints(meetsForWeek, racesForWeek, players);
-        } catch (error) {
-            console.error("Error determining winners by points", error);
-            return Promise.reject(false);
-        }
+        game.remainingTeams = await determineWinnersByPoints(meetsForWeek, racesForWeek, players);
 
-        if (!game.remainingTeams || game.remainingTeams.length === 0 || game.remainingTeams[0] === -1) {
+        if (!game.remainingTeams?.length || game.remainingTeams[0] === -1) {
             console.error("No remaining teams found");
             return Promise.reject(false);
         }
-
         await enterNextWeek(game, teams, players, meets, races);
-        if (game.remainingTeams[0] && game.remainingTeams.length > 0) {
-            return Promise.resolve(true);
-        }
-
-        console.error("error", game.remainingTeams);
-        return Promise.reject(false);
+        return Promise.resolve(true);
     } catch (error) {
         console.error("Error preparing for next round", error);
         return Promise.reject(false);
@@ -147,7 +133,6 @@ async function enterNextWeek(game: Game, teams: Team[], players: Player[], meets
         if (game.currentWeek == 10 || game.currentWeek == 25 || game.currentWeek == 40) {
 
             const championshipTeams = teams.filter(team => game.remainingTeams.includes(team.teamId));
-
             await updateChampionshipWeek(game, championshipTeams, players, meets, races);
             return Promise.resolve(true);
         }
@@ -163,86 +148,64 @@ async function enterNextWeek(game: Game, teams: Team[], players: Player[], meets
 }
 
 export async function determineWinnersByPoints(matches: Meet[], races: Race[], players: Player[]): Promise<number[]> {
-    let winners: number[] = [];
     try {
+        const winnersSet = new Set<number>();
+
         for (const meet of matches) {
-            const teamScores: { [teamId: number]: number } = {};
-            if (meet && meet.season === 'cross_country') {
-                meet.races.forEach(race => {
-                    races.filter(r => r.raceId === race).forEach(r => {
-                            if (!r.teams) {
-                                console.error("No team in race");
-                                return Promise.reject([-1]);
-                            }
-                            r.teams.forEach(team => {
-                                if (team.points > 0) {
-                                    teamScores[team.teamId] = (teamScores[team.teamId] || 0) + team.points;
-                                }
-                            });
-                        }
-                    );
-                });
+            const teamScores: Record<number, number> = {};
+            const meetRaceIds = new Set(meet.races);
+            const meetRaces = races.filter(r => meetRaceIds.has(r.raceId));
 
-                const sortedTeams = Object.entries(teamScores).sort(([, a], [, b]) => a - b);
-                const numberOfTeamsToPush = Math.max(Math.ceil(sortedTeams.length * 0.25), 2);
-                const teamsToPush = sortedTeams.slice(0, numberOfTeamsToPush)
-                if (meet.week === 11 || meet.week === 26 || meet.week === 41) { /* empty */
+            if (meet.season === 'cross_country' || meet.season === 'track_field') {
+                for (const r of meetRaces) {
+                    const raceTeams = r.teams ?? [];
+                    for (const team of raceTeams) {
+                        const pts = Number.isFinite(team.points) ? team.points : 0;
+                        teamScores[team.teamId] = (teamScores[team.teamId] ?? 0) + pts;
+                    }
                 }
-                winners = teamsToPush.map(([teamId]) => Number(teamId));
 
-            } else if (meet && meet.season === 'track_field') {
-                meet.races.forEach(race => {
-                    races.filter(r => r.raceId === race).forEach(r => {
-                            r.teams.forEach(team => {
-                                if (team.points > 0) {
-                                    teamScores[team.teamId] = (teamScores[team.teamId] || 0) + team.points;
-                                }
-                            });
-                        }
-                    );
-                });
+                const entries = Object.entries(teamScores);
+                if (entries.length > 0) {
+                    const sorted = entries
+                        .slice()
+                        .sort(([, a], [, b]) => meet.season === 'cross_country' ? a - b : b - a);
 
-                const sortedTeams = Object.entries(teamScores).sort(([, a], [, b]) => b - a);
-                const numberOfTeamsToPush = Math.max(Math.ceil(sortedTeams.length * 0.25), 2);
-                winners = sortedTeams.slice(0, numberOfTeamsToPush).map(([teamId]) => Number(teamId));
+                    const n = Math.max(Math.ceil(sorted.length * 0.25), 2);
+                    for (const [teamId] of sorted.slice(0, n)) {
+                        winnersSet.add(Number(teamId));
+                    }
+                }
             }
         }
+
+        let winners = Array.from(winnersSet);
+
+        if (winners.length === 0) {
+            const allRunners = races.flatMap(r => r.participants ?? []);
+            const withTimes = allRunners.filter(p => Number.isFinite(p.playerTime));
+            withTimes.sort((a, b) => (a.playerTime as number) - (b.playerTime as number));
+
+            const topTwoTeams = new Set<number>();
+            for (const runner of withTimes) {
+                const player = players.find(p => p.playerId === runner.playerId);
+                if (player?.teamId != null) topTwoTeams.add(player.teamId);
+                if (topTwoTeams.size >= 2) break;
+            }
+            winners = Array.from(topTwoTeams);
+        }
+
+        if (winners.length === 0) {
+            console.error("No winners found from scores or runner times");
+            return Promise.reject("Error: No winners found");
+
+        }
+
+        return winners;
     } catch (error) {
         console.error("Error determining winners by points", error);
         return Promise.reject(error);
     }
-
-    if (winners.length === 0) {
-        try {
-            const allRunners = races.flatMap(race => race.participants);
-            const sortedRunners = allRunners.toSorted((a, b) => a.playerTime - b.playerTime);
-            const topTwoTeams = new Set<number>();
-            for (const runner of sortedRunners) {
-                if (topTwoTeams.size < 2) {
-                    const player = players.find(player => player.playerId === runner.playerId);
-                    if (player) {
-                        const team = player.teamId;
-                        if (team !== undefined) {
-                            topTwoTeams.add(team);
-                        }
-                    }
-                } else {
-                    break;
-                }
-            }
-            winners = Array.from(topTwoTeams);
-        } catch (error) {
-            console.error("Error determining top two teams by runner times", error);
-            return Promise.reject(error);
-        }
-    }
-
-    if (!winners || winners.length === 0) {
-        console.error("No winners found");
-        return Promise.reject([-1]);
-    }
-
-    return Promise.resolve(winners);
 }
 
 // returns array of booleans [success, new year]
@@ -294,85 +257,53 @@ async function simulateMeetsForWeek(game: Game, meets: Meet[], races: Race[], pl
     return Promise.resolve(true);
 }
 
+function notNull<T>(x: T | null | undefined): x is T { return x != null; }
+
 async function updateChampionshipWeek(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
+    const sched = mapWeekToGamePhase(game.currentWeek);
+    const nextWeek = game.currentWeek + 1;
+    const foundMeet = meets.find(m => m.week === nextWeek && m.year === game.currentYear);
+    if (!game.remainingTeams?.length) return Promise.reject(false);
+    if (!foundMeet) return Promise.reject(false);
 
-    const shedObj = mapWeekToGamePhase(game.currentWeek);
-    const foundMeet = meets.find(meet => meet.week === game.currentWeek + 1 && meet.year === game.currentYear);
-
-    if (!game.remainingTeams) {
-        console.error("No game remaining teams found");
-        return Promise.reject(false);
-    }
-
-    if (!teams) {
-        console.error("No teams found");
-        return Promise.reject(false);
-    }
-
-    if (!foundMeet) {
-        console.error("Could not find meet for championship week");
-        return Promise.reject(false);
-    }
-    const foundRaces = races.filter(race => race.meetId === foundMeet.meetId);
-
+    const foundRaces = races.filter(r => r.meetId === foundMeet.meetId);
     await deleteMeet(game.gameId, foundMeet.meetId);
+    for (const r of foundRaces) await deleteRace(game.gameId, r.raceId);
 
-    for (const race of foundRaces) {
-        await deleteRace(game.gameId, race.raceId);
-    }
+    const meetTeams = teams
+        .filter(t => game.remainingTeams.includes(t.teamId))
+        .map(t => ({teamId: t.teamId, points: 0, has_five_racers: false}));
 
-    races = races.filter(r => r.meetId !== foundMeet.meetId);
-    meets = meets.filter(m => m.meetId !== foundMeet.meetId);
+    const raceTeams: Team[] = meetTeams
+        .map(mt => teams.find(t => t.teamId === mt.teamId) ?? null)
+        .filter(notNull);
 
-    const meetTeams = teams.filter(team => game.remainingTeams.includes(team.teamId)).map(team => ({
-        teamId: team.teamId,
-        points: 0,
-        has_five_racers: false
-    }));
+    const newRaces = await createRacesForMeet(raceTeams, players, game.gameId, sched.season, foundMeet.meetId, game.currentYear, nextWeek);
 
-    const raceTeams: Team[] =
-        meetTeams.map(mt => {
-            const team = teams.find(t => t.teamId === mt.teamId);
-            if (team) {
-                return team;
-            } else {
-                console.error(`Team with ID ${mt.teamId} not found`);
-                return null;
-            }
-        }).filter(team => team !== null)
-
-    const newRaces = await createRacesForMeet(raceTeams, players, game.gameId, shedObj.season, foundMeet.meetId, game.currentYear);
-
-    if (!meetTeams) {
-        console.error("No meet teams found");
-        return Promise.reject(false);
+    const validTeamsOnMeet = raceTeams;
+    const validPlayersOnTeams = players.filter(p => validTeamsOnMeet.some(t => t.players.includes(p.playerId)));
+    for (const r of newRaces) {
+        const participants = await populateRaceWithParticipants(validTeamsOnMeet, validPlayersOnTeams, sched.season, r.eventType);
+        r.heats = fillHeatsForRace(sched.season, r.eventType, participants);
+        r.participants = participants;
     }
 
     const newMeet: Meet = {
-        week: game.currentWeek + 1,
+        week: nextWeek,
         meetId: foundMeet.meetId,
         date: 'Championship Playoff Round',
         year: game.currentYear,
         teams: meetTeams,
         races: newRaces.map(r => r.raceId),
-        season: shedObj.season,
-        type: shedObj.type,
+        season: sched.season,
+        type: sched.type,
         gameId: game.gameId
     };
 
     races.push(...newRaces);
     meets.push(newMeet);
-
     await saveMeets(game.gameId, meets);
     await saveRaces(game.gameId, races);
 
-    if (!newRaces.length) {
-        console.error("No new races created");
-        return Promise.reject(false);
-    }
-    if (!newMeet.teams.length) {
-        console.error("No teams in new meet");
-        return Promise.reject(false);
-    }
-    return Promise.resolve(true);
+    return true;
 }
