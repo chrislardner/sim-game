@@ -1,4 +1,4 @@
-export interface Team {
+export type Team = {
     teamId: number;
     college: string;
     teamName: string;
@@ -16,16 +16,40 @@ export interface Team {
     long_ovr: number;
     xc_ovr: number;
     abbr: string;
-    player_control: boolean
-    latitude?: number;
-    longitude?: number;
-    XCPlayers: number;
+    player_control: boolean;
     XCTFPlayers: number;
     TFPlayers: number;
-}
+    latitude?: number;
+    longitude?: number;
+
+    profile?: TeamProfile;
+};
 
 export interface TeamSchedule {
     teamId: number;
     year: number;
     meets: number[];
 }
+
+export type TravelPolicy = {
+    homeRange?: number;
+    awayRange: number;
+    homeRoster?: number;
+    awayRoster?: number;
+};
+
+export type RecruitProfile = {
+    quality: number;
+    classSize: number;
+    hostPreference: number;
+};
+
+export type TeamProfile = {
+    xc: {
+        travel: TravelPolicy;
+    };
+    track: {
+        travel: TravelPolicy;
+    };
+    recruit: RecruitProfile;
+};

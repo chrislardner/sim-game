@@ -45,7 +45,6 @@ export async function createTeam(gameId: number, year: number, school: School, p
         xc_ovr: 0,
         abbr: school.collegeAbbr,
         player_control,
-        XCPlayers: school.XCPlayers ?? 0,
         XCTFPlayers: school.XCTFPlayers ?? 7,
         TFPlayers: school.TFPlayers ?? 10,
     };

@@ -65,7 +65,7 @@ export default function GameDashboard({params}: Readonly<{ params: Promise<{ gam
                 <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                     <h2 className="text-lg font-semibold">Current Team</h2>
                     <p className="text-blue-500 hover:underline cursor-pointer"
-                       onClick={() => router.push(`/games/${gameData.gameId}/league/teams/${gameData.selectedTeamId}`)}>{teams && teams[gameData.selectedTeamId - 1]?.college}</p>
+                       onClick={() => router.push(`/games/${gameData.gameId}/teams/${gameData.selectedTeamId}`)}>{teams && teams[gameData.selectedTeamId - 1]?.college}</p>
                 </div>
                 <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                     <h2 className="text-lg font-semibold">Current Week</h2>

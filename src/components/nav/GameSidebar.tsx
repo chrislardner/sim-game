@@ -9,18 +9,18 @@ import type {NavItem, NavPage, NavSection} from "@/types/nav";
 import {cn} from "@/lib/cn";
 import {ChevronRight} from "@/components/icons/ChevronRight";
 
-type Props = { gameId: string };
+type Props = { gameId: string, teamId: string };
 
 function isActiveExact(pathname: string, target: string) {
     return pathname === target;
 }
 
-export default function Sidebar({ gameId }: Props) {
+export default function Sidebar({ gameId, teamId }: Props) {
     const pathname = usePathname();
 
     const items: NavItem[] = useMemo(
-        () => (gameId ? resolveNav(NAV_CONFIG, gameId) : NAV_CONFIG),
-        [gameId]
+        () => (gameId ? resolveNav(NAV_CONFIG, gameId, teamId) : NAV_CONFIG),
+        [gameId, teamId]
     );
 
     const allOpenDefaults = useMemo(() => {
