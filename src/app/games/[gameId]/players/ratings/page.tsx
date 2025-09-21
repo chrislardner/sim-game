@@ -24,7 +24,7 @@ export default function PlayersPage({params}: Readonly<{ params: Promise<{ gameI
 
             fetchData().catch(console.error);
         } else {
-            console.log("couldn't find gameId", gameId);
+            console.error("couldn't find gameId", gameId);
         }
     }, [gameId]);
 
@@ -60,7 +60,7 @@ export default function PlayersPage({params}: Readonly<{ params: Promise<{ gameI
     const getRowLink = (player: Player) => `/games/${gameId}/players/${player.playerId}`;
 
     return (
-        <div className="p-4">
+        <div className="py-4">
             <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">Players</h1>
             <Table data={data} columns={columns} getRowLink={getRowLink} linkColumns={['fullName']}/>
         </div>

@@ -29,9 +29,8 @@ export default function LeagueSchedulePage({params}: Readonly<{ params: Promise<
             const years = Array.from(new Set(meetsData.map(meet => meet.year)));
             setAvailableYears(years);
             setCurrentYear(gameData.currentYear);
-            setSelectedYear(gameData.currentYear); // Set the selected year to the current game year
+            setSelectedYear(gameData.currentYear);
             setMeets(meetsData);
-            // Create a mapping of teamId to team college
             const teamsMapping = teamsData.reduce((accumulated: { [key: number]: Team }, team: Team) => {
                 accumulated[team.teamId] = team;
                 return accumulated;
@@ -63,7 +62,7 @@ export default function LeagueSchedulePage({params}: Readonly<{ params: Promise<
     const getRowLink = (meet: TransformedMeet) => `/games/${gameId}/league/schedule/${meet.meetId}`;
 
     return (
-        <div className="p-4">
+        <div className="py-4">
             <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">League Schedule</h1>
             <YearFilter
                 availableYears={availableYears}

@@ -3,63 +3,81 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-primary-light: #4f46e5;
-  --color-primary-dark: #fb6c9f;
+    --color-primary-light: #4f46e5;
+    --color-primary-dark: #fb6c9f;
 
-  --color-secondary-light: #7f95d1;
-  --color-secondary-dark: #96a8d9;
+    --color-secondary-light: #7f95d1;
+    --color-secondary-dark: #96a8d9;
 
-  --color-background-light: #f3f4f6;
-  --color-background-dark: #212529;
+    --color-background-light: #f3f4f6;
+    --color-background-dark: #212529;
 
-  --color-surface-light: #ffffff;
-  --color-surface-dark: #343a40;
+    --color-surface-light: #ffffff;
+    --color-surface-dark: #343a40;
 
-  --color-text-light: #343a40;
-  --color-text-dark: #f9fafb;
+    --color-text-light: #343a40;
+    --color-text-dark: #f9fafb;
 
-  --color-accent-light: #ff80ab;
-  --color-accent-dark: #f50057;
+    --color-accent-light: #ff80ab;
+    --color-accent-dark: #f50057;
 
-  --color-neutral-light: #fafafa;
-  --color-neutral-dark: #424242;
+    --color-neutral-light: #fafafa;
+    --color-neutral-dark: #424242;
 
-  --color-success-light: #b9f6ca;
-  --color-success-dark: #00c853;
+    --color-success-light: #b9f6ca;
+    --color-success-dark: #00c853;
 
-  --color-warning-light: #fff59d;
-  --color-warning-dark: #fbc02d;
+    --color-warning-light: #fff59d;
+    --color-warning-dark: #fbc02d;
 
-  --color-error-light: #ef9a9a;
-  --color-error-dark: #c62828;
+    --color-error-light: #ef9a9a;
+    --color-error-dark: #c62828;
 
-  --color-info-light: #81d4fa;
-  --color-info-dark: #0277bd;
+    --color-info-light: #81d4fa;
+    --color-info-dark: #0277bd;
 
-  --color-hover-light: #81d4fa;
-  --color-hover-dark: #0277bd;
+    --color-hover-light: #81d4fa;
+    --color-hover-dark: #0277bd;
 
-  --color-click-light: #81d4fa;
-  --color-click-dark: #0277bd;
+    --color-click-light: #81d4fa;
+    --color-click-dark: #0277bd;
 
-  --color-selected-light: #81d4fa;
-  --color-selected-dark: #0277bd;
+    --color-selected-light: #81d4fa;
+    --color-selected-dark: #0277bd;
 }
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
-  }
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentcolor);
+    }
+}
+
+@layer base {
+    html { scrollbar-gutter: stable; }
+
+    :root {
+        --page-max-w: 80rem;
+        --page-pad-x: 1rem;
+    }
+    @media (min-width: 640px) {
+        :root { --page-pad-x: 1.5rem; }
+    }
+    @media (min-width: 1024px) {
+        :root { --page-pad-x: 2rem; }
+    }
+}
+
+@layer utilities {
+    .page-x {
+        max-width: var(--page-max-w);
+        padding-left: var(--page-pad-x);
+        padding-right: var(--page-pad-x);
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+    }
 }

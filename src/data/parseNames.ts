@@ -78,7 +78,7 @@ class NameGenerator {
             entry.last_percent_thousand
         );
         if (!isValid) {
-            console.log("Invalid Entry (Missing Fields):", entry);
+            console.error("Invalid Entry (Missing Fields):", entry);
         }
         return isValid;
     }
@@ -92,7 +92,7 @@ class NameGenerator {
                 lastNameRate: parseFloat(entry.last_percent_thousand.replace("%", "")) || 0,
             };
             if (cleanedEntry.firstNameRate === 0 || cleanedEntry.lastNameRate === 0) {
-                console.log("Invalid Rate in Entry:", cleanedEntry);
+                console.error("Invalid Rate in Entry:", cleanedEntry);
             }
             return cleanedEntry;
         } catch (error) {

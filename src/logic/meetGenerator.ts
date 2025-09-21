@@ -4,14 +4,14 @@ import {raceTypes} from '@/constants/raceTypes';
 import {SeasonGamePhase, SeasonType} from '@/constants/seasons';
 import {getNextMeetId, getNextRaceId} from '@/data/storage';
 import {Player} from '@/types/player';
+import {populateRaceWithParticipants} from "@/logic/populateRaces";
 
 export async function createMeet(teams: Team[], players: Player[], week: number, year: number, gameId: number): Promise<{
-    meet: Meet,
-    races: Race[]
+    meet: Meet, races: Race[]
 }> {
     const map = mapWeekToGamePhase(week);
     const meetId = await getNextMeetId(gameId);
-    const races = await createRacesForMeet(teams, players, gameId, map.season, meetId, year)
+    const races = await createRacesForMeet(teams, players, gameId, map.season, meetId, year, week)
     const meet: Meet = {
         week,
         meetId,
@@ -26,46 +26,94 @@ export async function createMeet(teams: Team[], players: Player[], week: number,
     return {meet, races};
 }
 
-export async function createRacesForMeet(teams: Team[], players: Player[], gameId: number, seasonType: 'cross_country' | 'track_field', meetId: number, year: number): Promise<Race[]> {
-    const playerMap = new Map(players.map(player => [player.playerId, player]));
-    return await Promise.all(raceTypes[seasonType].map(async eventType => {
-        const participants = teams.flatMap(team =>
-            team.players.map(playerId => playerMap.get(playerId))
-                .filter(player =>
-                    player && player.seasons.includes(seasonType) && player.eventTypes[seasonType].includes(eventType)
-                ).map(player => ({
-                playerId: player!.playerId,
-                playerTime: 0,
-                scoring: {points: 0, team_top_five: false, team_top_seven: false}
-            }))
-        );
+async function populateRaceWithParticipantsConditionally(teams: Team[], players: Player[], seasonType: "cross_country" | "track_field", eventType: string, firstOfSeason: boolean) {
+    if (!firstOfSeason) return [] as Array<{
+        playerId: number;
+        playerTime: number;
+        scoring: { points: number; team_top_five: boolean; team_top_seven: boolean };
+    }>;
+    return await populateRaceWithParticipants(teams, players, seasonType, eventType);
+}
 
-        let heats = 1;
-        if (seasonType === 'track_field') {
-            if (['100m', '200m', '400m', '800m'].includes(eventType)) {
-                heats = Math.ceil(participants.length / 8);
-            } else if (['1,500m', '3,000m', '5,000m', '10,000m'].includes(eventType)) {
-                heats = Math.ceil(participants.length / 16);
-            }
+function computeHeats(seasonType: "cross_country" | "track_field", eventType: string, participantCount: number): Heat[] {
+    let heats;
+
+    if (seasonType === "track_field") {
+        const sprintLike = new Set(["100m", "200m", "400m", "800m"]);
+        const distLike = new Set(["1500m", "1,500m", "3000m", "3,000m", "5000m", "5,000m", "10000m", "10,000m",]);
+
+        if (sprintLike.has(eventType)) {
+            heats = Math.max(1, Math.ceil(participantCount / 8));
+        } else if (distLike.has(eventType)) {
+            heats = Math.max(1, Math.ceil(participantCount / 16));
+        } else {
+            // default lane/heat assumption
+            heats = Math.max(1, Math.ceil(participantCount / 12));
         }
-        const newHeats: Heat[] = Array.from({length: heats}, () => ({playerTimes: {}, players: []}))
-        participants.forEach((participant, index) => {
-            const heatIndex = index % heats;
-            newHeats[heatIndex].players.push(participant.playerId);
-        });
+    } else {
+        // cross-country: single mass start
+        heats = 1;
+    }
 
-        return {
+    const hs: Heat[] = Array.from({length: heats}, () => ({
+        playerTimes: {}, players: [],
+    }));
+
+    let i = 0;
+    for (let idx = 0; idx < participantCount; idx++) {
+        hs[i].players.push(idx);
+        i = (i + 1) % heats;
+    }
+
+    return hs;
+}
+
+function fillHeatPlayerIds(heats: Heat[], participantIds: number[]) {
+    for (const h of heats) {
+        h.players = h.players.map((idx) => participantIds[idx] ?? 0);
+    }
+}
+
+export function fillHeatsForRace(seasonType: "cross_country" | "track_field", eventType: string, participants: {
+    playerId: number;
+    playerTime: number;
+    scoring: { points: number; team_top_five: boolean; team_top_seven: boolean }
+}[]) {
+
+    const heats = computeHeats(seasonType, eventType, participants.length);
+    fillHeatPlayerIds(heats, participants.map((p) => p.playerId));
+    return heats;
+}
+
+export async function createRacesForMeet(teams: Team[], players: Player[], gameId: number, seasonType: "cross_country" | "track_field",
+                                         meetId: number, year: number, week: number):
+    Promise<Race[]> {
+
+    const firstOfSeason = week == 1;
+
+    const events = raceTypes[seasonType] ?? [];
+    const out: Race[] = [];
+
+    for (const eventType of events) {
+        const participants = await populateRaceWithParticipantsConditionally(teams, players, seasonType, eventType, firstOfSeason);
+        const heats = fillHeatsForRace(seasonType, eventType, participants);
+
+        const raceId = await getNextRaceId(gameId);
+
+        out.push({
             participants,
             eventType,
-            heats: newHeats,
-            raceId: await getNextRaceId(gameId),
-            teams: teams.map(team => ({teamId: team.teamId, points: 0,})),
+            heats,
+            raceId,
+            teams: teams.map((t) => ({teamId: t.teamId, points: 0})),
             meetId,
             gameId,
             year,
-        };
-    }));
+        });
+    }
+    return out;
 }
+
 
 export function mapWeekToGamePhase(gameWeek: number): { season: SeasonType, type: SeasonGamePhase } {
     if (gameWeek >= 1 && gameWeek <= 9) return {season: 'cross_country', type: 'regular'};

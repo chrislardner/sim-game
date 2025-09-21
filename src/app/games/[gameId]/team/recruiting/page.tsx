@@ -30,7 +30,7 @@ export default function RecruitingPage({params}: Readonly<{ params: Promise<{ ga
                 setDoneRecruiting(true);
                 return Promise.resolve();
             } catch (error) {
-                console.log("Error simulating week", error);
+                console.error("Error simulating week", error);
                 return Promise.reject(error);
             }
         }
@@ -39,7 +39,7 @@ export default function RecruitingPage({params}: Readonly<{ params: Promise<{ ga
     if (!gameData) return <div>Loading...</div>;
 
     return (
-        <div className="p-4 transition-colors">
+        <div className="py-4 transition-colors">
             <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">Dashboard</h1>
 
             <button

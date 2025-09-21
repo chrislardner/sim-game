@@ -1,6 +1,6 @@
 {
-  "name": "athlete-sim",
-  "version": "0.1.0",
+  "name": "xctracksim",
+  "version": "0.1.0-beta.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -17,7 +17,7 @@
     "idb": "^8.0.0",
     "jest": "^29.7.0",
     "lodash": "^4.17.21",
-    "next": "15.2.4",
+    "next": "15.4.7",
     "papaparse": "^5.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

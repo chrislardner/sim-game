@@ -1,160 +1,271 @@
 "use client";
 
-import {useEffect, useState} from 'react';
-import {useRouter} from 'next/navigation';
-import {loadMeets, loadPlayers, loadRaces, loadTeams} from '@/data/storage';
-import {Meet, Race} from '@/types/schedule';
-import {Player} from '@/types/player';
-import {Team} from '@/types/team';
+import React, {use, useEffect, useMemo, useState} from "react";
+import Link from "next/link";
+import {useRouter} from "next/navigation";
+import Table, {type ColumnDef} from "@/components/Table";
+import {loadMeets, loadPlayers, loadRaces, loadTeams} from "@/data/storage";
+import type {Meet, Race} from "@/types/schedule";
+import type {Player} from "@/types/player";
+import type {Team} from "@/types/team";
 
-export default function RaceResultsPage({params}: Readonly<{ params: Promise<{ gameId: string, raceId: string }> }>) {
+type RouteParams = { gameId: string; raceId: string };
+
+type ParticipantRow = {
+    pos: number;
+    playerId: number;
+    playerName: string;
+    teamId?: number;
+    teamLabel: string;
+    timeStr: string;
+    points: number;
+};
+
+type TeamPointsRow = {
+    teamId: number; teamLabel: string; points: number;
+};
+
+export default function RaceResultsPage({
+                                            params,
+                                        }: {
+    params: Promise<RouteParams>;
+}) {
+    const {gameId, raceId} = use(params);
     const router = useRouter();
-    const [unwrappedParams, setUnwrappedParams] = useState<{ gameId: string, raceId: string } | null>(null);
-    const [race, setRace] = useState<Race>();
-    const [teamsMap, setTeamsMap] = useState<{ [key: number]: Team }>({});
-    const [playersMap, setPlayersMap] = useState<{ [key: number]: { player: Player, team: Team } }>({});
-    const [meet, setMeet] = useState<Meet>();
-    const [teamPoints, setTeamPoints] = useState<{ [key: number]: number }>({});
+
+    const [race, setRace] = useState<Race | null>(null);
+    const [meet, setMeet] = useState<Meet | null>(null);
+    const [teamsById, setTeamsById] = useState<Record<number, Team>>({});
+    const [playersById, setPlayersById] = useState<Record<number, Player>>({});
+    const [metaOpen, setMetaOpen] = useState(false); // << expanded meta toggle
 
     useEffect(() => {
-        params.then(setUnwrappedParams);
-    }, [params]);
+        let mounted = true;
+        (async () => {
+            const [races, meets, teams, players] = await Promise.all([loadRaces(Number(gameId)), loadMeets(Number(gameId)), loadTeams(Number(gameId)), loadPlayers(Number(gameId)),]);
 
-    useEffect(() => {
-        async function fetchData() {
-            if (unwrappedParams?.gameId && unwrappedParams?.raceId) {
-                const {gameId, raceId} = unwrappedParams;
-                const raceData = await loadRaces(Number(gameId));
-                const playerData = await loadPlayers(Number(gameId));
-                const meetData = await loadMeets(Number(gameId));
-                const teams: Team[] = await loadTeams(Number(gameId));
+            const r = races.find((x) => x.raceId === Number(raceId)) ?? null;
+            const m = r ? meets.find((mm) => mm.meetId === Number(r.meetId)) ?? null : null;
 
-                const selectRace = raceData.find(r => r.raceId === Number(raceId));
-                const selectMeet = meetData.find(m => m.meetId === Number(selectRace?.meetId));
+            if (!mounted) return;
 
-                setRace(selectRace);
-                setMeet(selectMeet);
-                const selectPlayers = playerData.filter(player => selectRace?.participants.some(participant => participant.playerId === player.playerId));
+            setRace(r);
+            setMeet(m);
 
-                // Create a mapping of teamId to team college
-                const teamsMapping: { [key: number]: Team } = {};
-                teams.forEach(t => {
-                    teamsMapping[t.teamId] = t;
-                });
-                setTeamsMap(teamsMapping);
+            const tMap: Record<number, Team> = {};
+            for (const t of teams) tMap[t.teamId] = t;
+            setTeamsById(tMap);
 
-                const playersMapping = teams.reduce((accumulated: {
-                    [key: number]: { player: Player, team: Team }
-                }, team) => {
-                    team.players.forEach(playerId => {
-                        const player = selectPlayers.find(p => p.playerId === playerId);
-                        if (player) {
-                            accumulated[playerId] = {
-                                player,
-                                team,
-                            };
-                        }
-                    });
-                    return accumulated;
-                }, {});
-                setPlayersMap(playersMapping);
+            const pMap: Record<number, Player> = {};
+            for (const p of players) pMap[p.playerId] = p;
+            setPlayersById(pMap);
+        })();
+        return () => {
+            mounted = false;
+        };
+    }, [gameId, raceId]);
 
-                const teamPoints = selectRace?.teams.reduce((accumulated: { [key: number]: number }, team) => {
-                    if (team.points > 0) {
-                        accumulated[team.teamId] = team.points;
-                    }
-                    return accumulated;
-                }, {});
-                if (teamPoints) {
-                    setTeamPoints(teamPoints);
-                }
-            }
-        }
-
-        fetchData();
-    }, [unwrappedParams]);
-
-    const formatTime = (time: number) => {
-        const minutes = Math.floor(time / 60);
-        const seconds = Math.floor(time % 60);
-        const milliseconds = Math.floor((time % 1) * 100);
-        return `${minutes}:${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
+    const formatTime = (secs: number) => {
+        const minutes = Math.floor(secs / 60);
+        const seconds = Math.floor(secs % 60);
+        const hundredths = Math.floor((secs % 1) * 100);
+        return `${minutes}:${String(seconds).padStart(2, "0")}.${String(hundredths).padStart(2, "0")}`;
     };
 
-    if (!race) return <div>Loading...</div>;
-
-    const sortedParticipants = race.participants
-        .toSorted((a, b) => a.playerTime - b.playerTime)
-        .map((participant, index) => ({
-            ...participant,
-            position: index + 1,
-        }));
-
-    const sortedTeamPoints = Object.entries(teamPoints).sort(([, pointsA], [, pointsB]) => {
-        if (meet?.season === 'cross_country') {
-            return Number(pointsA) - Number(pointsB); // Less points first
-        } else {
-            return Number(pointsB) - Number(pointsA); // More points first
+    const teamIdByPlayerId: Record<number, number> = useMemo(() => {
+        const map: Record<number, number> = {};
+        for (const k in teamsById) {
+            const team = teamsById[Number(k)];
+            for (const pid of team.players ?? []) map[pid] = team.teamId;
         }
-    });
+        return map;
+    }, [teamsById]);
 
-    return (
-        <div className="p-4">
-            <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">Race Results</h1>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 cursor-pointer"
-               onClick={() => router.push(`/games/${unwrappedParams?.gameId}/league/schedule/${meet?.meetId}`)}>
-                Meet: <span className="font-semibold">{meet?.week} - {meet?.season}</span>
-            </p>
-            <p className="text-gray-700 dark:text-gray-300">Teams: {meet?.teams.map(team => teamsMap[team.teamId].abbr).join(', ')}</p>
-            <p className="text-gray-700 dark:text-gray-300">Event: <span
-                className="font-semibold">{race?.eventType}</span></p>
+    const participantRows: ParticipantRow[] = useMemo(() => {
+        if (!race) return [];
+        const sorted = [...race.participants].sort((a, b) => a.playerTime - b.playerTime);
 
-            <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Results</h2>
-            <table className="min-w-full bg-white dark:bg-gray-800">
-                <thead>
-                <tr>
-                    <th className="py-2 px-4 border-b">Position</th>
-                    <th className="py-2 px-4 border-b">Player</th>
-                    <th className="py-2 px-4 border-b">Team</th>
-                    <th className="py-2 px-4 border-b">Time</th>
-                    <th className="py-2 px-4 border-b">Points</th>
-                </tr>
-                </thead>
-                <tbody className="min-w-full">
-                {sortedParticipants.map(({playerId, playerTime, scoring: {points}, position}) => (
-                    <tr key={playerId}>
-                        <td className="py-2 px-4 border-b text-center">{position}</td>
-                        <td className="py-2 px-4 border-b text-center cursor-pointer"
-                            onClick={() => router.push(`/games/${unwrappedParams?.gameId}/players/${playerId}`)}>
-                            {playersMap[Number(playerId)]?.player.firstName + ' ' + playersMap[Number(playerId)]?.player.lastName}
-                        </td>
-                        <td className="py-2 px-4 border-b text-center">
-                            {playersMap[Number(playerId)]?.team.college + ' (' + playersMap[Number(playerId)]?.team.abbr + ')'}
-                        </td>
-                        <td className="py-2 px-4 border-b text-center">{formatTime(playerTime)}</td>
-                        <td className="py-2 px-4 border-b text-center">{points}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+        return sorted.map((p, idx) => {
+            const player = playersById[p.playerId];
+            const tId = teamIdByPlayerId[p.playerId];
+            const team = tId ? teamsById[tId] : undefined;
 
-            <h2 className="text-2xl font-semibold mt-6 mb-4 text-primary-light dark:text-primary-dark">Team Points</h2>
-            <table className="min-w-full bg-white dark:bg-gray-800">
-                <thead>
-                <tr>
-                    <th className="py-2 px-4 border-b">Team</th>
-                    <th className="py-2 px-4 border-b">Points</th>
-                </tr>
-                </thead>
-                <tbody className="min-w-full">
-                {sortedTeamPoints.map(([teamId, points]) => (
-                    <tr key={teamId}>
-                        <td className="py-2 px-4 border-b text-center">{teamsMap[Number(teamId)].college + ' (' + teamsMap[Number(teamId)]?.abbr + ')'}</td>
-                        <td className="py-2 px-4 border-b text-center">{points}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-        </div>
-    );
+            return {
+                pos: idx + 1,
+                playerId: p.playerId,
+                playerName: player ? `${player.firstName} ${player.lastName}` : `Player #${p.playerId}`,
+                teamId: team?.teamId,
+                teamLabel: team ? `${team.college} (${team.abbr})` : "—",
+                timeStr: formatTime(p.playerTime),
+                points: p.scoring?.points ?? 0,
+            };
+        });
+    }, [race, playersById, teamIdByPlayerId, teamsById]);
+
+    const teamPointsRows: TeamPointsRow[] = useMemo(() => {
+        if (!race) return [];
+        const rows = (race.teams ?? []).map((t) => {
+            const team = teamsById[t.teamId];
+            return {
+                teamId: t.teamId,
+                teamLabel: team ? `${team.college} (${team.abbr})` : `Team #${t.teamId}`,
+                points: t.points ?? 0,
+            };
+        });
+
+        const isXC = meet?.season === "cross_country";
+        rows.sort((a, b) => (isXC ? a.points - b.points : b.points - a.points));
+        return rows;
+    }, [race, teamsById, meet?.season]);
+
+    const participantColumns: ColumnDef<ParticipantRow>[] = [{
+        id: "pos", field: "pos", label: "Pos", className: "w-16", sortable: true
+    }, {
+        id: "player", label: "Player", sortable: true, render: (r) => (<Link
+            href={`/games/${gameId}/players/${r.playerId}`}
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+        >
+            {r.playerName}
+        </Link>),
+    }, {
+        id: "team", label: "Team", sortable: true, render: (r) => r.teamId ? (<Link
+            href={`/games/${gameId}/teams/${r.teamId}`}
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+        >
+            {r.teamLabel}
+        </Link>) : (<span>—</span>),
+    }, {id: "time", field: "timeStr", label: "Time", className: "w-28", sortable: true}, {
+        id: "pts", field: "points", label: "Pts", className: "w-16", sortable: true
+    },];
+
+    const teamPointsColumns: ColumnDef<TeamPointsRow>[] = [{
+        id: "team", label: "Team", render: (r) => (<Link
+            href={`/games/${gameId}/teams/${r.teamId}`}
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+        >
+            {r.teamLabel}
+        </Link>),
+    }, {id: "points", field: "points", label: "Points", className: "w-24", sortable: true},];
+
+    if (!race) {
+        return <div className="p-6 text-sm text-neutral-500 dark:text-neutral-400">Loading…</div>;
+    }
+
+    const meetHref = meet ? `/games/${gameId}/league/schedule/${meet.meetId}` : undefined;
+
+    return (<div className="py-4 md:p-6">
+        <header className="mb-4 flex flex-wrap items-center gap-2">
+            <h1 className="text-2xl md:text-3xl font-semibold text-primary-light dark:text-primary-dark">
+                Race Results
+            </h1>
+            <div className="ml-auto text-sm text-neutral-600 dark:text-neutral-300">
+                {meetHref ? (<button
+                    onClick={() => router.push(meetHref)}
+                    className="rounded-md border border-neutral-300 dark:border-neutral-700 px-2 py-1 hover:bg-neutral-50 dark:hover:bg-neutral-800"
+                >
+                    View Meet
+                </button>) : null}
+            </div>
+        </header>
+
+        <section
+            className="mb-4 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/60 px-4 py-3">
+            <div className="mb-2 flex items-center justify-between">
+                <div className="text-sm font-semibold">Meet Info</div>
+                <button
+                    type="button"
+                    aria-expanded={metaOpen}
+                    onClick={() => setMetaOpen((v) => !v)}
+                    className="text-xs rounded-md border border-neutral-300 dark:border-neutral-700 px-2 py-1 hover:bg-neutral-50 dark:hover:bg-neutral-800"
+                >
+                    {metaOpen ? "Hide details" : "Show details"}
+                </button>
+            </div>
+
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                <div>
+                    <span className="text-neutral-500 dark:text-neutral-400">Meet:</span>{" "}
+                    {meetHref ? (<Link href={meetHref} className="font-medium hover:underline">
+                        {meet?.week} • {meet?.season}
+                    </Link>) : (<span className="font-medium">
+                {meet?.week} • {meet?.season}
+              </span>)}
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                    <span className="text-neutral-500 dark:text-neutral-400">Teams:</span>
+                    <div className="flex flex-wrap gap-1">
+                        {(meet?.teams ?? []).map((t) => {
+                            const team = teamsById[t.teamId];
+                            return team ? (<Link
+                                key={t.teamId}
+                                href={`/games/${gameId}/teams/${t.teamId}`}
+                                className="rounded-md bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 text-xs hover:bg-neutral-200 dark:hover:bg-neutral-700"
+                            >
+                                {team.abbr}
+                            </Link>) : (<span
+                                key={t.teamId}
+                                className="rounded-md bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 text-xs"
+                            >
+                    #{t.teamId}
+                  </span>);
+                        })}
+                    </div>
+                </div>
+
+                <div>
+                    <span className="text-neutral-500 dark:text-neutral-400">Event:</span>{" "}
+                    <span className="font-medium">{race.eventType}</span>
+                </div>
+            </div>
+
+            {metaOpen && (<div className="mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-800">
+                <div className="text-xs uppercase tracking-wide text-neutral-500 dark:text-neutral-400 mb-1">
+                    Teams (full names)
+                </div>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1 text-sm">
+                    {(meet?.teams ?? []).map((t) => {
+                        const team = teamsById[t.teamId];
+                        if (!team) {
+                            return (<li key={t.teamId} className="text-neutral-600 dark:text-neutral-300">
+                                Team #{t.teamId}
+                            </li>);
+                        }
+                        return (<li key={t.teamId}>
+                            <Link
+                                href={`/games/${gameId}/teams/${t.teamId}`}
+                                className="text-blue-600 dark:text-blue-400 hover:underline"
+                            >
+                                {team.college} ({team.abbr})
+                            </Link>
+                        </li>);
+                    })}
+                </ul>
+            </div>)}
+        </section>
+
+        <section
+            className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/60">
+            <header className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+                <h2 className="text-lg font-semibold">Results</h2>
+            </header>
+            <div className="px-2 py-3">
+                <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 overflow-x-auto">
+                    <Table<ParticipantRow> data={participantRows} columns={participantColumns}/>
+                </div>
+            </div>
+        </section>
+
+        <section
+            className="mt-6 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/60">
+            <header className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+                <h2 className="text-lg font-semibold">Team Points</h2>
+            </header>
+            <div className="px-2 py-3">
+                <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 overflow-x-auto">
+                    <Table<TeamPointsRow> data={teamPointsRows} columns={teamPointsColumns}/>
+                </div>
+            </div>
+        </section>
+    </div>);
 }

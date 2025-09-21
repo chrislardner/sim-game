@@ -22,7 +22,7 @@ export default function TeamsPage({params}: Readonly<{ params: Promise<{ gameId:
 
             fetchData();
         } else {
-            console.log("couldn't find gameId", gameId);
+            console.error("couldn't find gameId", gameId);
         }
     }, [gameId]);
 
@@ -74,10 +74,10 @@ export default function TeamsPage({params}: Readonly<{ params: Promise<{ gameId:
         xc_rank: xcRanks[team.teamId],
     }));
 
-    const getRowLink = (team: Team) => `/games/${gameId}/league/teams/${team.teamId}`;
+    const getRowLink = (team: Team) => `/games/${gameId}/teams/${team.teamId}`;
 
     return (
-        <div className="p-4">
+        <div className="py-4">
             <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">Teams</h1>
             {game && <Table data={data} columns={columns} getRowLink={getRowLink} linkColumns={['college']}/>}
         </div>

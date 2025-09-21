@@ -13,13 +13,14 @@ export const NAV_CONFIG: NavItem[] = [
             { type: "page", label: "Races",     hrefTemplate: "/games/{id}/league/races" },
         ],
     },
-    // {
-    //     type: "section",
-    //     label: "TEAM",
-    //     children: [
-    //         { type: "page", label: "Roster", hrefTemplate: "/games/{id}/team/roster" },
-    //     ],
-    // },
+    {
+        type: "section",
+        label: "TEAM",
+        children: [
+            { type: "page", label: "Roster", hrefTemplate: "/games/{id}/team/{teamId}" },
+            { type: "page", label: "Lineups", hrefTemplate: "/games/{id}/team/{teamId}/lineups" },
+        ],
+    },
     {
         type: "section",
         label: "PLAYERS",

@@ -148,7 +148,7 @@ export default function RacesOverviewPage({params}: Readonly<{ params: Promise<{
     const getRowLink = (race: TransformedRace) => `/games/${gameId}/league/races/${race.raceId}`;
 
     return (
-        <div className="p-4">
+        <div className="py-4">
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">Races Overview</h1>
 
             <YearFilter

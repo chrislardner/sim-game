@@ -14,18 +14,24 @@ export interface Heat {
     players: number[];
 }
 
-export interface Meet {
-    week: number;
-    year: number;
+export type Meet = {
     meetId: number;
-    date: string;
-    teams: { teamId: number, points: number, has_five_racers: boolean }[];
-    races: number[];
-    season: 'cross_country' | 'track_field';
-    type: 'regular' | 'playoffs' | 'offseason';
     gameId: number;
+    year: number;
+    week: number;
+    date: string;
+    season: "cross_country" | "track_field";
+    type: string;
+    format?: MeetFormat;
+
     hostTeamId?: number;
-}
+    venue?: Venue;
+
+    teams: { teamId: number; points: number; has_five_racers?: boolean }[];
+    races: number[];
+    lineupsByTeam?: Record<number, TeamLineup>;
+    maxDeclared?: number;
+};
 
 export interface YearlyLeagueSchedule {
     year: number;
@@ -41,3 +47,13 @@ export interface RaceParticipant {
         team_top_seven: boolean;
     };
 }
+
+export type TeamLineup = {
+    declared: number[];
+    travel?: number[];
+    locked?: boolean;
+};
+
+export type MeetFormat = "invite" | "dual" | "tri" | "championship";
+
+export type Venue = { lat: number; lon: number; name?: string };

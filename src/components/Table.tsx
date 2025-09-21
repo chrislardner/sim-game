@@ -73,7 +73,7 @@ export default function Table<T>({
     };
 
     return (
-        <div className="p-2">
+        <div>
             <div className="block w-full max-w-full overflow-x-auto overscroll-x-contain">
                 <table className="w-full min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead className="bg-gray-50 dark:bg-gray-700 sticky top-0 z-10">
