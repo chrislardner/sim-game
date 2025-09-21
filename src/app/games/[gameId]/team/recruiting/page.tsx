@@ -30,7 +30,7 @@ export default function RecruitingPage({params}: Readonly<{ params: Promise<{ ga
                 setDoneRecruiting(true);
                 return Promise.resolve();
             } catch (error) {
-                console.log("Error simulating week", error);
+                console.error("Error simulating week", error);
                 return Promise.reject(error);
             }
         }

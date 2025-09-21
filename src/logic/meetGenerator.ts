@@ -111,7 +111,6 @@ export async function createRacesForMeet(teams: Team[], players: Player[], gameI
             year,
         });
     }
-    console.log(out, "out")
     return out;
 }
 

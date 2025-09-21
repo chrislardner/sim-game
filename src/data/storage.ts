@@ -51,13 +51,13 @@ export async function initializeDB() {
                 }
             },
             blocked() {
-                console.log('DB blocked');
+                console.error('DB blocked');
             },
             terminated() {
-                console.log('DB terminated');
+                console.error('DB terminated');
             },
             blocking() {
-                console.log('DB blocking');
+                console.error('DB blocking');
             }
         });
     } catch (error) {

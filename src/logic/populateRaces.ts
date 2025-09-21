@@ -13,7 +13,6 @@ export async function populateRaceWithParticipants(teams: Team[], players: Playe
         if (!playersByTeam.has(p.teamId)) playersByTeam.set(p.teamId, []);
         playersByTeam.get(p.teamId)!.push(p);
     }
-    console.log(playersByTeam, "playersByTeam");
     for (const team of teams) {
         const teamPlayers = playersByTeam.get(team.teamId) ?? [];
         for (const player of teamPlayers) {

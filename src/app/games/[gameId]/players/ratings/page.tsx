@@ -24,7 +24,7 @@ export default function PlayersPage({params}: Readonly<{ params: Promise<{ gameI
 
             fetchData().catch(console.error);
         } else {
-            console.log("couldn't find gameId", gameId);
+            console.error("couldn't find gameId", gameId);
         }
     }, [gameId]);
 

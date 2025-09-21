@@ -22,7 +22,7 @@ export default function TeamsPage({params}: Readonly<{ params: Promise<{ gameId:
 
             fetchData();
         } else {
-            console.log("couldn't find gameId", gameId);
+            console.error("couldn't find gameId", gameId);
         }
     }, [gameId]);
 
