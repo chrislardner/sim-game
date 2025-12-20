@@ -7,7 +7,7 @@ import Container from "@/components/Container";
 
 const LINKS = [
     { label: "Games", href: "/games" },
-    { label: "About", href: "/about" },
+    { label: "Manual", href: "/manual" },
     { label: "Settings", href: "/settings" },
 ];
 
