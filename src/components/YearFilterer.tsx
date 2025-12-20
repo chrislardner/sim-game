@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect, useState} from "react";
+import {useMemo} from "react";
 
 interface YearFilterProps {
     availableYears: number[];
@@ -15,11 +15,10 @@ export default function YearFilter({
                                        selectedYear,
                                        onYearChangeAction
                                    }: Readonly<YearFilterProps>) {
-    const [years, setYears] = useState<number[]>([]);
-
-    useEffect(() => {
-        setYears([...new Set(availableYears)].sort((a, b) => b - a)); // Sort years in descending order
-    }, [availableYears]);
+    const years = useMemo(
+        () => [...new Set(availableYears)].sort((a, b) => b - a),
+        [availableYears]
+    );
 
     return (
         <div className="mb-4">

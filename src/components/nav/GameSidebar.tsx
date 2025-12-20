@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useMemo, useState} from "react";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
 import {NAV_CONFIG} from "@/components/nav/config";
@@ -23,31 +23,31 @@ export default function Sidebar({ gameId, teamId }: Props) {
         [gameId, teamId]
     );
 
-    const allOpenDefaults = useMemo(() => {
+    const initialOpenState = useMemo(() => {
         const d: Record<string, boolean> = {};
-        items.forEach((it) => it.type === "section" && (d[(it as NavSection).label] = true));
-        return d;
-    }, [items]);
-
-    const [open, setOpen] = useState<Record<string, boolean>>(allOpenDefaults);
-
-    useEffect(() => {
-        setOpen(allOpenDefaults);
-    }, [allOpenDefaults, gameId]);
-
-    useEffect(() => {
-        setOpen((prev) => {
-            const next = { ...prev };
-            items.forEach((it) => {
-                if (it.type === "section") {
-                    const sec = it as NavSection;
-                    const hasActive = sec.children.some((c) => isActiveExact(pathname, c.hrefTemplate));
-                    if (hasActive) next[sec.label] = true;
-                }
-            });
-            return next;
+        items.forEach((it) => {
+            if (it.type === "section") {
+                const sec = it as NavSection;
+                sec.children.some((c) => isActiveExact(pathname, c.hrefTemplate));
+                d[sec.label] = true;
+            }
         });
-    }, [pathname, items]);
+        return d;
+    }, [items, pathname]);
+
+    const [open, setOpen] = useState<Record<string, boolean>>(initialOpenState);
+
+    const effectiveOpen = useMemo(() => {
+        const result = {...open};
+        items.forEach((it) => {
+            if (it.type === "section") {
+                const sec = it as NavSection;
+                const hasActive = sec.children.some((c) => isActiveExact(pathname, c.hrefTemplate));
+                if (hasActive) result[sec.label] = true;
+            }
+        });
+        return result;
+    }, [open, items, pathname]);
 
     return (
         <aside
@@ -89,7 +89,7 @@ export default function Sidebar({ gameId, teamId }: Props) {
                     }
 
                     const sec = it as NavSection;
-                    const isOpen = open[sec.label];
+                    const isOpen = effectiveOpen[sec.label];
 
                     return (
                         <li key={sec.label}>

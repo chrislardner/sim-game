@@ -1,6 +1,6 @@
 "use client";
 
-import {createContext, ReactNode, useContext, useEffect, useState} from 'react';
+import {createContext, ReactNode, useCallback, useContext, useSyncExternalStore} from 'react';
 
 interface ThemeContextProps {
     isDarkMode: boolean;
@@ -9,23 +9,39 @@ interface ThemeContextProps {
 
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
-export function ThemeProvider({children}: Readonly<{ children: ReactNode }>) {
-    const [isDarkMode, setIsDarkMode] = useState(true);
+// Theme store for useSyncExternalStore
+let listeners: Array<() => void> = [];
 
-    useEffect(() => {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            setIsDarkMode(savedTheme === 'dark');
-            document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-        }
-    }, []);
-
-    const toggleDarkMode = () => {
-        const newMode = !isDarkMode;
-        setIsDarkMode(newMode);
-        localStorage.setItem('theme', newMode ? 'dark' : 'light');
-        document.documentElement.classList.toggle('dark', newMode);
+function subscribe(listener: () => void) {
+    listeners = [...listeners, listener];
+    return () => {
+        listeners = listeners.filter(l => l !== listener);
     };
+}
+
+function getSnapshot(): boolean {
+    if (typeof window === 'undefined') return true;
+    const saved = localStorage.getItem('theme');
+    return saved ? saved === 'dark' : true;
+}
+
+function getServerSnapshot(): boolean {
+    return true; // Default dark mode for SSR
+}
+
+function setTheme(dark: boolean) {
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark', dark);
+    // Notify all subscribers
+    listeners.forEach(listener => listener());
+}
+
+export function ThemeProvider({children}: Readonly<{ children: ReactNode }>) {
+    const isDarkMode = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
+    const toggleDarkMode = useCallback(() => {
+        setTheme(!getSnapshot());
+    }, []);
 
     return (
         <ThemeContext.Provider value={{isDarkMode, toggleDarkMode}}>

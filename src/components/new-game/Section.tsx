@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useMemo, useState} from "react";
+import React, {useId, useState} from "react";
 import {ChevronRight} from "@/components/icons/ChevronRight";
 
 type Props = {
@@ -19,7 +19,8 @@ export default function Section({
                                     defaultOpen = true,
                                 }: Props) {
     const [open, setOpen] = useState(defaultOpen);
-    const sectionId = useMemo(() => `sec-${Math.random().toString(36).slice(2, 8)}`, []);
+    const sectionId = useId();
+
     return (
         <section className="bg-surface-light dark:bg-surface-dark rounded-lg shadow transition-colors">
             <header className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 p-4">
