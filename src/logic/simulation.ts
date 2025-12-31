@@ -1,6 +1,18 @@
 import {Game} from '@/types/game';
-import {deleteMeet, deleteRace, loadGameData, loadMeets, loadPlayers, loadRaces, loadTeams, saveGame, saveMeets,
-    savePlayers, saveRaces, saveTeams} from '@/data/storage';
+import {
+    deleteMeet,
+    deleteRace,
+    loadGameData,
+    loadMeets,
+    loadPlayers,
+    loadRaces,
+    loadTeams,
+    saveGame,
+    saveMeets,
+    savePlayers,
+    saveRaces,
+    saveTeams
+} from '@/data/storage';
 import {handleNewYear} from './newYear';
 import {createRacesForMeet, fillHeatsForRace, mapWeekToGamePhase} from '@/logic/meetGenerator';
 import {Meet, Race} from '@/types/schedule';
@@ -25,7 +37,6 @@ export async function simulateWeek(gameId: number): Promise<boolean> {
         console.error("Error loading game data", error);
         return Promise.reject(false);
     }
-
     const phase: SeasonGamePhase = mapWeekToGamePhase(game.currentWeek).type;
     game.gamePhase = phase;
 
@@ -35,8 +46,13 @@ export async function simulateWeek(gameId: number): Promise<boolean> {
         success = await simulateRegularSeason(game, teams, players, meets, races);
     } else if (phase === 'playoffs') {
         success = await simulatePlayoffs(game, teams, players, meets, races);
+
     } else if (phase === 'offseason') {
+        if (meets.some(meet => meet.week === game.currentWeek + 1)) {
+            await populateNextWeeksRacesWithParticipants(game, meets, races, teams, players);
+        }
         success = await handleOffseason(game);
+
     }
 
     if (!success) {

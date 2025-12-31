@@ -10,7 +10,9 @@ import YearFilter from '@/components/YearFilterer';
 
 type TransformedMeet = Omit<Meet, 'teams' | 'season'> & {
     teams: string;
-    season: 'TF' | 'XC';
+    season: string;
+    winner: string;
+    points: number;
 };
 
 export default function LeagueSchedulePage({params}: Readonly<{ params: Promise<{ gameId: string }> }>) {
@@ -51,13 +53,21 @@ export default function LeagueSchedulePage({params}: Readonly<{ params: Promise<
         {key: 'type', label: 'Type'},
         {key: 'season', label: 'Season'},
         {key: 'teams', label: 'Teams'},
+        {key: 'winner', label: "Winner"},
+        {key: 'points', label: "Points"}
     ];
 
-    const data: TransformedMeet[] = filteredMeets.map(meet => ({
-        ...meet,
-        teams: meet.teams.map(team => teamsMap[team.teamId]?.abbr).join(', '),
-        season: meet.season === 'track_field' ? 'TF' : 'XC',
-    }));
+    const data = filteredMeets.map(meet => {
+        return {
+            ...meet,
+            teams: meet.teams.map(team => teamsMap[team.teamId]?.abbr + " (" + (meet.season === 'cross_country' ? teamsMap[team.teamId]?.xc_ovr : teamsMap[team.teamId]?.ovr) + ")").join(", "),
+            season: meet.season === 'track_field' ? 'TF' : 'XC',
+            winner: teamsMap[meet.teams.sort((a, b) =>
+                meet.season === 'cross_country' ? a.points - b.points : b.points - a.points).at(0)?.teamId]?.abbr,
+            points: meet.teams.sort((a, b) =>
+                meet.season === 'cross_country' ? a.points - b.points : b.points - a.points).at(0)?.points,
+        };
+    });
 
     const getRowLink = (meet: TransformedMeet) => `/games/${gameId}/league/schedule/${meet.meetId}`;
 

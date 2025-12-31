@@ -37,7 +37,7 @@ export default function RaceResultsPage({
     const [meet, setMeet] = useState<Meet | null>(null);
     const [teamsById, setTeamsById] = useState<Record<number, Team>>({});
     const [playersById, setPlayersById] = useState<Record<number, Player>>({});
-    const [metaOpen, setMetaOpen] = useState(false); // << expanded meta toggle
+    const [metaOpen, setMetaOpen] = useState(false);
 
     useEffect(() => {
         let mounted = true;
@@ -129,7 +129,7 @@ export default function RaceResultsPage({
         </Link>),
     }, {
         id: "team", label: "Team", sortable: true, render: (r) => r.teamId ? (<Link
-            href={`/games/${gameId}/teams/${r.teamId}`}
+            href={`/games/${gameId}/team/${r.teamId}`}
             className="text-blue-600 dark:text-blue-400 hover:underline"
         >
             {r.teamLabel}
@@ -140,7 +140,7 @@ export default function RaceResultsPage({
 
     const teamPointsColumns: ColumnDef<TeamPointsRow>[] = [{
         id: "team", label: "Team", render: (r) => (<Link
-            href={`/games/${gameId}/teams/${r.teamId}`}
+            href={`/games/${gameId}/team/${r.teamId}`}
             className="text-blue-600 dark:text-blue-400 hover:underline"
         >
             {r.teamLabel}
@@ -199,7 +199,7 @@ export default function RaceResultsPage({
                             const team = teamsById[t.teamId];
                             return team ? (<Link
                                 key={t.teamId}
-                                href={`/games/${gameId}/teams/${t.teamId}`}
+                                href={`/games/${gameId}/team/${t.teamId}`}
                                 className="rounded-md bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 text-xs hover:bg-neutral-200 dark:hover:bg-neutral-700"
                             >
                                 {team.abbr}
@@ -233,7 +233,7 @@ export default function RaceResultsPage({
                         }
                         return (<li key={t.teamId}>
                             <Link
-                                href={`/games/${gameId}/teams/${t.teamId}`}
+                                href={`/games/${gameId}/team/${t.teamId}`}
                                 className="text-blue-600 dark:text-blue-400 hover:underline"
                             >
                                 {team.college} ({team.abbr})

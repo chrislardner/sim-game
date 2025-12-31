@@ -5,7 +5,7 @@ import React from "react";
 type Item = { k: string; v: React.ReactNode };
 
 const ITEMS: Item[] = [
-    { k: "Platform", v: "Browser • No install" },
+    {k: "Platform", v: "Browser"},
     { k: "Price",    v: "Free" },
 ];
 

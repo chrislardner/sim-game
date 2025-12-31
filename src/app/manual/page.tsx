@@ -106,7 +106,9 @@ export default function ManualPage() {
                                 <li><span className="font-medium">Preseason</span>: ratings adjust by age/coaching (planned).</li>
                                 <li><span className="font-medium">Regular Season</span>: weekly meets and individual races.</li>
                                 <li><span className="font-medium">Championships</span>: conference → regional → national rounds.</li>
-                                <li><span className="font-medium">Off-season</span>: recruiting, training, redshirts, scheduling (roadmap).</li>
+                                <li><span className="font-medium">Off-season</span>: recruiting, training, redshirts,
+                                    scheduling (planned).
+                                </li>
                             </ol>
                         </Section>
 
@@ -150,7 +152,9 @@ export default function ManualPage() {
                             <ul className="list-disc pl-5 space-y-1">
                                 <li><span className="font-medium">Roster build</span>: cover all event groups; XC depth vs. track specialization.</li>
                                 <li><span className="font-medium">Season plan</span>: target key meets; rotate lineups; manage fatigue (planned).</li>
-                                <li><span className="font-medium">Long-term</span>: recruiting, development, facilities (roadmap).</li>
+                                <li><span className="font-medium">Long-term</span>: recruiting, development, facilities
+                                    (planned).
+                                </li>
                             </ul>
                         </Section>
 
