@@ -1,188 +1,186 @@
 import {Player} from "@/types/player";
 
-const minMax = {
-    '100m': [9.7, 16.5],
-    '200m': [19.0, 42.0],
-    '400m': [47.0, 90.0],
-    '800m': [108.0, 180.0],
-    '1500m': [220.0, 450.0],
-    '3000m': [495.0, 960.0],
-    '5000m': [840.0, 1320.0],
-    '10000m': [1740.0, 3300.0],
-    '8000m': [1380.0, 2100.0]
+export type EventType =
+    | "100m"
+    | "200m"
+    | "400m"
+    | "800m"
+    | "1500m"
+    | "3000m"
+    | "5000m"
+    | "8000m"
+    | "10000m";
+
+type RatingKey =
+    | "acceleration"
+    | "explosiveness"
+    | "topSpeed"
+    | "pacing"
+    | "stamina"
+    | "mentalToughness";
+
+type TypeRatingKey =
+    | "shortDistanceOvr"
+    | "middleDistanceOvr"
+    | "longDistanceOvr";
+
+const MIN_MAX: Record<EventType, [number, number]> = {
+    "100m": [9.7, 16.5],
+    "200m": [19.0, 42.0],
+    "400m": [47.0, 90.0],
+    "800m": [108.0, 180.0],
+    "1500m": [220.0, 450.0],
+    "3000m": [495.0, 960.0],
+    "5000m": [840.0, 1320.0],
+    "8000m": [1380.0, 2100.0],
+    "10000m": [1740.0, 3300.0]
 };
 
-const variability = {
-    '100m': 0.03,
-    '200m': 0.04,
-    '400m': 0.05,
-    '800m': 0.07,
-    '1500m': 0.11,
-    '3000m': 0.14,
-    '5000m': 0.16,
-    '10000m': 0.20,
-    '8000m': 0.18
+const VARIABILITY: Record<EventType, number> = {
+    "100m": 0.025,
+    "200m": 0.030,
+    "400m": 0.035,
+    "800m": 0.040,
+    "1500m": 0.045,
+    "3000m": 0.040,
+    "5000m": 0.038,
+    "8000m": 0.035,
+    "10000m": 0.033
 };
 
-function getBaseTimeForEvent(eventType: string): number {
-    const baselines = {
-        '100m': (minMax['100m'][0] + minMax['100m'][1]) / 2,
-        '200m': (minMax['200m'][0] + minMax['200m'][1]) / 2,
-        '400m': (minMax['400m'][0] + minMax['400m'][1]) / 2,
-        '800m': (minMax['800m'][0] + minMax['800m'][1]) / 2,
-        '1500m': (minMax['1500m'][0] + minMax['1500m'][1]) / 2,
-        '3000m': (minMax['3000m'][0] + minMax['3000m'][1]) / 2,
-        '5000m': (minMax['5000m'][0] + minMax['5000m'][1]) / 2,
-        '10000m': (minMax['10000m'][0] + minMax['10000m'][1]) / 2,
-        '8000m': (minMax['8000m'][0] + minMax['8000m'][1]) / 2
-    };
-    return baselines[eventType as keyof typeof baselines] || 0;
+
+interface SkillProfile {
+    typeRating: TypeRatingKey;
+    attributes: ReadonlyArray<readonly [RatingKey, number]>;
 }
 
-function getEventVariability(eventType: keyof typeof variability): number {
-    return variability[eventType] || 0.1;
-}
-
-export function generateRaceTime(eventType: string, player: Player): number {
-    const baseTime = getBaseTimeForEvent(eventType);
-    const skillFactor = getPlayerSkill(player, eventType) / 10;
-
-    const mean = baseTime * (1 - skillFactor * 0.2);
-    const stdDev = getEventVariability(eventType as keyof typeof variability);
-
-    const randomFactor1 = Math.random();
-    const randomFactor2 = Math.random();
-    const z = Math.sqrt(-2 * Math.log(randomFactor1)) * Math.cos(2 * Math.PI * randomFactor2);
-    const raceTime = mean + stdDev * z;
-
-    const environmentalAdjustment = getEnvironmentalFactor(eventType);
-    const adjustedTime = raceTime + environmentalAdjustment;
-
-    return clampTime(adjustedTime, eventType as keyof typeof minMax);
-}
-
-function getPlayerSkill(player: Player, eventType: string): number {
-    const {playerRatings} = player;
-    const {typeRatings} = playerRatings;
-    let skill;
-
-    switch (eventType) {
-        case '100m': {
-            const attributeSum =
-                (playerRatings.acceleration * 0.25) +
-                (playerRatings.explosiveness * 0.40) +
-                (playerRatings.topSpeed * 0.35);
-            skill = 0.5 * typeRatings.shortDistanceOvr + 0.5 * attributeSum;
-            break;
-        }
-        case '200m': {
-            const attributeSum =
-                (playerRatings.acceleration * 0.30) +
-                (playerRatings.explosiveness * 0.35) +
-                (playerRatings.topSpeed * 0.34);
-            skill = 0.5 * typeRatings.shortDistanceOvr + 0.5 * attributeSum;
-            break;
-        }
-        case '400m': {
-            const attributeSum =
-                (playerRatings.acceleration * 0.15) +
-                (playerRatings.explosiveness * 0.05) +
-                (playerRatings.topSpeed * 0.25);
-            skill = 0.5 * typeRatings.shortDistanceOvr + 0.5 * attributeSum;
-            break;
-        }
-        case '800m': {
-            const attributeSum =
-                (playerRatings.pacing * 0.10) +
-                (playerRatings.topSpeed * 0.10) +
-                (playerRatings.stamina * 0.25) +
-                (playerRatings.mentalToughness * 0.25);
-            skill = 0.5 * typeRatings.middleDistanceOvr + 0.5 * attributeSum;
-            break;
-        }
-        case '1500m': {
-            const attributeSum =
-                (playerRatings.pacing * 0.15) +
-                (playerRatings.stamina * 0.30) +
-                (playerRatings.mentalToughness * 0.30);
-            skill = 0.5 * typeRatings.middleDistanceOvr + 0.5 * attributeSum;
-            break;
-        }
-        case '3000m': {
-            const attributeSum =
-                (playerRatings.pacing * 0.2) +
-                (playerRatings.stamina * 0.3) +
-                (playerRatings.mentalToughness * 0.25);
-            skill = 0.5 * typeRatings.longDistanceOvr + 0.5 * attributeSum;
-            break;
-        }
-        case '5000m': {
-            const attributeSum =
-                (playerRatings.pacing * 0.2) +
-                (playerRatings.stamina * 0.25) +
-                (playerRatings.mentalToughness * 0.20);
-            skill = 0.5 * typeRatings.longDistanceOvr + 0.5 * attributeSum;
-            break;
-        }
-        case '8000m': {
-            const attributeSum =
-                (playerRatings.pacing * 0.25) +
-                (playerRatings.stamina * 0.25) +
-                (playerRatings.mentalToughness * 0.25);
-            skill = 0.5 * typeRatings.longDistanceOvr + 0.5 * attributeSum;
-            break;
-        }
-        case '10000m': {
-            const attributeSum =
-                (playerRatings.pacing * 0.2) +
-                (playerRatings.stamina * 0.25) +
-                (playerRatings.mentalToughness * 0.25);
-            skill = 0.5 * typeRatings.longDistanceOvr + 0.5 * attributeSum;
-            break;
-        }
-        default:
-            skill = 1;
+const SKILL_PROFILES: Record<EventType, SkillProfile> = {
+    "100m": {
+        typeRating: "shortDistanceOvr",
+        attributes: [
+            ["acceleration", 0.25],
+            ["explosiveness", 0.40],
+            ["topSpeed", 0.35]
+        ]
+    },
+    "200m": {
+        typeRating: "shortDistanceOvr",
+        attributes: [
+            ["acceleration", 0.30],
+            ["explosiveness", 0.35],
+            ["topSpeed", 0.35]
+        ]
+    },
+    "400m": {
+        typeRating: "shortDistanceOvr",
+        attributes: [
+            ["acceleration", 0.20],
+            ["explosiveness", 0.15],
+            ["topSpeed", 0.65]
+        ]
+    },
+    "800m": {
+        typeRating: "middleDistanceOvr",
+        attributes: [
+            ["pacing", 0.20],
+            ["stamina", 0.40],
+            ["mentalToughness", 0.40]
+        ]
+    },
+    "1500m": {
+        typeRating: "middleDistanceOvr",
+        attributes: [
+            ["pacing", 0.25],
+            ["stamina", 0.35],
+            ["mentalToughness", 0.40]
+        ]
+    },
+    "3000m": {
+        typeRating: "longDistanceOvr",
+        attributes: [
+            ["pacing", 0.30],
+            ["stamina", 0.40],
+            ["mentalToughness", 0.30]
+        ]
+    },
+    "5000m": {
+        typeRating: "longDistanceOvr",
+        attributes: [
+            ["pacing", 0.30],
+            ["stamina", 0.45],
+            ["mentalToughness", 0.25]
+        ]
+    },
+    "8000m": {
+        typeRating: "longDistanceOvr",
+        attributes: [
+            ["pacing", 0.30],
+            ["stamina", 0.50],
+            ["mentalToughness", 0.20]
+        ]
+    },
+    "10000m": {
+        typeRating: "longDistanceOvr",
+        attributes: [
+            ["pacing", 0.30],
+            ["stamina", 0.50],
+            ["mentalToughness", 0.20]
+        ]
     }
+};
 
-    skill *= (0.75 + 0.25 * Math.random());
-
-    skill = Math.max(1, Math.min(100, skill)) / 10;
-    skill = Math.max(1, Math.min(10, skill));
-
-    return skill;
+function gaussianRandom(): number {
+    const u1 = Math.random();
+    const u2 = Math.random();
+    return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
 }
 
-function getEnvironmentalFactor(eventType: string): number {
-    const eventLength = getRaceLength(eventType);
-    return (Math.random() - 0.5) * (eventLength / 1000) * 2;
+function clamp(value: number, min: number, max: number): number {
+    return Math.max(min, Math.min(value, max));
 }
 
-function clampTime(time: number, eventType: keyof typeof minMax): number {
-    const [min, max] = minMax[eventType] || [0, Infinity];
-    return Math.max(min, Math.min(time, max));
-}
-
-function getRaceLength(eventType: string): number {
-    switch (eventType) {
-        case '100m':
-            return 100;
-        case '200m':
-            return 200;
-        case '400m':
-            return 400;
-        case '800m':
-            return 800;
-        case '1500m':
-            return 1500;
-        case '3000m':
-            return 3000;
-        case '5000m':
-            return 5000;
-        case '8000m':
-            return 8000;
-        case '10000m':
-            return 10000;
-        default:
-            return 0;
+function getPlayerSkill(player: Player, event: EventType): number {
+    const profile = SKILL_PROFILES[event];
+    const ratings = player.playerRatings;
+    let attributeScore = 0;
+    for (const [key, weight] of profile.attributes) {
+        attributeScore += ratings[key] * weight;
     }
+    const typeScore = ratings.typeRatings[profile.typeRating];
+    return clamp((attributeScore * 0.5 + typeScore * 0.5) / 100, 0, 1);
+}
+
+function getConsistencyFactor(player: Player): number {
+    const consistency = clamp(player.playerRatings.consistency / 100, 0, 1);
+    return 1 - consistency * 0.75;
+}
+
+function mapEvent(event: string): EventType {
+    const validEvents: EventType[] = [
+        "100m",
+        "200m",
+        "400m",
+        "800m",
+        "1500m",
+        "3000m",
+        "5000m",
+        "8000m",
+        "10000m"
+    ];
+    if (validEvents.includes(event as EventType)) {
+        return event as EventType;
+    }
+    throw new Error(`Unsupported event type: ${event}`);
+}
+
+export function generateRaceTime(event: string, player: Player): number {
+    const mappedEvent = mapEvent(event);
+    const [min, max] = MIN_MAX[mappedEvent];
+    const baseTime = (min + max) / 2;
+    const skill = getPlayerSkill(player, mappedEvent);
+    const consistencyFactor = getConsistencyFactor(player);
+    const mean = baseTime * (1 - skill * 0.2);
+    const stdDev = mean * VARIABILITY[mappedEvent] * consistencyFactor;
+    const raceTime = mean + gaussianRandom() * stdDev;
+    return clamp(raceTime, min, max);
 }

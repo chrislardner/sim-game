@@ -58,15 +58,34 @@ export default function LeagueSchedulePage({params}: Readonly<{ params: Promise<
     ];
 
     const data = filteredMeets.map(meet => {
+        const sortedTeams = [...meet.teams].sort((a, b) =>
+            meet.season === 'cross_country'
+                ? a.points - b.points
+                : b.points - a.points
+        );
+
+        if (sortedTeams.length === 0) {
+            throw new Error(`Meet ${meet.meetId} has no teams`);
+        }
+
+        const winnerTeam = sortedTeams[0];
+
         return {
             ...meet,
-            teams: meet.teams.map(team => teamsMap[team.teamId]?.abbr + " (" + (meet.season === 'cross_country' ? teamsMap[team.teamId]?.xc_ovr : teamsMap[team.teamId]?.ovr) + ")").join(", "),
+            teams: sortedTeams
+                .map(team =>
+                    `${teamsMap[team.teamId]?.abbr} (${
+                        meet.season === 'cross_country'
+                            ? teamsMap[team.teamId]?.xc_ovr
+                            : teamsMap[team.teamId]?.ovr
+                    })`
+                )
+                .join(', '),
             season: meet.season === 'track_field' ? 'TF' : 'XC',
-            winner: teamsMap[meet.teams.sort((a, b) =>
-                meet.season === 'cross_country' ? a.points - b.points : b.points - a.points).at(0)?.teamId]?.abbr,
-            points: meet.teams.sort((a, b) =>
-                meet.season === 'cross_country' ? a.points - b.points : b.points - a.points).at(0)?.points,
+            winner: teamsMap[winnerTeam.teamId]?.abbr ?? '',
+            points: winnerTeam.points,
         };
+
     });
 
     const getRowLink = (meet: TransformedMeet) => `/games/${gameId}/league/schedule/${meet.meetId}`;
