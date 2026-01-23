@@ -12,7 +12,7 @@ export default function Settings() {
                 <label className="text-lg">Dark Mode:</label>
                 <button
                     onClick={toggleDarkMode}
-                    className={`p-2 rounded-sm ${isDarkMode ? 'bg-blue-600' : 'bg-gray-400'} text-white`}
+                    className={`p-2 rounded-sm ${isDarkMode ? 'bg-blue-600' : 'bg-neutral-400'} text-white`}
                 >
                     {isDarkMode ? 'Disable' : 'Enable'}
                 </button>

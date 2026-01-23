@@ -75,8 +75,8 @@ export default function Table<T>({
     return (
         <div>
             <div className="block w-full max-w-full overflow-x-auto overscroll-x-contain">
-                <table className="w-full min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead className="bg-gray-50 dark:bg-gray-700 sticky top-0 z-10">
+                <table className="w-full min-w-full divide-y divide-neutral-200 dark:divide-neutral-700">
+                    <thead className="bg-neutral-50 dark:bg-neutral-700 sticky top-0 z-10">
                     <tr>
                         {columns.map((c) => {
                             const canSort = c.sortable ?? Boolean(c.field);
@@ -84,7 +84,7 @@ export default function Table<T>({
                                 <th
                                     key={`h:${c.id}`}
                                     onClick={() => toggleSort(c.field, canSort)}
-                                    className={`px-2 py-2 text-left text-xs font-small uppercase tracking-wider text-gray-500 ${c.className ?? ""} ${
+                                    className={`px-2 py-2 text-left text-xs font-small uppercase tracking-wider text-neutral-500 ${c.className ?? ""} ${
                                         canSort ? "cursor-pointer select-none" : "cursor-default"
                                     }`}
                                 >
@@ -98,11 +98,11 @@ export default function Table<T>({
                     </tr>
                     </thead>
 
-                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    <tbody className="bg-white dark:bg-neutral-800 divide-y divide-neutral-200 dark:divide-neutral-700">
                     {sorted.map((item, rowIdx) => (
                         <tr
                             key={rowIdx}
-                            className={`hover:bg-gray-100 dark:hover:bg-gray-700 ${getRowLink ? "cursor-pointer" : ""}`}
+                            className={`hover:bg-neutral-100 dark:hover:bg-neutral-700 ${getRowLink ? "cursor-pointer" : ""}`}
                             onClick={
                                 getRowLink
                                     ? () => {
@@ -117,7 +117,7 @@ export default function Table<T>({
                                     return (
                                         <td
                                             key={`c:${c.id}:${colIdx}`}
-                                            className={`px-2 py-2 text-sm text-gray-700 dark:text-gray-300 whitespace-normal break-words ${c.className ?? ""}`}
+                                            className={`px-2 py-2 text-sm text-neutral-700 dark:text-neutral-300 whitespace-normal break-words ${c.className ?? ""}`}
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             {c.render(item)}
@@ -129,7 +129,7 @@ export default function Table<T>({
                                 return (
                                     <td
                                         key={`c:${c.id}:${colIdx}`}
-                                        className={`px-2 py-2 text-sm text-gray-700 dark:text-gray-300 whitespace-normal break-words ${c.className ?? ""}`}
+                                        className={`px-2 py-2 text-sm text-neutral-700 dark:text-neutral-300 whitespace-normal break-words ${c.className ?? ""}`}
                                         onClick={(e) => {
                                             if (isLink && getRowLink) {
                                                 e.stopPropagation();

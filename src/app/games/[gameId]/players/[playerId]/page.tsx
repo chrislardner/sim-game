@@ -35,13 +35,13 @@ export default function PlayerPage({params}: Readonly<{ params: Promise<{ gameId
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">{player.firstName} {player.lastName}</h1>
             <div className="p-4 bg-surface-light dark:bg-surface-dark rounded-lg shadow-lg transition-colors">
                 <h2 className="text-xl font-semibold text-accent mb-2">Player Details</h2>
-                <p className="text-gray-700 dark:text-gray-300">Year: <span
+                <p className="text-neutral-700 dark:text-neutral-300">Year: <span
                     className="font-semibold">{player.year}</span></p>
-                <p className="text-gray-700 dark:text-gray-300">Event Types: <span
+                <p className="text-neutral-700 dark:text-neutral-300">Event Types: <span
                     className="font-semibold">{Object.values(player.eventTypes).flat().join(', ')}</span></p>
-                <p className="text-gray-700 dark:text-gray-300">Seasons <span
+                <p className="text-neutral-700 dark:text-neutral-300">Seasons <span
                     className="font-semibold">{player.seasons.join(', ')}</span></p>
-                <p className="text-gray-700 dark:text-gray-300">Archetype: <span
+                <p className="text-neutral-700 dark:text-neutral-300">Archetype: <span
                     className="font-semibold">{player.playerSubArchetype.main.join(', ')}</span></p>
                  <div ref={faceContainerRef} className="w-48 h-48"></div>
             </div>

@@ -64,12 +64,12 @@ export default function TeamPage({params}: Readonly<{ params: Promise<{ gameId: 
     return (
         <div className="py-4">
             <h1 className="text-3xl font-semibold mb-4 text-primary-light dark:text-primary-dark">{team.college + ' (' + team.abbr + ')'}</h1>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Team Name: <span
+            <p className="text-lg text-neutral-700 dark:text-neutral-300 mb-6">Team Name: <span
                 className="font-semibold">{team.teamName}</span></p>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Conference: <span
+            <p className="text-lg text-neutral-700 dark:text-neutral-300 mb-6">Conference: <span
                 className="font-semibold">{conference?.conferenceName + ' (' + (conference?.conferenceAbbr) + ')'}</span>
             </p>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">Location: <span
+            <p className="text-lg text-neutral-700 dark:text-neutral-300 mb-6">Location: <span
                 className="font-semibold">{team.city}, {team.state}</span></p>
             <button onClick={handleScheduleClick}
                     className="px-4 py-2 bg-accent-dark text-white rounded-lg transition hover:bg-accent-light mb-6">

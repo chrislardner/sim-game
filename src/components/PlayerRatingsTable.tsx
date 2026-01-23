@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useMemo } from "react";
-import Table, { ColumnDef } from "@/components/Table";
-import { ratingsToAttributes } from "@/types/ratingsToAttributes";
+import React, {useMemo} from "react";
+import Table, {ColumnDef} from "@/components/Table";
+import {ratingsToAttributes} from "@/types/ratingsToAttributes";
 import {ATTR_NAMES, ATTR_PARAMS, type AttrName, RoleKey} from "@/constants/curves";
-import type { Attributes, PlayerRatings } from "@/types/player";
+import type {Attributes, PlayerRatings} from "@/types/player";
 
 type Row = {
     id: AttrName;
@@ -87,7 +87,7 @@ export default function PlayerRatingsTable({ ratings, title = "Attributes" }: {
   const { overall, potential, typeRatings } = ratings;
 
   return (
-    <section className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+      <section className="p-4 bg-white dark:bg-neutral-800 rounded-lg shadow">
       <header className="mb-4">
         <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
           {title}
