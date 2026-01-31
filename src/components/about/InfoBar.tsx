@@ -6,7 +6,7 @@ type Item = { k: string; v: React.ReactNode };
 
 const ITEMS: Item[] = [
     {k: "Platform", v: "Browser"},
-    { k: "Price",    v: "Free" },
+    {k: "Price", v: "Free"},
 ];
 
 export default function InfoBar() {
@@ -22,7 +22,7 @@ export default function InfoBar() {
         "
             >
                 <div className="grid [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
-                    {ITEMS.map(({ k, v }) => (
+                    {ITEMS.map(({k, v}) => (
                         <dl
                             key={k}
                             className="

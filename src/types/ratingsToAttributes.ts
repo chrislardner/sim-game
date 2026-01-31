@@ -1,6 +1,5 @@
-import type { PlayerRatings } from "@/types/player";
-import { ATTR_NAMES, type AttrName } from "@/constants/curves";
-import type { Attributes } from "@/types/player";
+import type {Attributes, PlayerRatings} from "@/types/player";
+import {ATTR_NAMES, type AttrName} from "@/constants/curves";
 
 export function ratingsToAttributes(r: PlayerRatings): Attributes {
     const a: Partial<Record<AttrName, number>> = {};

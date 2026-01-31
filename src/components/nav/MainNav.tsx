@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/cn";
+import {usePathname} from "next/navigation";
+import {cn} from "@/lib/cn";
 import Container from "@/components/Container";
 
 const LINKS = [
-    { label: "Games", href: "/games" },
-    { label: "Manual", href: "/manual" },
-    { label: "Settings", href: "/settings" },
+    {label: "Games", href: "/games"},
+    {label: "Manual", href: "/manual"},
+    {label: "Settings", href: "/settings"},
 ];
 
 function isActive(pathname: string, href: string) {

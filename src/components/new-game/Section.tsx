@@ -23,7 +23,8 @@ export default function Section({
 
     return (
         <section className="bg-surface-light dark:bg-surface-dark rounded-lg shadow transition-colors">
-            <header className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 p-4">
+            <header
+                className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 p-4">
                 <button
                     type="button"
                     className="group inline-flex items-center gap-2 text-left"
@@ -36,7 +37,7 @@ export default function Section({
                         inline-flex transition-transform duration-200 ${open ? "rotate-90" : ""}`}
                         aria-hidden="true"
                     >
-            <ChevronRight />
+            <ChevronRight/>
           </span>
                     <div className="ml-1">
                         <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-200 uppercase tracking-wide">

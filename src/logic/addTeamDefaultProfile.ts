@@ -1,7 +1,7 @@
-import type { Team } from "@/types/team";
+import type {Team} from "@/types/team";
 
 export function withTeamDefaults(team: Team): Team {
-    const t = { ...team };
+    const t = {...team};
     t.profile ??= {
         recruit: {
             quality: 50,

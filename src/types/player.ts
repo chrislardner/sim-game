@@ -1,6 +1,6 @@
 import {generate} from "facesjs";
 import {SubArchetype} from "@/constants/subArchetypes";
-import type { AttrName } from "@/constants/curves";
+import type {AttrName} from "@/constants/curves";
 
 export interface PlayerRatings {
     playerId: number;

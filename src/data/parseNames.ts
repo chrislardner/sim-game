@@ -24,10 +24,6 @@ class NameGenerator {
     private lastNameWeights: WeightEntry[] = [];
     private isDataLoaded = false;
 
-    private capitalizeFirstLetter(name: string): string {
-        return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-    }
-
     async preloadCSV(): Promise<void> {
         try {
             const response = await fetch("/names/names.csv");
@@ -43,6 +39,25 @@ class NameGenerator {
             console.error("Error during preloadCSV:", error);
             throw error; // Rethrow to handle it in the calling code
         }
+    }
+
+    async generateRandomFullName(): Promise<{ firstName: string; lastName: string }> {
+        if (!this.isDataLoaded) {
+            await this.preloadCSV();
+        }
+
+        if (this.firstNameWeights.length === 0 || this.lastNameWeights.length === 0) {
+            throw new Error("Weights are empty. Ensure CSV data is valid and preloaded correctly.");
+        }
+
+        return {
+            firstName: this.getRandomNameFromWeights(this.firstNameWeights),
+            lastName: this.getRandomNameFromWeights(this.lastNameWeights)
+        };
+    }
+
+    private capitalizeFirstLetter(name: string): string {
+        return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
     }
 
     private async parseCSV(csvData: string): Promise<NameEntry[]> {
@@ -136,21 +151,6 @@ class NameGenerator {
             }
         }
         return weights[low].name;
-    }
-
-    async generateRandomFullName(): Promise<{ firstName: string; lastName: string }> {
-        if (!this.isDataLoaded) {
-            await this.preloadCSV();
-        }
-
-        if (this.firstNameWeights.length === 0 || this.lastNameWeights.length === 0) {
-            throw new Error("Weights are empty. Ensure CSV data is valid and preloaded correctly.");
-        }
-
-        return {
-            firstName: this.getRandomNameFromWeights(this.firstNameWeights),
-            lastName: this.getRandomNameFromWeights(this.lastNameWeights)
-        };
     }
 }
 

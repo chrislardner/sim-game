@@ -62,14 +62,14 @@ export default function Table<T>({
         if (!field || !canSort) return;
         setSort((prev) =>
             !prev || prev.field !== field
-                ? { field, direction: "ascending" }
-                : { field, direction: prev.direction === "ascending" ? "descending" : "ascending" }
+                ? {field, direction: "ascending"}
+                : {field, direction: prev.direction === "ascending" ? "descending" : "ascending"}
         );
     };
 
     const sortIcon = (field?: keyof T) => {
-        if (!field || !sort || sort.field !== field) return <FaSort />;
-        return sort.direction === "ascending" ? <FaSortUp /> : <FaSortDown />;
+        if (!field || !sort || sort.field !== field) return <FaSort/>;
+        return sort.direction === "ascending" ? <FaSortUp/> : <FaSortDown/>;
     };
 
     return (

@@ -15,7 +15,7 @@ function isActiveExact(pathname: string, target: string) {
     return pathname === target;
 }
 
-export default function Sidebar({ gameId, teamId }: Props) {
+export default function Sidebar({gameId, teamId}: Props) {
     const pathname = usePathname();
 
     const items: NavItem[] = useMemo(
@@ -66,7 +66,7 @@ export default function Sidebar({ gameId, teamId }: Props) {
                         const href = p.hrefTemplate;
                         const active = isActiveExact(pathname, href);
                         const linkProps = p.newTab
-                            ? { target: "_blank", rel: "noopener noreferrer" }
+                            ? {target: "_blank", rel: "noopener noreferrer"}
                             : {};
                         return (
                             <li key={p.label}>
@@ -81,7 +81,7 @@ export default function Sidebar({ gameId, teamId }: Props) {
                                             : "text-neutral-700 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/40"
                                     )}
                                 >
-                                    <span className="w-[1em] flex-none" aria-hidden="true" />
+                                    <span className="w-[1em] flex-none" aria-hidden="true"/>
                                     <span className="truncate">{p.label}</span>
                                 </Link>
                             </li>
@@ -96,7 +96,7 @@ export default function Sidebar({ gameId, teamId }: Props) {
                             <button
                                 type="button"
                                 aria-expanded={isOpen}
-                                onClick={() => setOpen((s) => ({ ...s, [sec.label]: !s[sec.label] }))}
+                                onClick={() => setOpen((s) => ({...s, [sec.label]: !s[sec.label]}))}
                                 className={cn(
                                     "group flex w-full items-center gap-2 rounded-md px-3 py-2 transition-colors",
                                     "text-[13px] text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-100 hover:bg-neutral-100/70 dark:hover:bg-neutral-800/40"
@@ -109,7 +109,7 @@ export default function Sidebar({ gameId, teamId }: Props) {
                     )}
                     aria-hidden="true"
                 >
-                  <ChevronRight />
+                  <ChevronRight/>
                 </span>
                                 <span className="truncate">{sec.label}</span>
                             </button>
@@ -119,7 +119,7 @@ export default function Sidebar({ gameId, teamId }: Props) {
                                     const href = c.hrefTemplate;
                                     const active = isActiveExact(pathname, href);
                                     const linkProps = (c as NavPage).newTab
-                                        ? { target: "_blank", rel: "noopener noreferrer" }
+                                        ? {target: "_blank", rel: "noopener noreferrer"}
                                         : {};
                                     return (
                                         <Link
@@ -134,7 +134,7 @@ export default function Sidebar({ gameId, teamId }: Props) {
                                                     : "text-neutral-700 hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800/40"
                                             )}
                                         >
-                                            <span className="w-[1em] flex-none" aria-hidden="true" />
+                                            <span className="w-[1em] flex-none" aria-hidden="true"/>
                                             <span className="truncate">{c.label}</span>
                                         </Link>
                                     );

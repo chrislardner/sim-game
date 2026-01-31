@@ -273,7 +273,9 @@ async function simulateMeetsForWeek(game: Game, meets: Meet[], races: Race[], pl
     return Promise.resolve(true);
 }
 
-function notNull<T>(x: T | null | undefined): x is T { return x != null; }
+function notNull<T>(x: T | null | undefined): x is T {
+    return x != null;
+}
 
 async function updateChampionshipWeek(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
     const sched = mapWeekToGamePhase(game.currentWeek);

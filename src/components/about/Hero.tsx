@@ -5,8 +5,10 @@ export default function Hero() {
     return (
         <section className="relative">
             <div aria-hidden className="pointer-events-none absolute inset-0">
-                <div className="absolute -top-24 -right-28 h-80 w-80 rounded-full bg-gradient-to-tr from-indigo-400/20 via-purple-400/20 to-pink-400/20 blur-3xl" />
-                <div className="absolute -bottom-24 -left-28 h-96 w-96 rounded-full bg-gradient-to-br from-emerald-300/20 via-cyan-300/20 to-blue-300/20 blur-3xl" />
+                <div
+                    className="absolute -top-24 -right-28 h-80 w-80 rounded-full bg-gradient-to-tr from-indigo-400/20 via-purple-400/20 to-pink-400/20 blur-3xl"/>
+                <div
+                    className="absolute -bottom-24 -left-28 h-96 w-96 rounded-full bg-gradient-to-br from-emerald-300/20 via-cyan-300/20 to-blue-300/20 blur-3xl"/>
             </div>
 
             <div className="container mx-auto px-4 pt-16 md:pt-20 pb-6 md:pb-8">
@@ -34,7 +36,7 @@ export default function Hero() {
                     </div>
 
                     <div className="mt-4 text-xs text-neutral-500 dark:text-neutral-400">
-                        <BuildStamp />
+                        <BuildStamp/>
                     </div>
                 </div>
             </div>

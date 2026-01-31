@@ -5,37 +5,43 @@ const a1 = {
     events: ['100m', '200m', '400m'],
     chance: 0.20,
     num: 1,
-    seasons: ['track_field']};
+    seasons: ['track_field']
+};
 const a2 = {
     main: [ma.s],
     events: ['100m', '200m'],
     chance: 0.20,
     num: 2,
-    seasons: ['track_field']};
+    seasons: ['track_field']
+};
 const a3 = {
     main: [ma.md, ma.s],
     events: ['400m', '800m', '1500m'],
     chance: 0.1,
     num: 3,
-    seasons: ['track_field']};
+    seasons: ['track_field']
+};
 const a4 = {
     main: [ma.md, ma.s],
     events: ['400m', '800m'],
     chance: 0.1,
     num: 4,
-    seasons: ['track_field']};
+    seasons: ['track_field']
+};
 const a5 = {
     main: [ma.md],
     events: ['800m', '1500m'],
     chance: 0.075,
     num: 5,
-    seasons: ['track_field']};
+    seasons: ['track_field']
+};
 const a6 = {
     main: [ma.ld, ma.md],
     events: ['1500m', '3000m'],
     chance: 0.075,
     num: 6,
-    seasons: ['track_field']};
+    seasons: ['track_field']
+};
 const a7 = {
     main: [ma.ld, ma.md],
     events: ['1500m', '3000m', '5000m', '10000m', '8000m'],

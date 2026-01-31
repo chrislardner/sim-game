@@ -4,13 +4,13 @@ import BuildStamp from "@/components/BuildStamp";
 type LinkItem = { label: string; href: string; external?: boolean };
 
 const LINKS: LinkItem[] = [
-    { label: "About",   href: "/" },
-    { label: "Manual",    href: "/help/manual" },
-    { label: "Contact", href: "mailto:dev@xctracksim.com" },
-    { label: "GitHub",  href: "https://github.com/chrislardner/sim-game", external: true },
+    {label: "About", href: "/"},
+    {label: "Manual", href: "/help/manual"},
+    {label: "Contact", href: "mailto:dev@xctracksim.com"},
+    {label: "GitHub", href: "https://github.com/chrislardner/sim-game", external: true},
 ];
 
-export default function Footer(){
+export default function Footer() {
     return (
         <footer className="relative">
             <div className="container mx-auto px-4">
@@ -48,7 +48,7 @@ export default function Footer(){
               </span>
                         ))}
                     </nav>
-                    <BuildStamp />
+                    <BuildStamp/>
                 </div>
             </div>
         </footer>

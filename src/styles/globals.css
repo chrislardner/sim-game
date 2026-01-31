@@ -57,12 +57,15 @@
 }
 
 @layer base {
-    html { scrollbar-gutter: stable; }
+    html {
+        scrollbar-gutter: stable;
+    }
 
     :root {
         --page-max-w: 80rem;
         --page-pad-x: 1rem;
     }
+
     @media (min-width: 640px) {
         :root {
             --page-pad-x: 0.5rem;

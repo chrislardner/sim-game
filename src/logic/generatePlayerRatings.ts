@@ -1,35 +1,47 @@
 import seedRandom from "seedrandom";
-import { randomNormal } from "d3-random";
-import { clamp } from "lodash";
-import { ATTR_PARAMS, ATTR_NAMES, BLENDS, RARITY, AGE_SETS, type AttrName, type RoleKey } from "@/constants/curves";
-import { sprintOvr, middleOvr, longOvr, playerOverall, potentialFromYear } from "@/logic/generatePlayerOverall";
-import type { Attributes, PlayerArch, PlayerRatings, TypeRatings } from "@/types/player";
-import { SubArchetype } from "@/constants/subArchetypes";
+import {randomNormal} from "d3-random";
+import {clamp} from "lodash";
+import {AGE_SETS, ATTR_NAMES, ATTR_PARAMS, type AttrName, BLENDS, RARITY, type RoleKey} from "@/constants/curves";
+import {longOvr, middleOvr, playerOverall, potentialFromYear, sprintOvr} from "@/logic/generatePlayerOverall";
+import type {Attributes, PlayerArch, PlayerRatings, TypeRatings} from "@/types/player";
+import {SubArchetype} from "@/constants/subArchetypes";
 
 const Z = 1.6448536269514722; // 5th/95th percentile
 
 const flags = (sub: SubArchetype) => {
     let spr = false, mid = false, lon = false;
     if (sub.num <= 2) spr = true;
-    else if (sub.num >= 3 && sub.num <= 4) { spr = true; mid = true; }
-    else if (sub.num === 5) mid = true;
-    else if (sub.num >= 6 && sub.num <= 10) { mid = true; lon = true; }
-    else if (sub.num === 11) lon = true;
-    else if (sub.num >= 12) { spr = true; mid = true; lon = true; }
-    return { spr, mid, lon } as const;
+    else if (sub.num >= 3 && sub.num <= 4) {
+        spr = true;
+        mid = true;
+    } else if (sub.num === 5) mid = true;
+    else if (sub.num >= 6 && sub.num <= 10) {
+        mid = true;
+        lon = true;
+    } else if (sub.num === 11) lon = true;
+    else if (sub.num >= 12) {
+        spr = true;
+        mid = true;
+        lon = true;
+    }
+    return {spr, mid, lon} as const;
 };
 
 const roles = (f: ReturnType<typeof flags>): RoleKey[] => [
     ...(f.spr ? ["sprinter"] as const : []),
     ...(f.mid ? ["middle"] as const : []),
-    ...(f.lon ? ["long"]   as const : []),
+    ...(f.lon ? ["long"] as const : []),
 ];
 
-const blendKey = (rs: RoleKey[]) => (["sprinter","middle","long"] as const).filter(r => rs.includes(r)).join("+") as keyof typeof BLENDS;
+const blendKey = (rs: RoleKey[]) => (["sprinter", "middle", "long"] as const).filter(r => rs.includes(r)).join("+") as keyof typeof BLENDS;
 
 const pickRarity = (rng: () => number) => {
-    const r = rng(); let acc = 0;
-    for (const tier of RARITY) { acc += tier.p; if (r <= acc) return tier }
+    const r = rng();
+    let acc = 0;
+    for (const tier of RARITY) {
+        acc += tier.p;
+        if (r <= acc) return tier
+    }
     return RARITY[RARITY.length - 1];
 };
 
@@ -59,7 +71,10 @@ const sampleAttr = (rng: () => number, mean: number, sd: number, low: number, hi
     return clamp(mean, 0, 100);
 };
 
-const genForRole = (rng: () => number, k: AttrName, role: RoleKey, rarity: {stdevScale:number; medianShift:number}, year: number) => {
+const genForRole = (rng: () => number, k: AttrName, role: RoleKey, rarity: {
+    stdevScale: number;
+    medianShift: number
+}, year: number) => {
     const p = ATTR_PARAMS[k][role];
     const mean = clamp(p.median + rarity.medianShift, p.low, p.high);
     const sd = (p.stdev ?? sigmaFromBounds(p.low, p.high)) * rarity.stdevScale;
@@ -69,7 +84,12 @@ const genForRole = (rng: () => number, k: AttrName, role: RoleKey, rarity: {stde
 
 const blendRoles = (vals: Partial<Record<RoleKey, number>>, weights: Record<RoleKey, number>) => {
     let num = 0, den = 0;
-    (Object.keys(weights) as RoleKey[]).forEach(r => { if (weights[r] && vals[r] !== undefined) { num += (vals[r] as number) * weights[r]; den += weights[r]; } });
+    (Object.keys(weights) as RoleKey[]).forEach(r => {
+        if (weights[r] && vals[r] !== undefined) {
+            num += (vals[r] as number) * weights[r];
+            den += weights[r];
+        }
+    });
     return den ? num / den : 0;
 };
 
@@ -97,7 +117,7 @@ export function generatePlayerRatings(
         longDistanceOvr: longOvr(a),
     };
 
-    const pa: PlayerArch = { isSprinter: f.spr, isMiddleDistance: f.mid, isLongDistance: f.lon };
+    const pa: PlayerArch = {isSprinter: f.spr, isMiddleDistance: f.mid, isLongDistance: f.lon};
     const overall = playerOverall(pa, typeRatings);
     const potential = potentialFromYear(playerYear, overall);
 
@@ -126,5 +146,5 @@ export function generatePlayerRatings(
         strideFrequency: a.strideFrequency,
     };
 
-    return { pr, pa };
+    return {pr, pa};
 }

@@ -55,7 +55,7 @@ export default function GameDashboard({params}: Readonly<{ params: Promise<{ gam
             <h1 className="text-3xl font-semibold mb-6 text-primary-light dark:text-primary-dark">Dashboard</h1>
 
             <button onClick={handleSimulateWeek} disabled={isSimulating}
-                className="px-4 py-2 bg-accent-dark hover:bg-accent-light font-semibold text-white rounded-sm"
+                    className="px-4 py-2 bg-accent-dark hover:bg-accent-light font-semibold text-white rounded-sm"
             >
                 {isSimulating ? "Simulating..." : "Simulate Next Week"}
             </button>

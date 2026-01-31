@@ -8,11 +8,11 @@ import FinePrint from "@/components/about/FinePrint";
 export default function AboutPage() {
     return (
         <main className="min-h-screen">
-            <Hero />
-            <SectionDivider className="my-8 md:my-10" />
-            <InfoBar />
-            <SectionDivider className="my-8 md:my-10" />
-            <FinePrint email="dev@xctracksim.com" />
+            <Hero/>
+            <SectionDivider className="my-8 md:my-10"/>
+            <InfoBar/>
+            <SectionDivider className="my-8 md:my-10"/>
+            <FinePrint email="dev@xctracksim.com"/>
         </main>
     );
 }
