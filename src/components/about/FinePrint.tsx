@@ -20,7 +20,7 @@ export default function FinePrint({
                         </a>
                     </p>
                     <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-200">
-                        © 2025 XC Track Sim
+                        © 2026 XC Track Sim
                     </p>
                 </div>
             </div>
