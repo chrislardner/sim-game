@@ -9,10 +9,6 @@ import {Meet, Race} from "@/types/schedule";
 import {Player} from "@/types/player";
 import SimulationBar from "@/components/SimulationBar";
 
-// ============================================================================
-// GAME CONTEXT
-// ============================================================================
-
 type GameContextType = {
     game: Game | null;
     teams: Team[] | null;
@@ -33,10 +29,6 @@ export function useGameContext() {
     }
     return ctx;
 }
-
-// ============================================================================
-// LAYOUT PROVIDER
-// ============================================================================
 
 type Props = {
     gameId: string;

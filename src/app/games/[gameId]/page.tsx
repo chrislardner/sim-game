@@ -176,7 +176,7 @@ function LastMeetSection({
                             userPlacement <= 3 ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" :
                                 "bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400"
                     )}>
-                        {userPlacement === 1 ? "🥇 1st" : userPlacement === 2 ? "🥈 2nd" : userPlacement === 3 ? "🥉 3rd" : `${userPlacement}th`}
+                        {userPlacement === 1 ? "1st" : userPlacement === 2 ? "2nd" : userPlacement === 3 ? "3rd" : `${userPlacement}th`}
                     </div>
                 )}
             </div>
