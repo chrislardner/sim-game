@@ -2,6 +2,7 @@ import {getCollegesByConferenceId} from "@/data/parseSchools";
 import {getNextTeamId} from "@/data/storage";
 import {Conference, School} from "@/types/regionals";
 import {Team} from "@/types/team";
+import {withTeamDefaults} from "@/logic/addTeamDefaultProfile";
 
 export async function createTeamsForConference(gameId: number, year: number, conference: Conference, selectedCollegeId: number): Promise<Team[]> {
     const schools: School[] = await getCollegesByConferenceId(conference.conferenceId);
@@ -26,13 +27,14 @@ export async function createTeam(gameId: number, year: number, school: School, p
         throw new Error("Failed to assign a college to a team.");
     }
 
-    return {
+    const team: Team = {
         teamId: newTeamId,
         college: school.collegeName,
         teamName: school.nickname,
         gameId,
         players: [],
-        points: 0,
+        xc_points: 0,
+        tf_points: 0,
         teamSchedule: {teamId: newTeamId, meets: [], year},
         conferenceId: school.conferenceId,
         schoolId: school.collegeId,
@@ -48,4 +50,5 @@ export async function createTeam(gameId: number, year: number, school: School, p
         XCTFPlayers: school.XCTFPlayers ?? 7,
         TFPlayers: school.TFPlayers ?? 10,
     };
+    return withTeamDefaults(team);
 }

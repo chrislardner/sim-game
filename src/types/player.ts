@@ -79,7 +79,6 @@ export interface Player {
     retiredYear: number;
     startYear: number;
     interactions: PlayerInteractions;
-    activeForRace: boolean;
 }
 
 

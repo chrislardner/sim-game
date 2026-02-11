@@ -27,11 +27,13 @@ export default function TeamsPage({params}: Readonly<{ params: Promise<{ gameId:
     }, [gameId]);
 
     const columns: {
-        key: 'college' | 'ovr' | 'sprint_ovr' | 'long_ovr' | 'xc_ovr' | 'middle_ovr' | 'ovr_rank' | 'longDistance_rank' | 'middleDistance_rank' | 'shortDistance_rank' | 'xc_rank';
+        key: 'college' | 'ovr' | 'xc_points' | 'tf_points' | 'sprint_ovr' | 'long_ovr' | 'xc_ovr' | 'middle_ovr' | 'ovr_rank' | 'longDistance_rank' | 'middleDistance_rank' | 'shortDistance_rank' | 'xc_rank';
         label: string
     }[] = [
         {key: 'college', label: 'College'},
         {key: 'ovr', label: 'Overall'},
+        {key: 'xc_points', label: 'XC Points'},
+        {key: 'tf_points', label: 'TF Points'},
         {key: 'ovr_rank', label: 'Overall Rank'},
         {key: 'sprint_ovr', label: 'Sprint Overall'},
         {key: 'middle_ovr', label: 'Middle Overall'},
@@ -63,6 +65,8 @@ export default function TeamsPage({params}: Readonly<{ params: Promise<{ gameId:
         ...team,
         college: team.college + " (" + team.abbr + ")",
         ovr: team.ovr,
+        xc_points: team.xc_points,
+        tf_points: team.tf_points,
         sprint_ovr: team.sprint_ovr,
         middle_ovr: team.middle_ovr,
         long_ovr: team.long_ovr,

@@ -1,7 +1,9 @@
 import {Player} from "@/types/player";
 import {Team} from "@/types/team";
+import {TeamLineup} from "@/types/schedule";
 
-export async function populateRaceWithParticipants(teams: Team[], players: Player[], seasonType: "cross_country" | "track_field", eventType: string) {
+export async function populateRaceWithParticipants(teams: Team[], players: Player[], seasonType: "cross_country" | "track_field",
+                                                   eventType: string, lineups: Record<number, TeamLineup>) {
     const participants: {
         playerId: number;
         playerTime: number;
@@ -17,7 +19,8 @@ export async function populateRaceWithParticipants(teams: Team[], players: Playe
         const teamPlayers = playersByTeam.get(team.teamId) ?? [];
         for (const player of teamPlayers) {
             const eligible = player?.eventTypes?.[seasonType]?.includes(eventType) ?? false;
-            if (!eligible) continue;
+            const isOnLineup = lineups[team.teamId]?.declared?.includes(player.playerId);
+            if (!eligible || !isOnLineup) continue;
 
             participants.push({
                 playerId: player.playerId,

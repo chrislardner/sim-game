@@ -4,7 +4,8 @@ export type Team = {
     teamName: string;
     gameId: number;
     players: number[];
-    points: number;
+    xc_points: number;
+    tf_points: number;
     teamSchedule: TeamSchedule;
     conferenceId: number;
     schoolId: number;

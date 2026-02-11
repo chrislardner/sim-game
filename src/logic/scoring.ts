@@ -132,7 +132,7 @@ export function handleCrossCountryScoring(race: Race, teams: Team[], players: Pl
         teams.forEach(team => {
             const meetTeam = meet.teams.find(t => t.teamId === team.teamId);
             if (meetTeam) {
-                team.points += meetTeam.points;
+                team.xc_points += meetTeam.points;
             }
         });
 
@@ -167,7 +167,7 @@ export function handleTrackFieldScoring(race: Race, teams: Team[], meet: Meet): 
     teams.forEach(team => {
         const meetTeam = meet.teams.find(t => t.teamId === team.teamId);
         if (meetTeam) {
-            team.points += meetTeam.points;
+            team.tf_points += meetTeam.points;
         }
     });
 }

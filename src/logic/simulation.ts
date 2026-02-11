@@ -31,8 +31,12 @@ export async function simulateWeek(gameId: number): Promise<boolean> {
     let races: Race[];
 
     try {
-        [game, teams, players, meets, races] = await Promise.all(
+        let loadedGame;
+        [loadedGame, teams, players, meets, races] = await Promise.all(
             [loadGameData(gameId), loadTeams(gameId), loadPlayers(gameId), loadMeets(gameId), loadRaces(gameId)]);
+        game = {...loadedGame};
+
+
     } catch (error) {
         console.error("Error loading game data", error);
         return Promise.reject(false);
@@ -98,7 +102,8 @@ async function populateNextWeeksRacesWithParticipants(
             const shedObj = mapWeekToGamePhase(week);
             const validTeamsOnMeet = teams.filter(team => meet.teams.some(mt => mt.teamId === team.teamId));
             const validPlayersOnTeams = players.filter(player => validTeamsOnMeet.some(team => team.players.includes(player.playerId)));
-            const participants = await populateRaceWithParticipants(validTeamsOnMeet, validPlayersOnTeams, shedObj.season, race.eventType);
+            if (!race.lineupsByTeam) throw new Error("No lineupsByTeam found for meet");
+            const participants = await populateRaceWithParticipants(validTeamsOnMeet, validPlayersOnTeams, shedObj.season, race.eventType, race.lineupsByTeam);
             race.heats = fillHeatsForRace(shedObj.season, race.eventType, participants);
             race.participants = participants;
         }
@@ -106,10 +111,15 @@ async function populateNextWeeksRacesWithParticipants(
 }
 
 async function simulateRegularSeason(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
-    await populateNextWeeksRacesWithParticipants(game, meets, races, teams, players);
+    // Repopulate CURRENT week from lineups (ensures any lineup changes are reflected)
+    await populateWeeksRacesWithParticipants(game, meets, races, teams, players, game.currentWeek);
+
+    // Prepare NEXT week
+    await populateWeeksRacesWithParticipants(game, meets, races, teams, players, game.currentWeek + 1);
+
     await simulateMeetsForWeek(game, meets, races, players);
     await updateTeamAndPlayerPoints(game, teams, players, meets, races);
-    return Promise.resolve(true);
+    return true;
 }
 
 export async function simulatePlayoffs(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
@@ -259,18 +269,57 @@ async function simulateMeetsForWeek(game: Game, meets: Meet[], races: Race[], pl
                     console.error("No player found");
                     return Promise.reject(false);
                 }
-                const raceTime = generateRaceTime(race.eventType, player);
-                const participantIndex = race.participants.findIndex(p => p.playerId === participant.playerId);
-                if (participantIndex !== -1) {
-                    race.participants[participantIndex].playerTime = raceTime;
+
+                const lineupRecord = race.lineupsByTeam[player.teamId] ?? null;
+
+                const teamLineup = lineupRecord || {declared: [], locked: false};
+                if (!teamLineup.declared.includes(player.playerId)) {
+                    console.error(`Player ${player.playerId} not declared for race ${race.raceId}`);
                 } else {
-                    console.error(`Participant with ID ${participant.playerId} not found in race`);
-                    return Promise.reject(false);
+                    const raceTime = generateRaceTime(race.eventType, player);
+                    const participantIndex = race.participants.findIndex(p => p.playerId === participant.playerId);
+                    if (participantIndex !== -1) {
+                        race.participants[participantIndex].playerTime = raceTime;
+                    } else {
+                        console.error(`Participant with ID ${participant.playerId} not found in race`);
+                        return Promise.reject(false);
+                    }
                 }
             }
         }
     }
     return Promise.resolve(true);
+}
+
+async function populateWeeksRacesWithParticipants(
+    game: Game, meets: Meet[], races: Race[], teams: Team[], players: Player[], week: number
+): Promise<void> {
+    const year = game.currentYear;
+    const weekMeets = meets.filter(meet => meet.week === week && meet.year === year);
+
+    for (const meet of weekMeets) {
+        const meetRaces = races.filter(race => meet.races.includes(race.raceId));
+        for (const race of meetRaces) {
+            const shedObj = mapWeekToGamePhase(week);
+            const validTeamsOnMeet = teams.filter(team => meet.teams.some(mt => mt.teamId === team.teamId));
+            const validPlayersOnTeams = players.filter(player => validTeamsOnMeet.some(team => team.players.includes(player.playerId)));
+
+            if (!race.lineupsByTeam) {
+                console.warn(`No lineupsByTeam for race ${race.raceId}`);
+                continue;
+            }
+
+            const participants = await populateRaceWithParticipants(
+                validTeamsOnMeet,
+                validPlayersOnTeams,
+                shedObj.season,
+                race.eventType,
+                race.lineupsByTeam
+            );
+            race.heats = fillHeatsForRace(shedObj.season, race.eventType, participants);
+            race.participants = participants;
+        }
+    }
 }
 
 function notNull<T>(x: T | null | undefined): x is T {
@@ -301,7 +350,8 @@ async function updateChampionshipWeek(game: Game, teams: Team[], players: Player
     const validTeamsOnMeet = raceTeams;
     const validPlayersOnTeams = players.filter(p => validTeamsOnMeet.some(t => t.players.includes(p.playerId)));
     for (const r of newRaces) {
-        const participants = await populateRaceWithParticipants(validTeamsOnMeet, validPlayersOnTeams, sched.season, r.eventType);
+        if (!r.lineupsByTeam) throw new Error("No lineupsByTeam found for race")
+        const participants = await populateRaceWithParticipants(validTeamsOnMeet, validPlayersOnTeams, sched.season, r.eventType, r.lineupsByTeam);
         r.heats = fillHeatsForRace(sched.season, r.eventType, participants);
         r.participants = participants;
     }
@@ -315,7 +365,7 @@ async function updateChampionshipWeek(game: Game, teams: Team[], players: Player
         races: newRaces.map(r => r.raceId),
         season: sched.season,
         type: sched.type,
-        gameId: game.gameId
+        gameId: game.gameId,
     };
 
     races.push(...newRaces);

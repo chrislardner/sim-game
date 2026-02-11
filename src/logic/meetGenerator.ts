@@ -1,5 +1,5 @@
 import {Team} from '@/types/team';
-import {Heat, Meet, Race} from '@/types/schedule';
+import {Heat, Meet, Race, TeamLineup} from '@/types/schedule';
 import {raceTypes} from '@/constants/raceTypes';
 import {SeasonGamePhase, SeasonType} from '@/constants/seasons';
 import {getNextMeetId, getNextRaceId} from '@/data/storage';
@@ -11,7 +11,7 @@ export async function createMeet(teams: Team[], players: Player[], week: number,
 }> {
     const map = mapWeekToGamePhase(week);
     const meetId = await getNextMeetId(gameId);
-    const races = await createRacesForMeet(teams, players, gameId, map.season, meetId, year, week)
+    const races = await createRacesForMeet(teams, players, gameId, map.season, meetId, year, week);
     const meet: Meet = {
         week,
         meetId,
@@ -26,13 +26,16 @@ export async function createMeet(teams: Team[], players: Player[], week: number,
     return {meet, races};
 }
 
-async function populateRaceWithParticipantsConditionally(teams: Team[], players: Player[], seasonType: "cross_country" | "track_field", eventType: string, firstOfSeason: boolean) {
+async function populateRaceWithParticipantsConditionally(teams: Team[], players: Player[],
+                                                         seasonType: "cross_country" | "track_field",
+                                                         eventType: string, firstOfSeason: boolean,
+                                                         lineups: Record<number, TeamLineup>) {
     if (!firstOfSeason) return [] as Array<{
         playerId: number;
         playerTime: number;
         scoring: { points: number; team_top_five: boolean; team_top_seven: boolean };
     }>;
-    return await populateRaceWithParticipants(teams, players, seasonType, eventType);
+    return await populateRaceWithParticipants(teams, players, seasonType, eventType, lineups);
 }
 
 function computeHeats(seasonType: "cross_country" | "track_field", eventType: string, participantCount: number): Heat[] {
@@ -93,9 +96,10 @@ export async function createRacesForMeet(teams: Team[], players: Player[], gameI
 
     const events = raceTypes[seasonType] ?? [];
     const out: Race[] = [];
+    const lineups = createTeamLineupsForRace(teams, players, {season: seasonType, type: 'regular'});
 
     for (const eventType of events) {
-        const participants = await populateRaceWithParticipantsConditionally(teams, players, seasonType, eventType, firstOfSeason);
+        const participants = await populateRaceWithParticipantsConditionally(teams, players, seasonType, eventType, firstOfSeason, lineups);
         const heats = fillHeatsForRace(seasonType, eventType, participants);
 
         const raceId = await getNextRaceId(gameId);
@@ -109,6 +113,7 @@ export async function createRacesForMeet(teams: Team[], players: Player[], gameI
             meetId,
             gameId,
             year,
+            lineupsByTeam: lineups,
         });
     }
     return out;
@@ -127,4 +132,29 @@ export function mapWeekToGamePhase(gameWeek: number): { season: SeasonType, type
     if (gameWeek >= 42 && gameWeek <= 52) return {season: 'track_field', type: 'offseason'};
 
     throw new Error('Invalid week number');
+}
+
+function createTeamLineupsForRace(teams: Team[], players: Player[], map: {
+    season: SeasonType,
+    type: SeasonGamePhase
+}): Record<number, TeamLineup> {
+    const lineups: Record<number, TeamLineup> = {};
+    const playersByTeam = new Map<number, Player[]>();
+    for (const p of players) {
+        if (!playersByTeam.has(p.teamId)) playersByTeam.set(p.teamId, []);
+        playersByTeam.get(p.teamId)!.push(p);
+    }
+
+    for (const team of teams) {
+        const teamPlayers = playersByTeam.get(team.teamId) ?? [];
+        const eligiblePlayers = teamPlayers.filter(p => p.eventTypes?.[map.season]?.length ?? 0 > 0);
+        let declaredPlayers = [];
+        if (map.season === 'cross_country') {
+            declaredPlayers = eligiblePlayers.slice(0, team.profile?.xc.travel.homeRoster).map(p => p.playerId);
+        } else {
+            declaredPlayers = eligiblePlayers.slice(0, team.profile?.track.travel.homeRoster).map(p => p.playerId);
+        }
+        lineups[team.teamId] = {declared: declaredPlayers};
+    }
+    return lineups;
 }

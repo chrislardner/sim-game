@@ -160,7 +160,7 @@ export default function ManualPage() {
                                 <Card title="Cross Country">
                                     <ul className="list-disc pl-5 space-y-1 text-sm">
                                         <li>Scoring by finish place; lowest team total wins.</li>
-                                        <li>Depth and pack time matter.</li>
+                                        <li>Depth matter.</li>
                                     </ul>
                                 </Card>
                                 <Card title="Track">

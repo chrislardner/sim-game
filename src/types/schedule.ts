@@ -1,6 +1,7 @@
 export interface Race {
     eventType: string;
     heats: Heat[];
+    lineupsByTeam: Record<number, TeamLineup>;
     participants: RaceParticipant[];
     raceId: number;
     teams: { teamId: number, points: number }[];
@@ -23,13 +24,11 @@ export type Meet = {
     season: "cross_country" | "track_field";
     type: string;
     format?: MeetFormat;
-
     hostTeamId?: number;
     venue?: Venue;
-
+    name?: string;
     teams: { teamId: number; points: number; has_five_racers?: boolean }[];
     races: number[];
-    lineupsByTeam?: Record<number, TeamLineup>;
     maxDeclared?: number;
 };
 
@@ -50,7 +49,6 @@ export interface RaceParticipant {
 
 export type TeamLineup = {
     declared: number[];
-    travel?: number[];
     locked?: boolean;
 };
 

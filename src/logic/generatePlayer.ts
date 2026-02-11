@@ -51,7 +51,6 @@ export async function createPlayer(gameId: number, teamId: number, schoolYear: n
         retiredYear: 0,
         startYear: startYear,
         interactions,
-        activeForRace: true
     };
 }
 

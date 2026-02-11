@@ -29,11 +29,11 @@ export default function MainNav() {
         >
             <Container>
                 <div className="flex h-12 items-center justify-between">
-                    <Link href="/" className="select-none text-sm font-semibold tracking-wide">
+                    <Link href="/" className="select-none text-sm font-semibold tracking-wide px-4">
                         XC·TF&nbsp;GM
                     </Link>
 
-                    <nav className="flex items-center gap-2">
+                    <nav className="flex items-center gap-2 px-4">
                         {LINKS.map((l) => {
                             const active = isActive(pathname, l.href);
                             return (

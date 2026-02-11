@@ -79,8 +79,8 @@
 }
 
 @layer utilities {
-    .page-x {
-        padding-left: var(--page-pad-x);
-        padding-right: var(--page-pad-x);
-    }
+    /*.page-x {*/
+    /*    padding-left: var(--page-pad-x);*/
+    /*    padding-right: var(--page-pad-x);*/
+    /*}*/
 }

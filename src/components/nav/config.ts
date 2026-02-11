@@ -18,6 +18,7 @@ export const NAV_CONFIG: NavItem[] = [
         label: "TEAM",
         children: [
             {type: "page", label: "Roster", hrefTemplate: "/games/{id}/team/{teamId}"},
+            {type: "page", label: "Team Schedule", hrefTemplate: "/games/{id}/team/{teamId}/schedule"},
             {type: "page", label: "Lineups", hrefTemplate: "/games/{id}/team/{teamId}/lineups"},
         ],
     },
@@ -46,7 +47,7 @@ export const NAV_CONFIG: NavItem[] = [
         type: "section",
         label: "Help",
         children: [
-            {type: "page", label: "Manual", hrefTemplate: "/help/manual", newTab: true}
+            {type: "page", label: "Manual", hrefTemplate: "/manual", newTab: true}
         ],
     },
 ];
