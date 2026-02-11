@@ -16,7 +16,6 @@ function formatTime(seconds: number): string {
 }
 
 function getTeamLineup(race: Race, teamId: number): number[] {
-    // lineupsByTeam is Record<number, TeamLineup> - direct object lookup
     return race.lineupsByTeam?.[teamId]?.declared || [];
 }
 
@@ -233,7 +232,7 @@ function LastMeetSection({
             </div>
 
             <Link
-                href={`/games/${gameId}/meets/${meet.meetId}`}
+                href={`/games/${gameId}/league/schedule/${meet.meetId}`}
                 className="inline-block mt-3 text-sm text-primary-light dark:text-primary-dark hover:underline"
             >
                 View Full Results →
@@ -302,7 +301,7 @@ function TeamCard({team, players, gameId}: { team: Team; players: Player[]; game
 
             <div className="p-4 pt-0 flex gap-2">
                 <Link
-                    href={`/games/${gameId}/team/${team.teamId}/roster`}
+                    href={`/games/${gameId}/team/${team.teamId}`}
                     className="flex-1 text-center py-2 text-sm rounded-md bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
                 >
                     Roster
@@ -347,7 +346,7 @@ function StandingsCard({teams, userTeamId, season, gameId}: {
                     )}
                 </div>
                 <Link
-                    href={`/games/${gameId}/standings`}
+                    href={`/games/${gameId}/league/teams`}
                     className="text-xs text-primary-light dark:text-primary-dark hover:underline"
                 >
                     View All →
@@ -441,7 +440,7 @@ export default function GameDashboard() {
             <section>
                 <SectionHeader
                     title="Next Meet"
-                    action={nextMeet ? {label: "Schedule", href: `/games/${game.gameId}/schedule`} : undefined}
+                    action={nextMeet ? {label: "Schedule", href: `/games/${game.gameId}/league/schedule`} : undefined}
                 />
                 {nextMeet ? (
                     <NextMeetSection
@@ -462,7 +461,7 @@ export default function GameDashboard() {
                         <section>
                             <SectionHeader
                                 title="Last Meet Results"
-                                action={{label: "All Meets", href: `/games/${game.gameId}/schedule`}}
+                                action={{label: "All Meets", href: `/games/${game.gameId}/league/schedule`}}
                             />
                             <LastMeetSection
                                 meet={previousMeet}
