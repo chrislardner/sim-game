@@ -33,7 +33,7 @@ export async function handleNewYear(game: Game, teams: Team[], players: Player[]
 
             // Add recruits as new first-year students
             for (let i = 0; i < graduatingSeniors.length; i++) {
-                const player = await createPlayer(game.gameId, team.teamId, 1, teamGraduatedPlayersSubArchetype[i], game.currentYear + 1, game.currentYear);
+                const player = await createPlayer(game.gameId, team.teamId, 1, teamGraduatedPlayersSubArchetype[i], game.currentYear + 1);
                 team.players.push(player.playerId);
                 players.push(player);
             }
@@ -70,12 +70,12 @@ export async function handleNewYear(game: Game, teams: Team[], players: Player[]
 
         } catch (error) {
             console.error('Error handling new year schedule:', error);
-            return false;
+            return Promise.reject(error);
         }
 
         return Promise.resolve(true);
     } catch (error) {
         console.error('Error handling offseason:', error);
-        return Promise.reject(false);
+        return Promise.reject(error);
     }
 }

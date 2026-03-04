@@ -1,12 +1,12 @@
 import {IDBPDatabase, openDB} from 'idb';
 import {Game} from '@/types/game';
 import {Team} from '@/types/team';
-import {Player} from '@/types/player';
+import {Player, Recruit} from '@/types/player';
 import {Meet, Race} from '@/types/schedule';
 
 // Database constants
 const DATABASE_NAME = 'sportsSimDB';
-const DATABASE_VERSION = 13;
+const DATABASE_VERSION = 14;
 
 export interface IDTracker {
     gameId: number;
@@ -14,6 +14,7 @@ export interface IDTracker {
     lastTeamId: number;
     lastMeetId: number;
     lastRaceId: number;
+    lastRecruitId: number;
 }
 
 let db: IDBPDatabase | null = null;
@@ -37,6 +38,9 @@ export async function initializeDB() {
                     playerStore.createIndex('by_team', ['gameId', 'teamId']);
                     playerStore.createIndex('by_retired', ['gameId', 'retiredYear']);
                     playerStore.createIndex('by_game', 'gameId');
+                }
+                if (!db.objectStoreNames.contains('recruits')) {
+                    db.createObjectStore('recruits', {keyPath: ['gameId', 'recruitId']}).createIndex('by_game', 'gameId');
                 }
                 if (!db.objectStoreNames.contains('meets')) {
                     db.createObjectStore('meets', {keyPath: ['gameId', 'meetId']}).createIndex('by_game', 'gameId');
@@ -100,6 +104,10 @@ export async function savePlayer(gameId: number, player: Player): Promise<IDBVal
     return await putData('players', {...player, gameId});
 }
 
+export async function saveRecruit(gameId: number, recruit: Recruit): Promise<IDBValidKey> {
+    return await putData('recruits', {...recruit, gameId});
+}
+
 export async function saveMeet(gameId: number, meet: Meet): Promise<IDBValidKey> {
     return await putData('meets', {...meet, gameId});
 }
@@ -152,6 +160,10 @@ export async function loadActivePlayers(gameId: number): Promise<Player[]> {
     return await getAllFromIndex('players', 'by_retired', [gameId, 0]) as Player[];
 }
 
+export async function loadRecruits(gameId: number): Promise<Recruit[]> {
+    return await getAllFromIndex('recruits', 'by_game', gameId) as Recruit[];
+}
+
 export async function loadMeets(gameId: number): Promise<Meet[]> {
     return await getAllFromIndex('meets', 'by_game', gameId) as Meet[];
 }
@@ -170,11 +182,12 @@ export async function deleteGameData(gameId: number) {
             return;
         }
 
-        const deleteTx = db.transaction(['games', 'teams', 'players', 'meets', 'races', 'id_trackers'], 'readwrite');
+        const deleteTx = db.transaction(['games', 'teams', 'players', 'recruits', 'meets', 'races', 'id_trackers'], 'readwrite');
         const promises = [
             deleteTx.objectStore('games').delete(gameId),
             deleteTx.objectStore('teams').delete(IDBKeyRange.bound([gameId, 0], [gameId, Infinity])),
             deleteTx.objectStore('players').delete(IDBKeyRange.bound([gameId, 0], [gameId, Infinity])),
+            deleteTx.objectStore('recruits').delete(IDBKeyRange.bound([gameId, 0], [gameId, Infinity])),
             deleteTx.objectStore('meets').delete(IDBKeyRange.bound([gameId, 0], [gameId, Infinity])),
             deleteTx.objectStore('races').delete(IDBKeyRange.bound([gameId, 0], [gameId, Infinity])),
             deleteTx.objectStore('id_trackers').delete(gameId),
@@ -206,6 +219,7 @@ export async function initializeIDTracker(gameId: number) {
         lastTeamId: 0,
         lastMeetId: 0,
         lastRaceId: 0,
+        lastRecruitId: 0,
     });
 }
 
@@ -271,6 +285,7 @@ async function getNextId(gameId: number, field: keyof IDTracker): Promise<number
 }
 
 export const getNextPlayerId = (gameId: number) => getNextId(gameId, 'lastPlayerId');
+export const getNextRecruitId = (gameId: number) => getNextId(gameId, 'lastRecruitId');
 export const getNextTeamId = (gameId: number) => getNextId(gameId, 'lastTeamId');
 export const getNextMeetId = (gameId: number) => getNextId(gameId, 'lastMeetId');
 export const getNextRaceId = (gameId: number) => getNextId(gameId, 'lastRaceId');
@@ -288,12 +303,13 @@ export async function deleteAllGames() {
     try {
         const db = await initializeDB();
 
-        const tx = db.transaction(['games', 'teams', 'players', 'meets', 'races', 'id_trackers'], 'readwrite');
+        const tx = db.transaction(['games', 'teams', 'players', 'recruits', 'meets', 'races', 'id_trackers'], 'readwrite');
 
         await Promise.all([
             tx.objectStore('games').clear(),
             tx.objectStore('teams').clear(),
             tx.objectStore('players').clear(),
+            tx.objectStore('recruits').clear(),
             tx.objectStore('meets').clear(),
             tx.objectStore('races').clear(),
             tx.objectStore('id_trackers').clear(),
@@ -351,6 +367,10 @@ export async function saveMeets(gameId: number, meets: Meet[]): Promise<boolean>
     return await saveMultiple('meets', gameId, meets);
 }
 
+export async function saveRecruits(gameId: number, recruits: Recruit[]): Promise<boolean> {
+    return await saveMultiple('recruits', gameId, recruits);
+}
+
 async function deleteItem(storeName: string, key: unknown) {
     try {
         const db = await initializeDB();
@@ -383,3 +403,12 @@ export async function deleteRace(gameId: number, raceId: number) {
 export async function deletePlayer(gameId: number, playerId: number) {
     await deleteItem('players', [gameId, playerId]);
 }
+
+export async function deleteRecruit(gameId: number, recruitId: number) {
+    await deleteItem('recruits', [gameId, recruitId]);
+}
+
+export async function deleteTeam(gameId: number, teamId: number) {
+    await deleteItem('teams', [gameId, teamId]);
+}
+

@@ -424,6 +424,7 @@ function PlayerRaceMatrix({
 type ViewMode = 'races' | 'players';
 
 export default function TeamLineupsPage({params}: Readonly<{ params: Promise<{ gameId: string; teamId: string }> }>) {
+
     const {gameId, teamId} = use(params);
     const teamIdNum = Number(teamId);
     const gameIdNum = Number(gameId);

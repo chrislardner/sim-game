@@ -79,12 +79,37 @@ export interface Player {
     retiredYear: number;
     startYear: number;
     interactions: PlayerInteractions;
+    recruitId?: number;
+    playerPersonality?: PlayerPersonality;
 }
 
+export interface Recruit {
+    recruitId: number;
+    year: number;
+    firstName: string;
+    lastName: string;
+    seasons: ('track_field' | 'cross_country')[];
+    eventTypes: { cross_country: string[]; track_field: string[] };
+    playerArch: PlayerArch;
+    face: ReturnType<typeof generate>;
+    playerSubArchetype: SubArchetype;
+    races: RecruitRace[];
+    recruitPersonality: PlayerPersonality;
+    interactions: PlayerInteractions;
+}
+
+export interface RecruitRace {
+    season: 'track_field' | 'cross_country';
+    event: string;
+    time: number;
+    week: number;
+    recruitRaceId: number;
+}
 
 export interface PlayerInteractions {
-    moodWithTeam: { [key: number]: number };
-    interactionsWithTeam: { [key: number]: Interaction };
+    interactionsWithTeam: Record<number, Interaction[]>;
+    moodWithTeam: Record<number, number>;
+    probabilityOfJoiningTeam: Record<number, number>;
 }
 
 export interface Interaction {

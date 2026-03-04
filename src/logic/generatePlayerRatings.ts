@@ -8,7 +8,7 @@ import {SubArchetype} from "@/constants/subArchetypes";
 
 const Z = 1.6448536269514722; // 5th/95th percentile
 
-const flags = (sub: SubArchetype) => {
+export const flags = (sub: SubArchetype) => {
     let spr = false, mid = false, lon = false;
     if (sub.num <= 2) spr = true;
     else if (sub.num >= 3 && sub.num <= 4) {

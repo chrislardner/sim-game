@@ -1,8 +1,8 @@
-import {PlayerInteractions, PlayerRatings} from "@/types/player";
+import {PlayerInteractions} from "@/types/player";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function generatePlayerInteractions(_playerInfo: PlayerRatings, startYear: number, currentYear: number): PlayerInteractions {
+export function generatePlayerInteractions(): PlayerInteractions {
     const moodWithTeam = {};
     const interactionsWithTeam = {};
-    return {moodWithTeam, interactionsWithTeam};
+    const probabilityOfJoiningTeam = {};
+    return {probabilityOfJoiningTeam, moodWithTeam, interactionsWithTeam};
 }

@@ -39,7 +39,7 @@ export async function simulateWeek(gameId: number): Promise<boolean> {
 
     } catch (error) {
         console.error("Error loading game data", error);
-        return Promise.reject(false);
+        return Promise.reject(error);
     }
     const phase: SeasonGamePhase = mapWeekToGamePhase(game.currentWeek).type;
     game.gamePhase = phase;
@@ -61,20 +61,20 @@ export async function simulateWeek(gameId: number): Promise<boolean> {
 
     if (!success) {
         console.error("Simulation failed");
-        return Promise.reject(false);
+        return Promise.reject("error");
     }
 
     const [incOk, newYear] = await incrementWeek(game);
     if (!incOk) {
         console.error("Increment week failed");
-        return Promise.reject(false);
+        return Promise.reject("error");
     }
     if (newYear) {
         await handleNewYear(game, teams, players, meets, races);
         return Promise.resolve(true);
     }
 
-    if (game.currentWeek == 11 || game.currentWeek == 26 || game.currentWeek == 41) {
+    if (game.currentWeek === 11 || game.currentWeek === 26 || game.currentWeek === 41) {
         await saveGame(game);
         await savePlayers(gameId, players);
         await saveTeams(gameId, teams);
@@ -127,10 +127,10 @@ export async function simulatePlayoffs(game: Game, teams: Team[], players: Playe
         await simulateMeetsForWeek(game, meets, races, players);
         await updateTeamAndPlayerPoints(game, teams, players, meets, races);
         const ok = await prepareForNextRound(game, teams, players, meets, races);
-        return ok ? Promise.resolve(true) : Promise.reject(false);
+        return ok ? Promise.resolve(true) : Promise.reject("error");
     } catch (error) {
         console.error("Error simulating playoffs", error);
-        return Promise.reject(false);
+        return Promise.reject(error);
     }
 }
 
@@ -144,32 +144,32 @@ async function prepareForNextRound(game: Game, teams: Team[], players: Player[],
 
         if (!game.remainingTeams?.length || game.remainingTeams[0] === -1) {
             console.error("No remaining teams found");
-            return Promise.reject(false);
+            return Promise.reject("error");
         }
         await enterNextWeek(game, teams, players, meets, races);
         return Promise.resolve(true);
     } catch (error) {
         console.error("Error preparing for next round", error);
-        return Promise.reject(false);
+        return Promise.reject("error");
     }
 }
 
 async function enterNextWeek(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
     try {
-        if (game.currentWeek == 10 || game.currentWeek == 25 || game.currentWeek == 40) {
+        if (game.currentWeek === 10 || game.currentWeek === 25 || game.currentWeek === 40) {
 
             const championshipTeams = teams.filter(team => game.remainingTeams.includes(team.teamId));
             await updateChampionshipWeek(game, championshipTeams, players, meets, races);
             return Promise.resolve(true);
         }
 
-        if (game.currentWeek == 11 || game.currentWeek == 26 || game.currentWeek == 41) {
+        if (game.currentWeek === 11 || game.currentWeek === 26 || game.currentWeek === 41) {
             return Promise.resolve(true);
         }
         return Promise.resolve(true);
     } catch (error) {
         console.error("Error entering next week", error);
-        return Promise.reject(false);
+        return Promise.reject(error);
     }
 }
 
@@ -267,7 +267,7 @@ async function simulateMeetsForWeek(game: Game, meets: Meet[], races: Race[], pl
                 const player: Player | undefined = players.find(p => p.playerId === participant.playerId);
                 if (player === undefined) {
                     console.error("No player found");
-                    return Promise.reject(false);
+                    return Promise.reject("error");
                 }
 
                 const lineupRecord = race.lineupsByTeam[player.teamId] ?? null;
@@ -282,7 +282,7 @@ async function simulateMeetsForWeek(game: Game, meets: Meet[], races: Race[], pl
                         race.participants[participantIndex].playerTime = raceTime;
                     } else {
                         console.error(`Participant with ID ${participant.playerId} not found in race`);
-                        return Promise.reject(false);
+                        return Promise.reject("error");
                     }
                 }
             }
@@ -330,8 +330,8 @@ async function updateChampionshipWeek(game: Game, teams: Team[], players: Player
     const sched = mapWeekToGamePhase(game.currentWeek);
     const nextWeek = game.currentWeek + 1;
     const foundMeet = meets.find(m => m.week === nextWeek && m.year === game.currentYear);
-    if (!game.remainingTeams?.length) return Promise.reject(false);
-    if (!foundMeet) return Promise.reject(false);
+    if (!game.remainingTeams?.length) return Promise.reject("Error: No remaining teams for championship");
+    if (!foundMeet) return Promise.reject("Error: No meet found for championship");
 
     const foundRaces = races.filter(r => r.meetId === foundMeet.meetId);
     await deleteMeet(game.gameId, foundMeet.meetId);

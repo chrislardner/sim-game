@@ -6,6 +6,7 @@ import {
     saveMeets,
     savePlayers,
     saveRaces,
+    saveRecruits,
     saveTeams
 } from '@/data/storage';
 import {generateTeamSchedules, generateYearlyLeagueSchedule} from '@/logic/scheduleGenerator';
@@ -19,6 +20,7 @@ import {Meet, Race} from '@/types/schedule';
 import {SubArchetype} from '@/constants/subArchetypes';
 import {calculateSubArchetype} from './calculateSubArchetype';
 import {calculateTeamOvrs} from './calculateTeamOvr';
+import {generateRecruits} from "@/logic/generateRecruits";
 
 export async function initializeNewGame(conferences: Conference[], selectedSchoolId: number): Promise<Game> {
     const teams: Team[] = [];
@@ -35,14 +37,14 @@ export async function initializeNewGame(conferences: Conference[], selectedSchoo
             for (let j = 0; j < team.XCTFPlayers; j++) {
                 const playerSubArchetypes: SubArchetype = calculateSubArchetype(["cross_country", "track_field"]);
 
-                const player = await createPlayer(gameId, team.teamId, -1, playerSubArchetypes, currentYear, currentYear);
+                const player = await createPlayer(gameId, team.teamId, -1, playerSubArchetypes, currentYear);
                 players.push(player);
                 team.players.push(player.playerId);
             }
             for (let j = 0; j < team.TFPlayers; j++) {
                 const playerSubArchetypes: SubArchetype = calculateSubArchetype(["track_field"]);
 
-                const player = await createPlayer(gameId, team.teamId, -1, playerSubArchetypes, currentYear, currentYear);
+                const player = await createPlayer(gameId, team.teamId, -1, playerSubArchetypes, currentYear);
                 players.push(player);
                 team.players.push(player.playerId);
             }
@@ -50,6 +52,7 @@ export async function initializeNewGame(conferences: Conference[], selectedSchoo
         }
         teams.push(...conferenceTeams);
     }
+    const recruits = await generateRecruits(teams.length * 7, gameId, currentYear);
     const selectedTeamId = teams.find(team => team.schoolId === selectedSchoolId)?.teamId;
     if (!selectedTeamId) throw new Error('Selected team not found');
 
@@ -78,6 +81,7 @@ export async function initializeNewGame(conferences: Conference[], selectedSchoo
         remainingTeams: teams.map(team => team.teamId),
         selectedTeamId: selectedTeamId,
         conferences,
+        recruits: recruits.map(recruit => recruit.recruitId),
     };
 
     try {
@@ -86,7 +90,8 @@ export async function initializeNewGame(conferences: Conference[], selectedSchoo
             saveTeams(gameId, teams),
             saveMeets(gameId, scheduleObject.meets),
             savePlayers(gameId, players),
-            saveRaces(gameId, scheduleObject.races)
+            saveRaces(gameId, scheduleObject.races),
+            saveRecruits(gameId, recruits),
         ]);
     } catch (error) {
         console.error('Error saving game data:', error);

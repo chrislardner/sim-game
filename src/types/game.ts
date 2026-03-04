@@ -13,4 +13,5 @@ export interface Game {
     remainingTeams: number[];
     selectedTeamId: number
     conferences: Conference[];
+    recruits: number[];
 }

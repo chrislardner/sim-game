@@ -3,12 +3,12 @@ import {Player} from "@/types/player";
 import {Meet, Race, RaceParticipant} from "@/types/schedule";
 import {Team} from "@/types/team";
 
-export async function updateTeamAndPlayerPoints(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
+export function updateTeamAndPlayerPoints(game: Game, teams: Team[], players: Player[], meets: Meet[], races: Race[]): Promise<boolean> {
     try {
         const week = game.currentWeek;
-        const leagueMeets = game.leagueSchedule.meets
-            .map(meetId => meets.find(meet => meet.meetId === meetId))
-            .filter(meet => meet && meet.week === week);
+        const leagueMeets = meets.filter(meet =>
+            meet.week === week && meet.year === game.currentYear
+        );
 
         leagueMeets.forEach(meet => {
             if (meet && meet.season === 'cross_country') {
@@ -42,7 +42,7 @@ export async function updateTeamAndPlayerPoints(game: Game, teams: Team[], playe
         return Promise.resolve(true);
     } catch (error) {
         console.error("Error updating team and player points", error);
-        return Promise.reject(false);
+        return Promise.reject(error);
     }
 }
 
@@ -86,10 +86,10 @@ export function handleCrossCountryScoring(race: Race, teams: Team[], players: Pl
                 return teamParticipants[teamId] && teamParticipants[teamId].length >= 5;
             } else {
                 console.error("Team not found");
+                return false;
             }
         });
 
-        // Assign points based on position in the filtered list
         validParticipants.forEach((participant, index) => {
             participant.scoring.points = index + 1; // Position in the race (1st place = 1 point)
         });
