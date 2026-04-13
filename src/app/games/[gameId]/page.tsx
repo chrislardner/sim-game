@@ -215,7 +215,7 @@ function LastMeetSection({
                                 <div key={result.playerId} className="flex items-center justify-between py-1 text-sm">
                                     <div className="truncate">
                                         <span className="text-text-light dark:text-text-dark">
-                                            {result.player?.firstName} {result.player?.lastName?.charAt(0)}.
+                                            {result.player?.firstName} {result.player?.lastName}
                                         </span>
                                         <span className="text-xs text-neutral-400 ml-1">{result.eventType}</span>
                                     </div>
